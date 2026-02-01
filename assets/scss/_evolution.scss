@@ -1,0 +1,119 @@
+@use "./variables" as *;
+
+/* INTERFACE EVOLUTION - DESIGN MAQUETTE */
+#evolution-sidebar {
+    position: fixed;
+    top: 0;
+    left: -$sidebar-width; 
+    width: $sidebar-width;
+    height: 100vh;
+    background-color: $black-sidebar;
+    color: $white;
+    z-index: 2000;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+
+    &.is-open {
+        transform: translateX($sidebar-width);
+    }
+
+    .sidebar-inner {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 30px 20px;
+    }
+}
+
+.sidebar-scroll-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-top: 20px;
+    padding-right: 5px;
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+}
+
+.module-group {
+    margin-bottom: 35px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #333;
+
+    h3 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        color: #888;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+    }
+}
+
+.justify-tools {
+    display: flex;
+    gap: 10px;
+    .tool-btn {
+        flex: 1;
+        background: #333;
+        border: 1px solid #444;
+        color: white;
+        padding: 10px;
+        cursor: pointer;
+        transition: background 0.2s;
+        &:hover { background: $accent; }
+    }
+}
+
+.grid-config {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    
+    .input-inline {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        label { font-size: 0.9rem; }
+        input {
+            width: 50px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            padding: 5px;
+            text-align: center;
+        }
+    }
+}
+
+.btn-add-main, .btn-publish {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: opacity 0.2s;
+    &:hover { opacity: 0.8; }
+}
+
+.btn-add-main { background: #444; color: white; }
+.btn-publish { background: $white; color: $black-sidebar; margin-top: auto; }
+
+#evolution-toggle {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 55px;
+    height: 55px;
+    background: $black-sidebar;
+    border: 1px solid #333;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 2001;
+    transition: transform 0.3s;
+    img { width: 25px; filter: invert(1); }
+    &:hover { transform: scale(1.1) rotate(45deg); }
+}

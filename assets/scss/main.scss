@@ -1,0 +1,34 @@
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+
+// 1. CONFIGURATION (L'ordre est vital ici)
+@use "variables" as *;
+@use "reset";
+
+// 2. STRUCTURE GLOBALE
+@use "grid";
+
+// 3. COMPOSANTS
+@use "header";
+@use "hero";
+@use "article";
+@use "evolution";
+@use "footer";
+
+/* ==========================================================================
+   VERROUILLAGE FINAL DU CALAGE
+   ========================================================================== */
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#main {
+    flex-grow: 1;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+}

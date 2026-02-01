@@ -1,0 +1,49 @@
+/* STYLE DES COMPOSANTS ÉDITORIAUX */
+
+// Le Bloc Manifeste (Texte)
+.bloc-manifeste {
+    margin-bottom: 2.5rem;
+    
+    p {
+        font-size: 1.15rem;
+        line-height: 1.7;
+        color: #333;
+    }
+
+    &.align-left { text-align: left; }
+    &.align-center { text-align: center; }
+    &.align-right { text-align: right; }
+    &.align-justify { text-align: justify; }
+}
+
+// Le Bloc Image
+.bloc-image {
+    margin: 3rem 0;
+    width: 100%;
+
+    figure {
+        margin: 0;
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 2px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        figcaption {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #888;
+            font-style: italic;
+        }
+    }
+
+    &.img-full {
+        grid-column: 1 / -1; // Reste ici car c'est une variante de l'objet image
+    }
+
+    &.img-center {
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
