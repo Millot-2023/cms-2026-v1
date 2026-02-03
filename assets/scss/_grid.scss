@@ -3,23 +3,10 @@
 /* GRILLE MASTER (PROTOCOLE FRACTIONS) */
 .master-grid {
     display: grid;
-    // On remplace 1fr par un minmax qui garantit 20px de marge minimum
     grid-template-columns: minmax(20px, 1fr) minmax(auto, 1200px) minmax(20px, 1fr);
     column-gap: 0;
     width: 100%;
-    
-
-
-
-// REDONNE LA MAIN : Plus aucune contrainte de hauteur sur la grille
     min-height: auto;
-   /* min-height: 101vh;*/
-
-
-
-
-
-
 
     & > * {
         grid-column: 2;
@@ -41,18 +28,16 @@
     }
 }
 
-/* SYSTÈME DE BLOCS DYNAMIQUES */
+/* SYSTÈME DE BLOCS DYNAMIQUES 
+   Nettoyé de toute propriété de hauteur ou de largeur forcée
+*/
 .grid-block {
-    display: grid;
-    gap: 20px;
-    margin: 40px 0;
-    width: 100%;
+    margin: 0; 
 }
 
 /* RESPONSIVE MOBILE (Base 393px) */
 @media (max-width: 800px) {
     .master-grid {
-        // Déjà sécurisé à 20px, on peut garder cette structure ou la simplifier
         grid-template-columns: 20px 1fr 20px;
     }
 }
