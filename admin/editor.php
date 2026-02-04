@@ -43,8 +43,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .sidebar-header h2 { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin: 0; color: var(--text-muted); }
         
         .sidebar-scroll { flex-grow: 1; overflow-y: auto; padding: 20px 25px; scrollbar-width: thin; scrollbar-color: #333 transparent; }
-        
-        .sidebar-footer { padding: 25px; border-top: 1px solid #222; background: #0a0a0a; flex-shrink: 0; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar-footer { padding: 25px; border-top: 1px solid #222; background: #0a0a0a; flex-shrink: 0; }
         
         .section-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; margin-top: 30px; margin-bottom: 12px; display: block; letter-spacing: 1px; }
         .admin-input { width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 12px; margin-bottom: 12px; font-size: 11px; box-sizing: border-box; border-radius: 4px; }
@@ -52,7 +51,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .grid-targets { display: grid; gap: 8px; margin-bottom: 15px; grid-template-columns: repeat(3, 1fr); }
         .grid-style { display: grid; gap: 8px; margin-bottom: 15px; grid-template-columns: repeat(2, 1fr); }
         
-        .tool-btn { background: #1a1a1a; border: 1px solid #333; color: #666; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 4px; transition: all 0.2s; text-decoration: none; }
+        .tool-btn { background: #1a1a1a; border: 1px solid #333; color: #666; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 4px; transition: all 0.2s; }
         .tool-btn:hover { border-color: #555; color: #999; }
         .tool-btn.active { background: #fff; color: #000; border-color: #fff; font-weight: bold; }
         
@@ -62,9 +61,11 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .gauge-data { font-family: monospace; font-size: 11px; color: #fff; }
         .gauge-slider { width: 100%; cursor: pointer; accent-color: #fff; height: 4px; }
         
+        /* CANVAS : Gestion du scroll infini */
         .canvas { flex-grow: 1; height: 100vh; background: var(--canvas-bg); display: flex; flex-direction: column; align-items: center; padding: 80px 20px; overflow-y: scroll; transition: padding-left 0.4s; }
         body:not(.sidebar-hidden) .canvas { padding-left: 360px; }
         
+        /* PAPER : Hauteur dynamique */
         .paper { position: relative; width: 100%; max-width: 850px; background: #fff; color: #000; min-height: 1200px; height: auto; padding: 120px 100px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); display: block; overflow-wrap: break-word; flex-shrink: 0; margin-bottom: 100px; }
         
         .block-container { position: relative; width: 100%; margin-bottom: 5px; padding: 2px 0; }
@@ -102,11 +103,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .delete-btn:hover { background: #ff4d4d; }
         
         [contenteditable] { outline: none; }
-        
-        .publish-btn { width: 100%; background: #fff; color: #000; border: none; padding: 18px; cursor: pointer; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; border-radius: 4px; }
-        .exit-btn { width: 100%; background: transparent; color: #444; border: 1px solid #222; padding: 12px; cursor: pointer; font-weight: 400; text-transform: uppercase; letter-spacing: 1px; font-size: 10px; border-radius: 4px; text-decoration: none; text-align: center; transition: all 0.2s; }
-        .exit-btn:hover { border-color: #444; color: #888; }
-
+        .publish-btn { width: 100%; background: #fff; color: #000; border: none; padding: 18px; cursor: pointer; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; }
         .sidebar-trigger { position: fixed; top: 20px; left: 20px; z-index: 50; cursor: pointer; background: #fff; color: #000; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold; }
         img { max-width: 100%; height: auto; display: block; margin: 20px 0; border-radius: 2px; }
     </style>
@@ -167,7 +164,6 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
 
         <div class="sidebar-footer">
             <button class="publish-btn" onclick="publishDesign()">PUBLIER LE PROJET</button>
-            <a href="../" class="exit-btn">Quitter l'éditeur</a>
         </div>
     </aside>
 
