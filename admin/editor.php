@@ -8,10 +8,12 @@ $is_local = ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_NAME'] 
 if (!$is_local) { die("Acces reserve."); exit; }
 
 $content_dir = "../content/";
-$slug = isset($_GET['slug']) ? $_GET['slug'] : '';
+$slug = isset($_GET['slug']) ? $_GET['slug'] : 'default-page';
 $title = "Titre du Projet";
+$htmlContent = "";
 
-if ($slug && file_exists($content_dir . $slug . '/data.php')) {
+// Chargement des données existantes
+if (file_exists($content_dir . $slug . '/data.php')) {
     include $content_dir . $slug . '/data.php';
 }
 ?>
@@ -109,7 +111,11 @@ if ($slug && file_exists($content_dir . $slug . '/data.php')) {
             box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
             display: flex; flex-direction: column;
             box-sizing: border-box;
+            transition: background 0.3s, color 0.3s;
         }
+
+        /* MODE SOMBRE SUR LA FEUILLE */
+        .paper.dark-mode { background: #111 !important; color: #fff !important; }
 
         .gear-trigger {
             position: absolute; top: 0; left: 0;
@@ -201,7 +207,7 @@ if ($slug && file_exists($content_dir . $slug . '/data.php')) {
         </div>
 
         <button class="reset-btn" onclick="resetGlobalStyle()">Réinitialiser</button>
-        <button class="publish-btn">PUBLIER LE DESIGN</button>
+        <button class="publish-btn" onclick="publishDesign()">PUBLIER LE DESIGN</button>
         <button class="exit-btn" onclick="window.location.href='../index.php'">Quitter</button>
     </aside>
 
@@ -213,21 +219,24 @@ if ($slug && file_exists($content_dir . $slug . '/data.php')) {
 
             <h1 contenteditable="true" id="editable-h1" onfocus="setGlobalTarget('h1')"><?php echo htmlspecialchars($title); ?></h1>
             <div class="content-area" id="editor-core" onclick="handleCoreClick(event)">
-                </div>
+                <?php echo $htmlContent; ?>
+            </div>
         </article>
     </main>
 
     <script>
     let currentTag = 'h1';
+    let slug = '<?php echo $slug; ?>';
     
-    const designSystem = {
-        h1: { fontSize: '48px', fontWeight: '700', lineHeight: '1.2', textAlign: 'center' },
-        h2: { fontSize: '32px', fontWeight: '600', lineHeight: '1.3', textAlign: 'left' },
-        h3: { fontSize: '24px', fontWeight: '500', lineHeight: '1.4', textAlign: 'left' },
-        h4: { fontSize: '20px', fontWeight: '500', lineHeight: '1.4', textAlign: 'left' },
-        h5: { fontSize: '18px', fontWeight: '500', lineHeight: '1.4', textAlign: 'left' },
-        p:  { fontSize: '18px', fontWeight: '400', lineHeight: '1.6', textAlign: 'left' }
-    };
+    // Initialisation
+    const designSystem = <?php echo isset($designSystem) ? json_encode($designSystem) : json_encode([
+        'h1' => ['fontSize' => '48px', 'fontWeight' => '700', 'lineHeight' => '1.2', 'textAlign' => 'center'],
+        'h2' => ['fontSize' => '32px', 'fontWeight' => '600', 'lineHeight' => '1.3', 'textAlign' => 'left'],
+        'h3' => ['fontSize' => '24px', 'fontWeight' => '500', 'lineHeight' => '1.4', 'textAlign' => 'left'],
+        'h4' => ['fontSize' => '20px', 'fontWeight' => '500', 'lineHeight' => '1.4', 'textAlign' => 'left'],
+        'h5' => ['fontSize' => '18px', 'fontWeight' => '500', 'lineHeight' => '1.4', 'textAlign' => 'left'],
+        'p'  => ['fontSize' => '18px', 'fontWeight' => '400', 'lineHeight' => '1.6', 'textAlign' => 'left']
+    ]); ?>;
 
     function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
 
@@ -268,8 +277,6 @@ if ($slug && file_exists($content_dir . $slug . '/data.php')) {
 
     function addBlock(tag) {
         const core = document.getElementById('editor-core');
-        
-        // Création du container pour porter la croix
         const container = document.createElement('div');
         container.className = "block-container";
 
@@ -278,31 +285,43 @@ if ($slug && file_exists($content_dir . $slug . '/data.php')) {
         newEl.innerText = (tag === 'p') ? "Saisissez votre manifeste..." : "Nouveau Titre " + tag.toUpperCase();
         newEl.onfocus = () => setGlobalTarget(tag);
         
-        // Création du bouton supprimer
         const delBtn = document.createElement('div');
         delBtn.className = "delete-btn";
         delBtn.innerHTML = "✕";
-        delBtn.onclick = () => {
-            container.remove();
-            setGlobalTarget('h1');
-        };
+        delBtn.onclick = () => { container.remove(); setGlobalTarget('h1'); };
 
         container.appendChild(newEl);
         container.appendChild(delBtn);
         core.appendChild(container);
         
         setGlobalTarget(tag);
-        newEl.scrollIntoView({ behavior: 'smooth', block: 'end' });
         newEl.focus();
     }
 
     function handleCoreClick(e) {
         if(e.target !== e.currentTarget) {
             const tag = e.target.tagName.toLowerCase();
-            if(['h1','h2','h3','h4','h5','p'].includes(tag)) {
-                setGlobalTarget(tag);
-            }
+            if(['h1','h2','h3','h4','h5','p'].includes(tag)) { setGlobalTarget(tag); }
         }
+    }
+
+    async function publishDesign() {
+        const data = {
+            slug: slug,
+            title: document.getElementById('editable-h1').innerText,
+            designSystem: designSystem,
+            htmlContent: document.getElementById('editor-core').innerHTML
+        };
+
+        try {
+            const response = await fetch('save.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const result = await response.json();
+            alert(result.message);
+        } catch (error) { alert("Erreur lors de la publication"); }
     }
 
     function resetGlobalStyle() {
@@ -311,7 +330,12 @@ if ($slug && file_exists($content_dir . $slug . '/data.php')) {
         renderStyles();
     }
 
-    function toggleDarkMode() { document.getElementById('paper').classList.toggle('dark-mode'); }
+    function toggleDarkMode() { 
+        const paper = document.getElementById('paper');
+        const icon = document.getElementById('icon-toggle');
+        paper.classList.toggle('dark-mode');
+        icon.innerText = paper.classList.contains('dark-mode') ? '☀️' : '🌙';
+    }
 
     window.onload = () => { 
         renderStyles();
