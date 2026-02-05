@@ -74,7 +74,6 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .row-h { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
         .row-styles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .row-align { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .row-float { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
 
         .tool-btn { 
             background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); 
@@ -83,15 +82,18 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
             display: flex; align-items: center; justify-content: center; width: 100%;
         }
         .tool-btn:hover { border-color: #555; color: #fff; }
+
         .tool-btn svg { width: 16px; height: 16px; pointer-events: none; }
 
-        .float-icon { width: 24px !important; height: 24px !important; opacity: 0.5; }
-        .tool-btn:hover .float-icon { opacity: 1; }
-
         .color-wrapper {
-            position: relative; width: 100%; height: 40px;
-            border: 1px solid var(--sidebar-border); border-radius: 4px;
-            overflow: hidden; cursor: pointer; box-sizing: border-box;
+            position: relative;
+            width: 100%;
+            height: 40px;
+            border: 1px solid var(--sidebar-border);
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            box-sizing: border-box;
             background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
         }
         .color-wrapper:hover { border-color: #fff; }
@@ -109,10 +111,6 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .block-container { position: relative; margin-bottom: 5px; }
         .delete-block { position: absolute; left: -18px; top: 0; background: #ff4d4d; color: white; width: 18px; height: 18px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; opacity: 0; transition: opacity 0.2s; z-index: 10; }
         .block-container:hover .delete-block { opacity: 1; }
-
-        .float-block { overflow: hidden; margin-bottom: 20px; }
-        .grid-block { display: grid; gap: 20px; margin-bottom: 20px; }
-        .grid-item { background: #f9f9f9; border: 1px dashed #ccc; padding: 20px; min-height: 50px; }
 
         .theme-toggle { cursor: pointer; font-size: 16px; color: var(--sidebar-text); }
         .sidebar-trigger { position: fixed; top: 20px; left: 20px; z-index: 500; background: var(--accent); color: var(--canvas-bg); border: none; width: 40px; height: 40px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
@@ -162,34 +160,6 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
                 </div>
             </div>
 
-            <span class="section-label">DISPOSITION (FLOAT)</span>
-            <div class="row-float">
-                <button class="tool-btn" onclick="addFloatBlock('left')" title="Image Gauche">
-                    <svg class="float-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="8" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M14 4h7M14 8h7M3 14h18M3 18h18"/></svg>
-                </button>
-                <button class="tool-btn" onclick="addFloatBlock('full')" title="Image Large">
-                    <svg class="float-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M3 14h18M3 18h18"/></svg>
-                </button>
-                <button class="tool-btn" onclick="addFloatBlock('right')" title="Image Droite">
-                    <svg class="float-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="13" y="3" width="8" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M3 4h7M3 8h7M3 14h18M3 18h18"/></svg>
-                </button>
-            </div>
-            <div class="gauge-row">
-                <div class="gauge-info"><span>LARGEUR IMAGE</span><span class="gauge-data"><span id="val-img-width">40</span>%</span></div>
-                <input type="range" id="slider-img-width" style="width:100%; accent-color:#fff;" min="10" max="100" value="40" oninput="updateImageWidth(this.value)">
-            </div>
-
-            <span class="section-label">STRUCTURE (GRILLE)</span>
-            <div class="row-h" style="margin-bottom:8px;">
-                <button class="tool-btn" onclick="addGridBlock(2)">COL 2</button>
-                <button class="tool-btn" onclick="addGridBlock(3)">COL 3</button>
-                <button class="tool-btn" onclick="addGridBlock(4)">COL 4</button>
-            </div>
-            <div class="gauge-row">
-                <div class="gauge-info"><span>ESPACEMENT (GUTTER)</span><span class="gauge-data"><span id="val-gutter">20</span>px</span></div>
-                <input type="range" id="slider-gutter" style="width:100%; accent-color:#fff;" min="0" max="100" value="20" oninput="updateGutter(this.value)">
-            </div>
-
             <span class="section-label">RÉGLAGES : <span id="target-label" style="color:#fff">H1</span></span>
             <div class="gauge-row">
                 <div class="gauge-info"><span>TAILLE</span><span class="gauge-data"><span id="val-size">64</span>px</span></div>
@@ -215,16 +185,13 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
 
     <script>
     let currentTag = 'h1';
-    let currentImageElement = null;
     let designSystem = { 'h1': { fontSize: '64px' }, 'h2': { fontSize: '42px' }, 'h3': { fontSize: '30px' }, 'h4': { fontSize: '24px' }, 'h5': { fontSize: '18px' }, 'p':  { fontSize: '18px' } };
-    let currentGutter = '20px';
 
     function renderStyles() {
         let css = "";
         for (let tag in designSystem) {
             css += `.paper ${tag} { font-size: ${designSystem[tag].fontSize}; margin-top:0; margin-bottom:0.5em; outline:none; }\n`;
         }
-        css += `.grid-block { gap: ${currentGutter}; }`;
         document.getElementById('dynamic-styles').innerHTML = css;
     }
 
@@ -234,34 +201,13 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         renderStyles();
     }
 
-    function updateGutter(val) {
-        currentGutter = val + 'px';
-        document.getElementById('val-gutter').innerText = val;
-        renderStyles();
-    }
-
-    function updateImageWidth(val) {
-        if(currentImageElement) {
-            currentImageElement.style.width = val + '%';
-            document.getElementById('val-img-width').innerText = val;
-        }
-    }
-
-    function setTarget(tag, imgEl = null) {
+    function setTarget(tag) {
         currentTag = tag;
-        currentImageElement = imgEl;
         document.getElementById('target-label').innerText = tag.toUpperCase() === 'P' ? 'PARAGRAPHE' : tag.toUpperCase();
-        
         if(designSystem[tag]) {
             let val = parseInt(designSystem[tag].fontSize);
             document.getElementById('slider-size').value = val;
             document.getElementById('val-size').innerText = val;
-        }
-
-        if(imgEl) {
-            let w = parseInt(imgEl.style.width) || 40;
-            document.getElementById('slider-img-width').value = w;
-            document.getElementById('val-img-width').innerText = w;
         }
     }
 
@@ -283,40 +229,6 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><${tag} contenteditable="true" onfocus="setTarget('${tag}')">${txt}</${tag}>`;
         document.getElementById('editor-core').appendChild(container);
         container.querySelector(tag).focus();
-    }
-
-    function addFloatBlock(type) {
-        const container = document.createElement('div');
-        container.className = 'block-container';
-        let style = "";
-        let width = (type === 'full') ? "100%" : "40%";
-        
-        if(type === 'left') style = `float:left; margin:0 20px 10px 0; width:${width}; aspect-ratio:16/9;`;
-        if(type === 'right') style = `float:right; margin:0 0 10px 20px; width:${width}; aspect-ratio:16/9;`;
-        if(type === 'full') style = `width:${width}; margin-bottom:20px; aspect-ratio:21/9;`;
-
-        container.innerHTML = `
-            <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
-            <div class="float-block">
-                <div class="img-placeholder" onclick="setTarget('img', this)" style="${style} background:#f0f0f0; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; color:#999; font-size:10px; cursor:pointer;">IMAGE</div>
-                <p contenteditable="true" onfocus="setTarget('p')">Texte accompagnant l'image. Modifiez ce contenu pour voir l'habillage se faire naturellement autour du bloc image défini.</p>
-            </div>`;
-        document.getElementById('editor-core').appendChild(container);
-    }
-
-    function addGridBlock(cols) {
-        const container = document.createElement('div');
-        container.className = 'block-container';
-        let items = "";
-        for(let i=0; i<cols; i++) {
-            items += `<div class="grid-item" contenteditable="true" onfocus="setTarget('p')">Contenu col ${i+1}</div>`;
-        }
-        container.innerHTML = `
-            <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
-            <div class="grid-block" style="grid-template-columns: repeat(${cols}, 1fr);">
-                ${items}
-            </div>`;
-        document.getElementById('editor-core').appendChild(container);
     }
 
     window.onload = () => { renderStyles(); setTarget('h1'); };
