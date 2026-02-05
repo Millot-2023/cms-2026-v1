@@ -44,10 +44,8 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         }
 
         body.light-mode {
-            /* Seul le canvas et l'accentuation changent */
             --canvas-bg: #e0e0e0;
             --accent: #000000;
-            /* La sidebar n'est pas redéfinie ici, elle reste noire */
         }
         
         body { 
@@ -62,7 +60,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
             transition: background 0.3s; 
         }
         
-        /* --- 2. LE COCKPIT (SIDEBAR) - FIXE EN NOIR --- */
+        /* --- 2. LE COCKPIT (SIDEBAR) --- */
         .sidebar { 
             position: fixed; 
             top: 0; left: 0; bottom: 0; 
@@ -105,15 +103,19 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
 
         .section-label { font-size: 9px; color: var(--sidebar-muted); text-transform: uppercase; margin-top: 25px; margin-bottom: 10px; display: block; }
 
+        .grid-structure { display: flex; flex-direction: column; gap: 8px; }
+        .row-h { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .row-p { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
         .tool-btn { 
             background-color: var(--sidebar-input); 
             border: 1px solid var(--sidebar-border); 
             color: var(--sidebar-muted); 
-            height: 45px; cursor: pointer; font-size: 11px; 
+            height: 40px; cursor: pointer; font-size: 10px; font-weight: bold;
             border-radius: 4px; transition: 0.2s; 
         }
         .tool-btn:hover { border-color: #555; color: #fff; }
-        .tool-btn.active { background-color: #fff; color: #000; font-weight: bold; }
+        .tool-btn.active { background-color: #fff; color: #000; border-color: #fff; }
 
         .gauge-row { background-color: var(--sidebar-input); padding: 15px; border-radius: 6px; margin-bottom: 10px; border: 1px solid var(--sidebar-border); }
         .gauge-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 10px; color: var(--sidebar-muted); }
@@ -151,10 +153,19 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
             <textarea class="admin-input" placeholder="Résumé" style="height:60px;"><?php echo $summary; ?></textarea>
 
             <span class="section-label">STRUCTURE</span>
-            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
-                <button class="tool-btn" id="btn-p" onclick="addBlock('p', 'Texte...')">P</button>
-                <button class="tool-btn" id="btn-h2" onclick="addBlock('h2', 'Titre H2')">H2</button>
-                <button class="tool-btn" id="btn-h3" onclick="addBlock('h3', 'Titre H3')">H3</button>
+            <div class="grid-structure">
+                <div class="row-h">
+                    <button class="tool-btn" id="btn-h1" onclick="addBlock('h1', 'Titre H1')">H1</button>
+                    <button class="tool-btn" id="btn-h2" onclick="addBlock('h2', 'Titre H2')">H2</button>
+                    <button class="tool-btn" id="btn-h3" onclick="addBlock('h3', 'Titre H3')">H3</button>
+                    <button class="tool-btn" id="btn-h4" onclick="addBlock('h4', 'Titre H4')">H4</button>
+                    <button class="tool-btn" id="btn-h5" onclick="addBlock('h5', 'Titre H5')">H5</button>
+                </div>
+                <div class="row-p">
+                    <button class="tool-btn" id="btn-p" onclick="addBlock('p', 'Texte...')">P</button>
+                    <button class="tool-btn" onclick="execStyle('bold')">B</button>
+                    <button class="tool-btn" onclick="execStyle('italic')">I</button>
+                </div>
             </div>
 
             <span class="section-label">RÉGLAGES</span>
@@ -187,6 +198,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
     }
 
     function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
+    function execStyle(cmd) { document.execCommand(cmd, false, null); }
 
     function setTarget(tag) {
         currentTag = tag;
@@ -196,7 +208,6 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
 
     function updateStyle(prop, val, id) {
         document.getElementById(id).innerText = val.replace('px','');
-        // Logique de rendu CSS dynamique ici...
     }
 
     function addBlock(tag, txt) {
