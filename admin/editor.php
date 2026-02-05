@@ -53,8 +53,8 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         
         .sidebar { 
             position: fixed; top: 0; left: 0; bottom: 0; width: 340px; 
-            background-color: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); 
-            display: flex; flex-direction: column; z-index: 1000; color: var(--sidebar-text);
+            background-color: #111111; border-right: 1px solid var(--sidebar-border); 
+            display: flex; flex-direction: column; z-index: 1000; color: #ffffff;
             transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
         body.sidebar-hidden .sidebar { transform: translateX(-100%); }
@@ -64,7 +64,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         
         .sidebar-scroll { flex-grow: 1; overflow-y: auto; padding: 20px 25px; }
         
-        .sidebar-footer { padding: 25px; border-top: 1px solid var(--sidebar-border); background-color: var(--sidebar-bg); display: flex; flex-direction: column; gap: 10px; }
+        .sidebar-footer { padding: 25px; border-top: 1px solid var(--sidebar-border); background-color: #111111; display: flex; flex-direction: column; gap: 10px; }
 
         .admin-input { width: 100%; background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-text); padding: 12px; margin-bottom: 12px; font-size: 11px; border-radius: 4px; outline: none; box-sizing: border-box; resize: vertical; }
 
@@ -85,9 +85,6 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .tool-btn:hover { border-color: #555; color: #fff; }
         .tool-btn svg { width: 16px; height: 16px; pointer-events: none; }
 
-        .float-icon { width: 24px !important; height: 24px !important; opacity: 0.5; }
-        .tool-btn:hover .float-icon { opacity: 1; }
-
         .color-wrapper {
             position: relative; width: 100%; height: 40px;
             border: 1px solid var(--sidebar-border); border-radius: 4px;
@@ -101,20 +98,28 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .gauge-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 10px; color: var(--sidebar-muted); }
         .gauge-data { color: var(--sidebar-text); font-family: monospace; }
 
-        .canvas { flex-grow: 1; height: 100vh; display: flex; justify-content: center; padding: 80px 20px; overflow-y: auto; transition: padding-left 0.4s; }
-        body:not(.sidebar-hidden) .canvas { padding-left: 340px; }
+        .canvas { 
+            flex-grow: 1; height: 100vh; overflow-y: auto; display: block; transition: padding-left 0.4s; box-sizing: border-box; padding: 80px 20px; 
+        }
+        body:not(.sidebar-hidden) .canvas { padding-left: 360px; }
 
-        .paper { width: 100%; max-width: 850px; background: #ffffff; color: #000000; min-height: 1100px; padding: 100px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); display: flex; flex-direction: column; }
+        .paper { 
+            width: 100%; max-width: 850px; background: #ffffff; color: #000000; min-height: 1100px; padding: 100px; 
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5); display: block; box-sizing: border-box; margin: 0 auto; position: relative;
+        }
 
-        .block-container { position: relative; margin-bottom: 5px; }
+        .paper::after { content: ""; display: table; clear: both; }
+
+        .block-container { position: relative; margin-bottom: 5px; width: 100%; box-sizing: border-box; clear: both; }
         .delete-block { position: absolute; left: -18px; top: 0; background: #ff4d4d; color: white; width: 18px; height: 18px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; opacity: 0; transition: opacity 0.2s; z-index: 10; }
         .block-container:hover .delete-block { opacity: 1; }
 
-        .float-block { overflow: hidden; margin-bottom: 20px; }
-        .grid-block { display: grid; gap: 20px; margin-bottom: 20px; }
-        .grid-item { background: #f9f9f9; border: 1px dashed #ccc; padding: 20px; min-height: 50px; }
+        .float-block { overflow: hidden; margin-bottom: 20px; width: 100%; }
+        
+        .grid-block { display: grid; margin-bottom: 20px; width: 100%; clear: both; }
+        .grid-item { background: transparent; padding: 0; box-sizing: border-box; min-width: 0; }
 
-        .theme-toggle { cursor: pointer; font-size: 16px; color: var(--sidebar-text); }
+        .theme-toggle { cursor: pointer; font-size: 16px; color: #ffffff; }
         .sidebar-trigger { position: fixed; top: 20px; left: 20px; z-index: 500; background: var(--accent); color: var(--canvas-bg); border: none; width: 40px; height: 40px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
     </style>
 </head>
@@ -144,7 +149,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
                     <button class="tool-btn" onclick="addBlock('h5', 'Titre H5')">H5</button>
                 </div>
                 
-                <button class="tool-btn" onclick="addBlock('p', 'Nouveau paragraphe...')">Paragraphe</button>
+                <button class="tool-btn" onclick="addBlock('p')">Paragraphe</button>
                 
                 <div class="row-styles">
                     <button class="tool-btn" onclick="execStyle('bold')">B</button>
@@ -219,6 +224,8 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
     let designSystem = { 'h1': { fontSize: '64px' }, 'h2': { fontSize: '42px' }, 'h3': { fontSize: '30px' }, 'h4': { fontSize: '24px' }, 'h5': { fontSize: '18px' }, 'p':  { fontSize: '18px' } };
     let currentGutter = '20px';
 
+    const LOREM = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s.";
+
     function renderStyles() {
         let css = "";
         for (let tag in designSystem) {
@@ -265,22 +272,19 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         }
     }
 
-    function changeTextColor(color) {
-        document.execCommand('foreColor', false, color);
-    }
-
+    function changeTextColor(color) { document.execCommand('foreColor', false, color); }
     function toggleTheme() {
         document.body.classList.toggle('light-mode');
         document.getElementById('t-icon').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
     }
-
     function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
     function execStyle(cmd) { document.execCommand(cmd, false, null); }
 
-    function addBlock(tag, txt) {
+    function addBlock(tag, txt = null) {
+        const content = (tag === 'p' && !txt) ? LOREM : (txt || 'Nouveau texte');
         const container = document.createElement('div');
         container.className = 'block-container';
-        container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><${tag} contenteditable="true" onfocus="setTarget('${tag}')">${txt}</${tag}>`;
+        container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><${tag} contenteditable="true" onfocus="setTarget('${tag}')">${content}</${tag}>`;
         document.getElementById('editor-core').appendChild(container);
         container.querySelector(tag).focus();
     }
@@ -290,7 +294,6 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         container.className = 'block-container';
         let style = "";
         let width = (type === 'full') ? "100%" : "40%";
-        
         if(type === 'left') style = `float:left; margin:0 20px 10px 0; width:${width}; aspect-ratio:16/9;`;
         if(type === 'right') style = `float:right; margin:0 0 10px 20px; width:${width}; aspect-ratio:16/9;`;
         if(type === 'full') style = `width:${width}; margin-bottom:20px; aspect-ratio:21/9;`;
@@ -299,7 +302,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
             <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
             <div class="float-block">
                 <div class="img-placeholder" onclick="setTarget('img', this)" style="${style} background:#f0f0f0; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; color:#999; font-size:10px; cursor:pointer;">IMAGE</div>
-                <p contenteditable="true" onfocus="setTarget('p')">Texte accompagnant l'image. Modifiez ce contenu pour voir l'habillage se faire naturellement autour du bloc image défini.</p>
+                <p contenteditable="true" onfocus="setTarget('p')">${LOREM}</p>
             </div>`;
         document.getElementById('editor-core').appendChild(container);
     }
@@ -309,11 +312,11 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         container.className = 'block-container';
         let items = "";
         for(let i=0; i<cols; i++) {
-            items += `<div class="grid-item" contenteditable="true" onfocus="setTarget('p')">Contenu col ${i+1}</div>`;
+            items += `<div class="grid-item"><p contenteditable="true" onfocus="setTarget('p')">${LOREM}</p></div>`;
         }
         container.innerHTML = `
             <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
-            <div class="grid-block" style="grid-template-columns: repeat(${cols}, 1fr);">
+            <div class="grid-block" style="grid-template-columns: repeat(${cols}, minmax(0, 1fr));">
                 ${items}
             </div>`;
         document.getElementById('editor-core').appendChild(container);
