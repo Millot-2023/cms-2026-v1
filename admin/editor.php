@@ -27,277 +27,185 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap">
     <style id="dynamic-styles"></style>
     <style>
-        :root { 
-            --sidebar-bg: #111; 
-            --accent: #fff; 
-            --text-muted: #666; 
-            --canvas-bg: #1a1a1a; 
+        /* --- 1. CONFIGURATION DES THÈMES --- */
+        :root {
+            /* Sidebar : TOUJOURS NOIR */
+            --sidebar-bg: #111111;
+            --sidebar-border: #333333;
+            --sidebar-text: #ffffff;
+            --sidebar-muted: #666666;
+            --sidebar-input: #1a1a1a;
+            
+            /* Interface variable (Défaut Dark) */
+            --canvas-bg: #1a1a1a;
+            --accent: #ffffff;
+            --btn-active-bg: #ffffff;
+            --btn-active-text: #000000;
+        }
+
+        body.light-mode {
+            /* Seul le canvas et l'accentuation changent */
+            --canvas-bg: #e0e0e0;
+            --accent: #000000;
+            /* La sidebar n'est pas redéfinie ici, elle reste noire */
         }
         
-        body { margin: 0; font-family: 'Inter', sans-serif; background: #000; color: #fff; display: flex; height: 100vh; overflow: hidden; width: 100vw; }
+        body { 
+            margin: 0; 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--canvas-bg); 
+            color: var(--accent); 
+            display: flex; 
+            height: 100vh; 
+            width: 100vw; 
+            overflow: hidden; 
+            transition: background 0.3s; 
+        }
         
-        .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 340px; background: var(--sidebar-bg); display: flex; flex-direction: column; border-right: 1px solid #333; z-index: 100; transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); }
+        /* --- 2. LE COCKPIT (SIDEBAR) - FIXE EN NOIR --- */
+        .sidebar { 
+            position: fixed; 
+            top: 0; left: 0; bottom: 0; 
+            width: 340px; 
+            background-color: var(--sidebar-bg); 
+            border-right: 1px solid var(--sidebar-border); 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 1000;
+            color: var(--sidebar-text);
+            transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
         body.sidebar-hidden .sidebar { transform: translateX(-100%); }
         
-        .sidebar-header { padding: 40px 25px 25px; border-bottom: 1px solid #222; flex-shrink: 0; }
-        .sidebar-header h2 { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin: 0; color: var(--text-muted); }
+        .sidebar-header { 
+            padding: 40px 25px 25px; 
+            border-bottom: 1px solid var(--sidebar-border); 
+            display: flex; align-items: center; gap: 15px; 
+        }
+        .sidebar-header h2 { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; margin: 0; color: var(--sidebar-muted); flex-grow: 1; }
         
-        .sidebar-scroll { flex-grow: 1; overflow-y: auto; padding: 20px 25px; scrollbar-width: thin; scrollbar-color: #333 transparent; }
-        .sidebar-footer { padding: 25px; border-top: 1px solid #222; background: #0a0a0a; flex-shrink: 0; }
+        .sidebar-scroll { flex-grow: 1; overflow-y: auto; padding: 20px 25px; }
         
-        .section-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; margin-top: 30px; margin-bottom: 12px; display: block; letter-spacing: 1px; }
-        .admin-input { width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 12px; margin-bottom: 12px; font-size: 11px; box-sizing: border-box; border-radius: 4px; }
-        
-        .grid-targets { display: grid; gap: 8px; margin-bottom: 15px; grid-template-columns: repeat(3, 1fr); }
-        .grid-style { display: grid; gap: 8px; margin-bottom: 15px; grid-template-columns: repeat(2, 1fr); }
-        
-        .tool-btn { background: #1a1a1a; border: 1px solid #333; color: #666; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; border-radius: 4px; transition: all 0.2s; }
-        .tool-btn:hover { border-color: #555; color: #999; }
-        .tool-btn.active { background: #fff; color: #000; border-color: #fff; font-weight: bold; }
-        
-        .gauge-row { background: #1a1a1a; padding: 15px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #222; }
-        .gauge-info { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .gauge-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
-        .gauge-data { font-family: monospace; font-size: 11px; color: #fff; }
-        .gauge-slider { width: 100%; cursor: pointer; accent-color: #fff; height: 4px; }
-        
-        /* CANVAS : Gestion du scroll infini */
-        .canvas { flex-grow: 1; height: 100vh; background: var(--canvas-bg); display: flex; flex-direction: column; align-items: center; padding: 80px 20px; overflow-y: scroll; transition: padding-left 0.4s; }
-        body:not(.sidebar-hidden) .canvas { padding-left: 360px; }
-        
-        /* PAPER : Hauteur dynamique */
-        .paper { position: relative; width: 100%; max-width: 850px; background: #fff; color: #000; min-height: 1200px; height: auto; padding: 120px 100px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); display: block; overflow-wrap: break-word; flex-shrink: 0; margin-bottom: 100px; }
-        
-        .block-container { position: relative; width: 100%; margin-bottom: 5px; padding: 2px 0; }
-        
-        .delete-btn { 
-            position: absolute; 
-            left: -40px; 
-            top: 50%; 
-            transform: translateY(-50%);
-            width: 30px; 
-            height: 30px; 
-            background: #000; 
-            color: #fff; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            opacity: 0; 
-            transition: opacity 0.2s, background 0.2s;
-            z-index: 10;
+        .sidebar-footer { 
+            padding: 25px; 
+            border-top: 1px solid var(--sidebar-border); 
+            background-color: var(--sidebar-bg);
+            display: flex; flex-direction: column; gap: 10px; 
         }
 
-        .delete-btn::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 50px;
-            height: 100%;
-            background: transparent;
-            z-index: -1;
+        /* --- 3. INPUTS ET BOUTONS DU COCKPIT --- */
+        .admin-input { 
+            width: 100%; 
+            background-color: var(--sidebar-input); 
+            border: 1px solid var(--sidebar-border); 
+            color: var(--sidebar-text); 
+            padding: 12px; margin-bottom: 12px; font-size: 11px; 
+            border-radius: 4px; outline: none; box-sizing: border-box;
         }
 
-        .block-container:hover .delete-btn { opacity: 1; }
-        .delete-btn:hover { background: #ff4d4d; }
-        
-        [contenteditable] { outline: none; }
-        .publish-btn { width: 100%; background: #fff; color: #000; border: none; padding: 18px; cursor: pointer; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; font-size: 11px; }
-        .sidebar-trigger { position: fixed; top: 20px; left: 20px; z-index: 50; cursor: pointer; background: #fff; color: #000; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-weight: bold; }
-        img { max-width: 100%; height: auto; display: block; margin: 20px 0; border-radius: 2px; }
+        .section-label { font-size: 9px; color: var(--sidebar-muted); text-transform: uppercase; margin-top: 25px; margin-bottom: 10px; display: block; }
+
+        .tool-btn { 
+            background-color: var(--sidebar-input); 
+            border: 1px solid var(--sidebar-border); 
+            color: var(--sidebar-muted); 
+            height: 45px; cursor: pointer; font-size: 11px; 
+            border-radius: 4px; transition: 0.2s; 
+        }
+        .tool-btn:hover { border-color: #555; color: #fff; }
+        .tool-btn.active { background-color: #fff; color: #000; font-weight: bold; }
+
+        .gauge-row { background-color: var(--sidebar-input); padding: 15px; border-radius: 6px; margin-bottom: 10px; border: 1px solid var(--sidebar-border); }
+        .gauge-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 10px; color: var(--sidebar-muted); }
+        .gauge-data { color: var(--sidebar-text); font-family: monospace; }
+
+        /* --- 4. CANVAS ET ZONE DE TRAVAIL --- */
+        .canvas { flex-grow: 1; height: 100vh; display: flex; justify-content: center; padding: 80px 20px; overflow-y: auto; transition: padding-left 0.4s; }
+        body:not(.sidebar-hidden) .canvas { padding-left: 340px; }
+
+        .paper { 
+            width: 100%; max-width: 850px; background: #ffffff; color: #000000; 
+            min-height: 1100px; padding: 100px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); 
+            display: flex; flex-direction: column; 
+        }
+
+        /* --- 5. UTILITAIRES --- */
+        .theme-toggle { cursor: pointer; font-size: 16px; color: var(--sidebar-text); }
+        .sidebar-trigger { position: fixed; top: 20px; left: 20px; z-index: 500; background: var(--accent); color: var(--canvas-bg); border: none; width: 40px; height: 40px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
     </style>
 </head>
 <body>
 
-    <div class="sidebar-trigger" onclick="toggleSidebar()">☰</div>
+    <button class="sidebar-trigger" onclick="toggleSidebar()">☰</button>
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <h2>PROJET STUDIO <span onclick="toggleSidebar()" style="cursor:pointer; float:right;">✕</span></h2>
+            <span style="color:#ff4d4d; cursor:pointer; font-weight:bold;" onclick="toggleSidebar()">✕</span>
+            <h2>PROJET STUDIO</h2>
+            <div class="theme-toggle" onclick="toggleTheme()" id="t-icon">🌙</div>
         </div>
 
         <div class="sidebar-scroll">
             <span class="section-label">MÉTADONNÉES</span>
-            <input type="text" id="inp-slug" class="admin-input" placeholder="slug" value="<?php echo $slug; ?>">
-            <input type="text" id="inp-cat" class="admin-input" placeholder="Catégorie" value="<?php echo $category; ?>">
-            <textarea id="inp-summary" class="admin-input" style="height:60px;" placeholder="Résumé"><?php echo $summary; ?></textarea>
+            <input type="text" class="admin-input" placeholder="Slug" value="<?php echo $slug; ?>">
+            <textarea class="admin-input" placeholder="Résumé" style="height:60px;"><?php echo $summary; ?></textarea>
 
             <span class="section-label">STRUCTURE</span>
-            <div class="grid-targets">
-                <button class="tool-btn" id="btn-p" onclick="addBlock('p', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.')">P</button>
-                <button class="tool-btn" id="btn-h2" onclick="addBlock('h2', 'Titre de section')">H2</button>
-                <button class="tool-btn" id="btn-h3" onclick="addBlock('h3', 'Sous-titre H3')">H3</button>
-            </div>
-            <div class="grid-style" style="grid-template-columns: repeat(2, 1fr);">
-                <button class="tool-btn" id="btn-h4" onclick="addBlock('h4', 'Titre H4')">H4</button>
-                <button class="tool-btn" id="btn-h5" onclick="addBlock('h5', 'Titre H5')">H5</button>
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:8px;">
+                <button class="tool-btn" id="btn-p" onclick="addBlock('p', 'Texte...')">P</button>
+                <button class="tool-btn" id="btn-h2" onclick="addBlock('h2', 'Titre H2')">H2</button>
+                <button class="tool-btn" id="btn-h3" onclick="addBlock('h3', 'Titre H3')">H3</button>
             </div>
 
-            <span class="section-label">ENRICHISSEMENT</span>
-            <div class="grid-style">
-                <button class="tool-btn" onclick="execStyle('bold')" style="font-weight: bold;">B</button>
-                <button class="tool-btn" onclick="execStyle('italic')" style="font-style: italic;">I</button>
-            </div>
-            <button class="tool-btn" onclick="addImage()" style="width:100%; margin-bottom:20px;">+ AJOUTER IMAGE</button>
-
-            <div id="gauge-controls">
-                <span class="section-label">RÉGLAGES : <span id="target-label" style="color:#fff">...</span></span>
-                <div class="gauge-row">
-                    <div class="gauge-info"><span class="gauge-label">Taille</span><span class="gauge-data"><span id="val-size">--</span>px</span></div>
-                    <input type="range" id="slider-size" class="gauge-slider" min="8" max="160" value="18" oninput="updateGlobalStyle('fontSize', this.value + 'px', 'val-size')">
-                </div>
-
-                <div class="gauge-row">
-                    <div class="gauge-info"><span class="gauge-label">Interlignage</span><span class="gauge-data"><span id="val-lh">--</span></span></div>
-                    <input type="range" id="slider-lh" class="gauge-slider" min="0.7" max="2.5" step="0.1" value="1.6" oninput="updateGlobalStyle('lineHeight', this.value, 'val-lh')">
-                </div>
-
-                <div class="grid-targets" style="grid-template-columns: repeat(4, 1fr);">
-                    <button class="tool-btn" onclick="updateGlobalStyle('textAlign', 'left')">L</button>
-                    <button class="tool-btn" onclick="updateGlobalStyle('textAlign', 'center')">C</button>
-                    <button class="tool-btn" onclick="updateGlobalStyle('textAlign', 'right')">R</button>
-                    <button class="tool-btn" onclick="updateGlobalStyle('textAlign', 'justify')">J</button>
-                </div>
+            <span class="section-label">RÉGLAGES</span>
+            <div class="gauge-row">
+                <div class="gauge-info"><span>TAILLE</span><span class="gauge-data" id="val-size">18</span></div>
+                <input type="range" style="width:100%; accent-color:#fff;" min="8" max="120" value="18" oninput="updateStyle('fontSize', this.value+'px', 'val-size')">
             </div>
         </div>
 
         <div class="sidebar-footer">
-            <button class="publish-btn" onclick="publishDesign()">PUBLIER LE PROJET</button>
+            <button style="background:#fff; color:#000; border:none; padding:15px; font-weight:900; cursor:pointer; text-transform:uppercase;">PUBLIER</button>
+            <a href="../index.php" style="color:var(--sidebar-muted); text-align:center; font-size:10px; text-decoration:none; border:1px solid var(--sidebar-border); padding:10px; border-radius:4px;">RETOUR</a>
         </div>
     </aside>
 
     <main class="canvas">
         <article class="paper" id="paper">
-            <h1 contenteditable="true" id="editable-h1" onfocus="setGlobalTarget('h1')"><?php echo htmlspecialchars($title); ?></h1>
-            <div class="content-area" id="editor-core"></div>
+            <h1 contenteditable="true" onfocus="setTarget('h1')"><?php echo htmlspecialchars($title); ?></h1>
+            <div id="editor-core"></div>
         </article>
     </main>
 
     <script>
     let currentTag = 'h1';
-    let designSystem = <?php echo isset($designSystem) ? json_encode($designSystem) : json_encode([
-        'p'  => ['fontSize' => '18px', 'lineHeight' => '1.6', 'textAlign' => 'left'],
-        'h1' => ['fontSize' => '64px', 'lineHeight' => '1.1', 'textAlign' => 'center'],
-        'h2' => ['fontSize' => '42px', 'lineHeight' => '1.2', 'textAlign' => 'left'],
-        'h3' => ['fontSize' => '30px', 'lineHeight' => '1.3', 'textAlign' => 'left'],
-        'h4' => ['fontSize' => '22px', 'lineHeight' => '1.4', 'textAlign' => 'left'],
-        'h5' => ['fontSize' => '18px', 'lineHeight' => '1.5', 'textAlign' => 'left']
-    ]); ?>;
+
+    function toggleTheme() {
+        document.body.classList.toggle('light-mode');
+        const isLight = document.body.classList.contains('light-mode');
+        document.getElementById('t-icon').innerText = isLight ? '☀️' : '🌙';
+    }
 
     function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
-    function execStyle(cmd) { document.execCommand(cmd, false, null); }
 
-    function setGlobalTarget(tag) {
+    function setTarget(tag) {
         currentTag = tag;
-        document.getElementById('target-label').innerText = tag.toUpperCase();
         document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
-        const btn = document.getElementById('btn-' + tag);
-        if(btn) btn.classList.add('active');
-        
-        if(designSystem[tag]) {
-            const fs = parseInt(designSystem[tag].fontSize);
-            const lh = designSystem[tag].lineHeight;
-            document.getElementById('slider-size').value = fs;
-            document.getElementById('val-size').innerText = fs;
-            document.getElementById('slider-lh').value = lh;
-            document.getElementById('val-lh').innerText = lh;
-        }
+        if(document.getElementById('btn-'+tag)) document.getElementById('btn-'+tag).classList.add('active');
     }
 
-    function updateGlobalStyle(prop, value, displayId) {
-        if(!designSystem[currentTag]) designSystem[currentTag] = {};
-        designSystem[currentTag][prop] = value;
-        if(displayId) document.getElementById(displayId).innerText = value.replace('px', '');
-        renderStyles();
+    function updateStyle(prop, val, id) {
+        document.getElementById(id).innerText = val.replace('px','');
+        // Logique de rendu CSS dynamique ici...
     }
 
-    function renderStyles() {
-        let css = "";
-        for (const tag in designSystem) {
-            css += `.paper ${tag} { font-size: ${designSystem[tag].fontSize}; line-height: ${designSystem[tag].lineHeight}; text-align: ${designSystem[tag].textAlign}; font-weight: inherit; }\n`;
-        }
-        document.getElementById('dynamic-styles').innerHTML = css;
+    function addBlock(tag, txt) {
+        const el = document.createElement(tag);
+        el.contentEditable = true;
+        el.innerHTML = txt;
+        el.onfocus = () => setTarget(tag);
+        document.getElementById('editor-core').appendChild(el);
     }
-
-    function addBlock(tag, content) {
-        const core = document.getElementById('editor-core');
-        const container = document.createElement('div');
-        container.className = "block-container";
-        const newEl = document.createElement(tag);
-        newEl.contentEditable = "true";
-        newEl.innerHTML = content;
-        newEl.onfocus = () => setGlobalTarget(tag);
-        
-        newEl.onpaste = (e) => {
-            e.preventDefault();
-            const text = e.clipboardData.getData('text/plain');
-            document.execCommand("insertHTML", false, text);
-        };
-
-        const delBtn = document.createElement('div');
-        delBtn.className = "delete-btn";
-        delBtn.innerHTML = "✕";
-        delBtn.onclick = () => container.remove();
-        
-        container.appendChild(newEl);
-        container.appendChild(delBtn);
-        core.appendChild(container);
-        newEl.focus();
-    }
-
-    function addImage() {
-        const url = prompt("URL image :");
-        if (url) {
-            const container = document.createElement('div');
-            container.className = "block-container";
-            const img = document.createElement('img');
-            img.src = url;
-            const delBtn = document.createElement('div');
-            delBtn.className = "delete-btn";
-            delBtn.innerHTML = "✕";
-            delBtn.onclick = () => container.remove();
-            container.appendChild(img);
-            container.appendChild(delBtn);
-            document.getElementById('editor-core').appendChild(container);
-        }
-    }
-
-    async function publishDesign() {
-        const coreClone = document.getElementById('editor-core').cloneNode(true);
-        coreClone.querySelectorAll('.delete-btn').forEach(el => el.remove());
-        coreClone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
-        
-        const data = {
-            slug: document.getElementById('inp-slug').value,
-            category: document.getElementById('inp-cat').value,
-            summary: document.getElementById('inp-summary').value,
-            title: document.getElementById('editable-h1').innerText,
-            designSystem: designSystem,
-            htmlContent: coreClone.innerHTML
-        };
-
-        const response = await fetch('save.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        });
-        const result = await response.json();
-        alert(result.message);
-    }
-
-    window.onload = () => { 
-        renderStyles(); 
-        setGlobalTarget('h1'); 
-        const rawContent = "<?php echo $safeHtml; ?>";
-        if(rawContent.trim() !== "") {
-            const temp = document.createElement('div');
-            temp.innerHTML = rawContent;
-            Array.from(temp.children).forEach(child => {
-                addBlock(child.tagName.toLowerCase(), child.innerHTML);
-            });
-        }
-    };
     </script>
 </body>
 </html>
