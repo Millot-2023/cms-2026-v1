@@ -311,22 +311,50 @@ if (file_exists($content_dir . $slug . '/data.php')) {
         document.getElementById('editor-core').appendChild(container);
     }
 
-    function triggerUpload(el) { el.querySelector('input').click(); }
-    function handleImageSelect(input) {
-        const file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const placeholder = input.parentElement;
-                placeholder.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">
-                                         <input type="file" style="display:none;" onchange="handleImageSelect(this)">`;
-                const img = placeholder.querySelector('img');
-                img.onclick = (event) => { event.stopPropagation(); setTarget('img', placeholder); };
+
+
+
+
+
+
+
+
+//chargemenr d'image à l'infini
+function triggerUpload(el) {
+    el.querySelector('input').click();
+}
+
+function handleImageSelect(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const placeholder = input.parentElement;
+            
+            // Injection de l'image et du nouvel input
+            placeholder.innerHTML = `
+                <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">
+                <input type="file" style="display:none;" onchange="handleImageSelect(this)">
+            `;
+            
+            const img = placeholder.querySelector('img');
+            
+            // Correction : ajout de triggerUpload pour relancer l'explorateur au clic
+            img.onclick = (event) => {
+                event.stopPropagation();
                 setTarget('img', placeholder);
+                triggerUpload(placeholder);
             };
-            reader.readAsDataURL(file);
-        }
+            
+            setTarget('img', placeholder);
+        };
+        reader.readAsDataURL(file);
     }
+}
+
+
+
+
 
     function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
     function execStyle(cmd) { document.execCommand(cmd, false, null); }
