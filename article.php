@@ -19,36 +19,52 @@ require_once 'includes/header.php';
 require_once 'includes/hero.php'; 
 
 // Sécurité : On s'assure que le contenu ne contient aucune balise 'contenteditable' résiduelle
-$finalHtml = str_replace('contenteditable="true"', 'contenteditable="false"', $htmlContent);
+$finalHtml = str_replace('contenteditable="true"', '', $content ?? 'Aucun contenu.');
 ?>
 
 <style>
-/* 1. SEUL LE DYNAMIQUE RESTE ICI */
+/* 1. RENDU DYNAMIQUE DU DESIGN SYSTEM */
 <?php 
-if (isset($designSystem)) {
+if (isset($designSystem) && is_array($designSystem)) {
     foreach ($designSystem as $tag => $props) {
-        echo ".article-reader-mode $tag { 
-            font-size: " . ($props['fontSize'] ?? 'inherit') . "; 
-            line-height: " . ($props['lineHeight'] ?? '1.6') . "; 
-            text-align: " . ($props['textAlign'] ?? 'left') . "; 
-            font-weight: " . ($props['fontWeight'] ?? '400') . "; 
+        $fontSize = $props['fontSize'] ?? 'inherit';
+        echo ".article-render $tag { 
+            font-size: $fontSize; 
+            line-height: 1.6; 
             margin-bottom: 1.5rem;
         }\n";
     }
 }
 ?>
 
-/* 4. DISCRETION ET ITALIQUE */
-.meta-discrete {
-    font-size: 0.9rem;
-    font-style: italic;
-    color: #888;
-    margin-top: 40px;
-    margin-bottom: 20px;
+/* 2. STRUCTURE ET FLUX */
+.master-grid {
+    margin-top: 50px;
+    clear: both;
+    position: relative;
+    z-index: 10;
+    background: #fff;
 }
 
-/* SUPPRESSION DES ELEMENTS ADMIN */
-.article-header, .delete-block, .btn-edit-mode, .admin-only {
+.single-article {
+    padding: 40px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.article-render img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* CLEARFIX POUR LES FLOATS DANS LE RENDU */
+.article-render::after, .float-block::after {
+    content: ""; display: table; clear: both;
+}
+
+/* SUPPRESSION DES RELIQUATS ADMIN */
+.delete-block, .hidden-file-input {
     display: none !important;
 }
 </style>
@@ -57,25 +73,24 @@ if (isset($designSystem)) {
     <main id="main">
         <article class="single-article">
             
-            <?php if (!empty($image)): ?>
-                <div class="project-main-image">
-                    <img src="<?php echo $image; ?>" alt="<?php echo $title; ?>">
-                </div>
-            <?php endif; ?>
-
-            <header class="article-header">
-                <span class="category"><?php echo $category; ?></span>
-                <h1 class="main-article-title"><?php echo $title; ?></h1>
-                <p class="date">Publié le <?php echo $date; ?></p>
-                <a href="admin/editor.php?slug=<?php echo $slug; ?>" class="btn-edit-mode">Modifier via l'éditeur</a>
+            <header class="article-header-view">
+                <span class="category" style="text-transform: uppercase; letter-spacing: 2px; font-size: 12px; color: #666;">
+                    <?php echo htmlspecialchars($category ?? 'Design'); ?>
+                </span>
+                <h1 class="main-article-title"><?php echo htmlspecialchars($title); ?></h1>
+                <p class="date" style="font-size: 13px; color: #999;">Publié le <?php echo $date ?? date('d/m/Y'); ?></p>
             </header>
 
             <div class="article-content">
-                <p class="summary"><em><?php echo $summary; ?></em></p>
-                <hr>
+                <?php if(!empty($summary)): ?>
+                    <p class="summary" style="font-size: 1.2rem; line-height: 1.6; color: #444; margin: 30px 0; border-left: 3px solid #000; padding-left: 20px;">
+                        <em><?php echo nl2br(htmlspecialchars($summary)); ?></em>
+                    </p>
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 40px 0;">
+                <?php endif; ?>
                 
                 <div class="article-render">
-                    <?php echo $htmlContent ?? 'Aucun contenu.'; ?>
+                    <?php echo $finalHtml; ?>
                 </div>
             </div>
         </article>

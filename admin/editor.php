@@ -8,19 +8,27 @@ if (!$is_local) { die("Acces reserve."); exit; }
 
 $content_dir = "../content/";
 $slug = isset($_GET['slug']) ? $_GET['slug'] : 'nouveau-projet';
+
+// Valeurs par défaut
 $title = "Titre du Projet";
 $category = "Design";
 $summary = "";
 $htmlContent = "";
-$designSystemArray = [ 'h1' => [ 'fontSize' => '64px' ], 'h2' => [ 'fontSize' => '42px' ], 'h3' => [ 'fontSize' => '30px' ], 'h4' => [ 'fontSize' => '24px' ], 'h5' => [ 'fontSize' => '18px' ], 'p' =>  [ 'fontSize' => '18px' ] ];
+$designSystemArray = [ 
+    'h1' => [ 'fontSize' => '64px' ], 
+    'h2' => [ 'fontSize' => '42px' ], 
+    'h3' => [ 'fontSize' => '30px' ], 
+    'h4' => [ 'fontSize' => '24px' ], 
+    'h5' => [ 'fontSize' => '18px' ], 
+    'p' =>  [ 'fontSize' => '18px' ] 
+];
 
+// Chargement des données réelles
 if (file_exists($content_dir . $slug . '/data.php')) {
     include $content_dir . $slug . '/data.php';
     if (isset($content)) { $htmlContent = $content; }
     if (isset($designSystem)) { $designSystemArray = $designSystem; }
 }
-
-$safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -38,7 +46,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
 
         /* --- 1. CONFIGURATION DES THÈMES --- */
         :root {
-            --sidebar-bg: #111111;
+            --sidebar-bg: #000000;
             --sidebar-border: #333333;
             --sidebar-text: #ffffff;
             --sidebar-muted: #666666;
@@ -56,7 +64,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         
         .sidebar { 
             position: fixed; top: 0; left: 0; bottom: 0; width: 340px; 
-            background-color: #111111; border-right: 1px solid var(--sidebar-border); 
+            background-color: #000000; border-right: 1px solid var(--sidebar-border); 
             display: flex; flex-direction: column; z-index: 1000; color: #ffffff;
             transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
         }
@@ -66,9 +74,9 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .sidebar-header h2 { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; margin: 0; color: var(--sidebar-muted); flex-grow: 1; }
         
         .sidebar-scroll { flex-grow: 1; overflow-y: auto; padding: 20px 25px; }
-        .sidebar-footer { padding: 25px; border-top: 1px solid var(--sidebar-border); background-color: #111111; display: flex; flex-direction: column; gap: 10px; }
+        .sidebar-footer { padding: 25px; border-top: 1px solid var(--sidebar-border); background-color: #000000; display: flex; flex-direction: column; gap: 10px; }
 
-        .admin-input { width: 100%; background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-text); padding: 12px; margin-bottom: 12px; font-size: 11px; border-radius: 4px; outline: none; box-sizing: border-box; resize: vertical; }
+        .admin-input { width: 100%; background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-text); padding: 12px; margin-bottom: 12px; font-size: 11px; border-radius: 4px; outline: none; box-sizing: border-box; }
 
         .section-label { font-size: 9px; color: var(--sidebar-muted); text-transform: uppercase; margin-top: 25px; margin-bottom: 10px; display: block; }
 
@@ -85,15 +93,12 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
             display: flex; align-items: center; justify-content: center; width: 100%;
         }
         .tool-btn:hover { border-color: #555; color: #fff; }
-        .tool-btn svg { width: 16px; height: 16px; pointer-events: none; }
 
         .color-wrapper {
-            position: relative; width: 100%; height: 40px;
-            border: 1px solid var(--sidebar-border); border-radius: 4px;
-            overflow: hidden; cursor: pointer; box-sizing: border-box;
+            position: relative; width: 100%; height: 40px; border: 1px solid var(--sidebar-border); 
+            border-radius: 4px; overflow: hidden; cursor: pointer; 
             background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);
         }
-        .color-wrapper:hover { border-color: #fff; }
         .color-wrapper input[type="color"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 
         .gauge-row { background-color: var(--sidebar-input); padding: 15px; border-radius: 6px; margin-bottom: 10px; border: 1px solid var(--sidebar-border); }
@@ -106,42 +111,32 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .paper { 
             width: 100%; max-width: 850px; background: #ffffff; color: #000000; min-height: 1100px; padding: 100px; 
             box-shadow: 0 40px 100px rgba(0,0,0,0.5); display: block; box-sizing: border-box; margin: 0 auto; position: relative;
-            overflow-wrap: break-word; word-wrap: break-word;
         }
 
-        /* --- LE FIX POUR LES FLOATS (CLEARFIX) --- */
-        .block-container::after, .float-block::after, .paper::after { 
-            content: ""; display: table; clear: both; 
-        }
-
-        .block-container { position: relative; margin-bottom: 5px; width: 100%; box-sizing: border-box; clear: both; }
+        .block-container { position: relative; margin-bottom: 5px; width: 100%; clear: both; }
         .delete-block { position: absolute; left: -18px; top: 0; background: #ff4d4d; color: white; width: 18px; height: 18px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; opacity: 0; transition: opacity 0.2s; z-index: 10; }
         .block-container:hover .delete-block { opacity: 1; }
 
-        .float-block { width: 100%; position: relative; }
-        
-        .grid-block { display: grid; margin-bottom: 20px; width: 100%; clear: both; }
-        .grid-item { background: transparent; padding: 0; box-sizing: border-box; min-width: 0; }
+        .sidebar-trigger { position: fixed; top: 20px; left: 20px; z-index: 500; background: var(--accent); color: var(--canvas-bg); border: none; width: 40px; height: 40px; border-radius: 4px; cursor: pointer; font-weight: bold; }
 
-        .theme-toggle { cursor: pointer; font-size: 16px; color: #ffffff; }
-        .sidebar-trigger { position: fixed; top: 20px; left: 20px; z-index: 500; background: var(--accent); color: var(--canvas-bg); border: none; width: 40px; height: 40px; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-publish { background:#fff; color:#000; border:none; padding:15px; font-weight:900; cursor:pointer; text-transform:uppercase; }
+        .btn-exit { color:var(--sidebar-muted); text-align:center; font-size:10px; text-decoration:none; border:1px solid var(--sidebar-border); padding:10px; border-radius:4px; text-transform:uppercase; font-weight:bold; }
     </style>
 </head>
-<body>
-
+<body class="dark-mode"> 
     <button class="sidebar-trigger" onclick="toggleSidebar()">☰</button>
 
     <aside class="sidebar">
         <div class="sidebar-header">
             <span style="color:#ff4d4d; cursor:pointer; font-weight:bold;" onclick="toggleSidebar()">✕</span>
             <h2>PROJET STUDIO</h2>
-            <div class="theme-toggle" onclick="toggleTheme()" id="t-icon">🌙</div>
+            <div class="theme-toggle" onclick="toggleTheme()" id="t-icon" style="cursor:pointer">🌙</div>
         </div>
 
         <div class="sidebar-scroll">
             <span class="section-label">MÉTADONNÉES</span>
-            <input type="text" id="inp-slug" class="admin-input" placeholder="Slug" value="<?php echo $slug; ?>" readonly>
-            <textarea id="inp-summary" class="admin-input" placeholder="Résumé" style="height:60px;"><?php echo $summary; ?></textarea>
+            <input type="text" id="inp-slug" class="admin-input" value="<?php echo htmlspecialchars($slug); ?>" readonly>
+            <textarea id="inp-summary" class="admin-input" placeholder="Résumé" style="height:60px;"><?php echo htmlspecialchars($summary); ?></textarea>
 
             <span class="section-label">TYPOGRAPHIE</span>
             <div class="grid-structure">
@@ -156,24 +151,30 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
                 <div class="row-styles">
                     <button class="tool-btn" onclick="execStyle('bold')">B</button>
                     <button class="tool-btn" onclick="execStyle('italic')">I</button>
-                    <div class="color-wrapper" title="Couleur de sélection"><input type="color" oninput="changeTextColor(this.value)"></div>
+                    <div class="color-wrapper"><input type="color" oninput="changeTextColor(this.value)"></div>
                 </div>
                 <div class="row-align">
-                    <button class="tool-btn" onclick="execStyle('justifyLeft')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 10H3M21 6H3M21 14H3M17 18H3"/></svg></button>
-                    <button class="tool-btn" onclick="execStyle('justifyCenter')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10H6M21 6H3M21 14H3M18 18H6"/></svg></button>
-                    <button class="tool-btn" onclick="execStyle('justifyRight')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10H7M21 6H3M21 14H3M21 18H7"/></svg></button>
-                    <button class="tool-btn" onclick="execStyle('justifyFull')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10H3M21 6H3M21 14H3M21 18H3"/></svg></button>
+                    <button class="tool-btn" onclick="execStyle('justifyLeft')">L</button>
+                    <button class="tool-btn" onclick="execStyle('justifyCenter')">C</button>
+                    <button class="tool-btn" onclick="execStyle('justifyRight')">R</button>
+                    <button class="tool-btn" onclick="execStyle('justifyFull')">J</button>
                 </div>
+            </div>
+
+            <span class="section-label">RÉGLAGES : <span id="target-label" style="color:#fff">H1</span></span>
+            <div class="gauge-row">
+                <div class="gauge-info"><span>TAILLE POLICE</span><span class="gauge-data"><span id="val-size">64</span>px</span></div>
+                <input type="range" id="slider-size" style="width:100%; accent-color:#fff;" min="8" max="120" value="64" oninput="updateStyle('fontSize', this.value+'px', 'val-size')">
             </div>
 
             <span class="section-label">DISPOSITION (FLOAT)</span>
             <div class="row-float">
-                <button class="tool-btn" onclick="addFloatBlock('left')" title="Image Gauche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="8" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M14 4h7M14 8h7M3 14h18M3 18h18"/></svg></button>
-                <button class="tool-btn" onclick="addFloatBlock('full')" title="Image Large"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M3 14h18M3 18h18"/></svg></button>
-                <button class="tool-btn" onclick="addFloatBlock('right')" title="Image Droite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="13" y="3" width="8" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M3 4h7M3 8h7M3 14h18M3 18h18"/></svg></button>
+                <button class="tool-btn" onclick="addFloatBlock('left')">GAUCHE</button>
+                <button class="tool-btn" onclick="addFloatBlock('full')">LARGE</button>
+                <button class="tool-btn" onclick="addFloatBlock('right')">DROITE</button>
             </div>
             <div class="gauge-row">
-                <div class="gauge-info"><span>LARGEUR IMAGE</span><span class="gauge-data"><span id="val-img-width">40</span>%</span></div>
+                <div class="gauge-info"><span>IMAGE WIDTH</span><span class="gauge-data"><span id="val-img-width">40</span>%</span></div>
                 <input type="range" id="slider-img-width" style="width:100%; accent-color:#fff;" min="10" max="100" value="40" oninput="updateImageWidth(this.value)">
             </div>
 
@@ -181,23 +182,16 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
             <div class="row-h" style="margin-bottom:8px;">
                 <button class="tool-btn" onclick="addGridBlock(2)">COL 2</button>
                 <button class="tool-btn" onclick="addGridBlock(3)">COL 3</button>
-                <button class="tool-btn" onclick="addGridBlock(4)">COL 4</button>
             </div>
             <div class="gauge-row">
-                <div class="gauge-info"><span>ESPACEMENT (GUTTER)</span><span class="gauge-data"><span id="val-gutter">20</span>px</span></div>
+                <div class="gauge-info"><span>GUTTER</span><span class="gauge-data"><span id="val-gutter">20</span>px</span></div>
                 <input type="range" id="slider-gutter" style="width:100%; accent-color:#fff;" min="0" max="100" value="20" oninput="updateGutter(this.value)">
-            </div>
-
-            <span class="section-label">RÉGLAGES : <span id="target-label" style="color:#fff">H1</span></span>
-            <div class="gauge-row">
-                <div class="gauge-info"><span>TAILLE</span><span class="gauge-data"><span id="val-size">64</span>px</span></div>
-                <input type="range" id="slider-size" style="width:100%; accent-color:#fff;" min="8" max="120" value="64" oninput="updateStyle('fontSize', this.value+'px', 'val-size')">
             </div>
         </div>
 
         <div class="sidebar-footer">
-            <button onclick="publishProject()" style="background:#fff; color:#000; border:none; padding:15px; font-weight:900; cursor:pointer; text-transform:uppercase;">PUBLIER</button>
-            <a href="../index.php" style="color:var(--sidebar-muted); text-align:center; font-size:10px; text-decoration:none; border:1px solid var(--sidebar-border); padding:10px; border-radius:4px;">RETOUR</a>
+            <button onclick="publishProject()" class="btn-publish">PUBLIER</button>
+            <a href="../index.php" class="btn-exit">QUITTER</a>
         </div>
     </aside>
 
@@ -216,32 +210,41 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
     let currentImageElement = null;
     let designSystem = <?php echo json_encode($designSystemArray); ?>;
     let currentGutter = '20px';
-    const LOREM = "Lorem Ipsum is simply dummy text of the printing and typesetting industry...";
 
     function renderStyles() {
         let css = "";
         for (let tag in designSystem) {
-            css += `.paper ${tag} { font-size: ${designSystem[tag].fontSize}; margin-top:0; margin-bottom:0.5em; outline:none; }\n`;
+            css += `.paper ${tag}, #main-title { font-size: ${designSystem[tag].fontSize}; margin-bottom:0.5em; outline:none; }\n`;
         }
         css += `.grid-block { gap: ${currentGutter}; }`;
         document.getElementById('dynamic-styles').innerHTML = css;
     }
 
     function updateStyle(prop, val, displayId) {
-        designSystem[currentTag][prop] = val;
-        document.getElementById(displayId).innerText = val.replace('px', '');
-        renderStyles();
+        if(designSystem[currentTag]) {
+            designSystem[currentTag][prop] = val; 
+            document.getElementById(displayId).innerText = val.replace('px', ''); 
+            const targets = document.querySelectorAll(`.paper ${currentTag}, #main-title`);
+            targets.forEach(el => {
+                if(currentTag === 'h1' && (el.id === 'main-title' || el.tagName === 'H1')) {
+                    el.style.setProperty('font-size', val, 'important');
+                } else if (el.tagName.toLowerCase() === currentTag) {
+                    el.style.setProperty('font-size', val, 'important');
+                }
+            });
+            renderStyles();
+        }
     }
 
     function updateGutter(val) {
         currentGutter = val + 'px';
         document.getElementById('val-gutter').innerText = val;
-        renderStyles();
+        document.querySelectorAll('.grid-block').forEach(grid => grid.style.gap = currentGutter);
     }
 
     function updateImageWidth(val) {
         if(currentImageElement) {
-            currentImageElement.style.width = val + '%';
+            currentImageElement.style.setProperty('width', val + '%', 'important');
             document.getElementById('val-img-width').innerText = val;
         }
     }
@@ -249,49 +252,53 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
     function setTarget(tag, imgEl = null) {
         currentTag = tag;
         currentImageElement = imgEl;
-        document.getElementById('target-label').innerText = tag.toUpperCase() === 'P' ? 'PARAGRAPHE' : tag.toUpperCase();
+        document.getElementById('target-label').innerText = tag.toUpperCase();
         if(designSystem[tag]) {
             let val = parseInt(designSystem[tag].fontSize);
             document.getElementById('slider-size').value = val;
             document.getElementById('val-size').innerText = val;
         }
+        if(tag === 'img' && imgEl) {
+            let currentW = parseInt(imgEl.style.width) || 40;
+            document.getElementById('slider-img-width').value = currentW;
+            document.getElementById('val-img-width').innerText = currentW;
+        }
     }
-
-    function changeTextColor(color) { document.execCommand('foreColor', false, color); }
-    function toggleTheme() {
-        document.body.classList.toggle('light-mode');
-        document.getElementById('t-icon').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
-    }
-    function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
-    function execStyle(cmd) { document.execCommand(cmd, false, null); }
-
-    function addBlock(tag, txt = null) {
-        const content = (tag === 'p' && !txt) ? LOREM : (txt || 'Nouveau texte');
+/*ICI LE LOREM*/
+    function addBlock(tag, txt = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.") {
         const container = document.createElement('div');
         container.className = 'block-container';
-        container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><${tag} contenteditable="true" onfocus="setTarget('${tag}')">${content}</${tag}>`;
+        container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><${tag} contenteditable="true" onfocus="setTarget('${tag}')">${txt}</${tag}>`;
         document.getElementById('editor-core').appendChild(container);
-        container.querySelector(tag).focus();
+        const newEl = container.querySelector(tag);
+        if(designSystem[tag]) newEl.style.setProperty('font-size', designSystem[tag].fontSize, 'important');
+        newEl.focus();
     }
 
     function addFloatBlock(type) {
         const container = document.createElement('div');
         container.className = 'block-container';
-        let style = "";
         let width = (type === 'full') ? "100%" : "40%";
-        if(type === 'left') style = `float:left; margin:0 20px 10px 0; width:${width}; aspect-ratio:16/9;`;
-        if(type === 'right') style = `float:right; margin:0 0 10px 20px; width:${width}; aspect-ratio:16/9;`;
-        if(type === 'full') style = `width:${width}; margin-bottom:20px; aspect-ratio:21/9;`;
-
+        let style = (type === 'left') ? `float:left; margin:0 20px 10px 0; width:${width};` : (type === 'right') ? `float:right; margin:0 0 10px 20px; width:${width};` : `width:${width}; margin-bottom:20px; clear:both;`;
         container.innerHTML = `
             <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
-            <div class="float-block">
-                <div class="img-placeholder" onclick="triggerUpload(this)" style="${style} background:#f0f0f0; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; color:#999; font-size:10px; cursor:pointer; overflow:hidden; position:relative;">
-                    Cliquer pour télécharger une image
-                    <input type="file" class="hidden-file-input" style="display:none;" accept="image/*" onchange="handleImageSelect(this)">
-                </div> 
-                <p contenteditable="true" onfocus="setTarget('p')">${LOREM}</p>
-            </div>`;
+            <div onclick="triggerUpload(this)" style="${style} background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">
+                IMAGE <input type="file" style="display:none;" onchange="handleImageSelect(this)">
+            </div>
+
+
+
+
+            <p contenteditable="true" onfocus="setTarget('p')">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>`;
+
+
+
+
+
+
+
+
+            
         document.getElementById('editor-core').appendChild(container);
     }
 
@@ -299,95 +306,54 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         const container = document.createElement('div');
         container.className = 'block-container';
         let items = "";
-        for(let i=0; i<cols; i++) {
-            items += `<div class="grid-item"><p contenteditable="true" onfocus="setTarget('p')">${LOREM}</p></div>`;
-        }
-        container.innerHTML = `
-            <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
-            <div class="grid-block" style="grid-template-columns: repeat(${cols}, minmax(0, 1fr));">
-                ${items}
-            </div>`;
+        for(let i=0; i<cols; i++) items += `<div style="flex:1"><p contenteditable="true" onfocus="setTarget('p')">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p></div>`;
+        container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="grid-block" style="display:flex; gap:${currentGutter};">${items}</div>`;
         document.getElementById('editor-core').appendChild(container);
     }
 
-    function publishProject() {
-        const titleH1 = document.getElementById('main-title').innerText;
-        const coreClone = document.getElementById('editor-core').cloneNode(true);
-        coreClone.querySelectorAll('.delete-block').forEach(el => el.remove());
-        coreClone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
-
-        const formData = new FormData();
-        formData.append('slug', document.getElementById('inp-slug').value);
-        formData.append('title', titleH1);
-        formData.append('summary', document.getElementById('inp-summary').value);
-        formData.append('designSystem', JSON.stringify(designSystem));
-        formData.append('htmlContent', coreClone.innerHTML);
-        formData.append('cover', document.querySelector('#editor-core img')?.src || '');
-        formData.append('category', 'Design');
-
-        fetch('save.php', { method: 'POST', body: formData })
-        .then(r => r.json()).then(res => alert(res.message));
-    }
-
-    function triggerUpload(el) { el.querySelector('.hidden-file-input').click(); }
-
+    function triggerUpload(el) { el.querySelector('input').click(); }
     function handleImageSelect(input) {
         const file = input.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = (e) => {
                 const placeholder = input.parentElement;
                 placeholder.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">
-                                         <input type="file" class="hidden-file-input" style="display:none;" accept="image/*" onchange="handleImageSelect(this)">`;
+                                         <input type="file" style="display:none;" onchange="handleImageSelect(this)">`;
                 const img = placeholder.querySelector('img');
                 img.onclick = (event) => { event.stopPropagation(); setTarget('img', placeholder); };
-                img.ondblclick = (event) => { event.stopPropagation(); placeholder.querySelector('.hidden-file-input').click(); };
                 setTarget('img', placeholder);
             };
             reader.readAsDataURL(file);
         }
     }
 
+    function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
+    function execStyle(cmd) { document.execCommand(cmd, false, null); }
+    function changeTextColor(color) { document.execCommand('foreColor', false, color); }
+    function toggleTheme() { 
+        document.body.classList.toggle('light-mode'); 
+        document.getElementById('t-icon').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
+    }
+
+    function publishProject() {
+        const formData = new FormData();
+        formData.append('slug', document.getElementById('inp-slug').value);
+        formData.append('designSystem', JSON.stringify(designSystem));
+        formData.append('htmlContent', document.getElementById('editor-core').innerHTML);
+        formData.append('title', document.getElementById('main-title').innerText);
+        formData.append('summary', document.getElementById('inp-summary').value);
+        fetch('save.php', { method: 'POST', body: formData }).then(r => r.json()).then(res => alert(res.message));
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
-        const core = document.getElementById('editor-core');
-        if (!core) return;
-        Array.from(core.children).forEach(child => {
-            if (!child.classList.contains('block-container')) {
-                const wrap = document.createElement('div');
-                wrap.className = 'block-container';
-                child.parentNode.insertBefore(wrap, child);
-                wrap.appendChild(child);
-            }
-        });
-        core.querySelectorAll('.block-container').forEach(container => {
-            if (!container.querySelector('.delete-block')) {
-                const del = document.createElement('div');
-                del.className = 'delete-block'; del.innerHTML = '✕';
-                del.onclick = (e) => { e.stopPropagation(); container.remove(); };
-                container.prepend(del);
-            }
-            container.querySelectorAll('p, h2, h3, h4, h5').forEach(txt => {
-                txt.setAttribute('contenteditable', 'true');
-                txt.onfocus = () => setTarget(txt.tagName.toLowerCase());
-            });
-            container.querySelectorAll('.img-placeholder').forEach(div => {
-                if(!div.querySelector('.hidden-file-input')) {
-                    const inp = document.createElement('input');
-                    inp.type = 'file'; inp.className = 'hidden-file-input'; inp.style.display = 'none'; inp.accept = 'image/*';
-                    inp.onchange = function() { handleImageSelect(this); };
-                    div.appendChild(inp);
-                }
-                div.onclick = () => setTarget('img', div);
-                div.ondblclick = (e) => { e.stopPropagation(); div.querySelector('.hidden-file-input').click(); };
-                const img = div.querySelector('img');
-                if (img) {
-                    img.onclick = (e) => { e.stopPropagation(); setTarget('img', div); };
-                    img.ondblclick = (e) => { e.stopPropagation(); div.querySelector('.hidden-file-input').click(); };
-                }
-            });
+        document.querySelectorAll('.paper h1, .paper h2, .paper h3, .paper h4, .paper h5, .paper p').forEach(el => {
+            let tag = el.tagName.toLowerCase();
+            if(designSystem[tag]) el.style.setProperty('font-size', designSystem[tag].fontSize, 'important');
+            el.setAttribute('contenteditable', 'true');
+            el.onfocus = () => setTarget(tag);
         });
         renderStyles();
-        setTarget('h1');
     });
     </script>
 </body>
