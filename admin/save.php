@@ -11,7 +11,7 @@ if (!$is_local) { exit; }
 $json = file_get_contents('php://input');
 $decoded = json_decode($json, true);
 
-// On fusionne les données du JSON et du POST classique pour être paré à tout
+// On fusionne les données du JSON et du POST classique
 $data = $decoded ? array_merge($_POST, $decoded) : $_POST;
 
 if ($data && isset($data['slug'])) {
@@ -25,26 +25,35 @@ if ($data && isset($data['slug'])) {
 
     $file_path = $dir . "/data.php";
     
-    // 2. Construction du fichier avec var_export
+    // 2. Préparation du Design System (on le décode si c'est du JSON string)
+    $ds = $data['designSystem'];
+    if(is_string($ds)) {
+        $ds = json_decode($ds, true);
+    }
+    
+    // 3. Construction du fichier PHP
     $content = "<?php\n";
+    $content .= "/** Fichier généré par Studio CMS **/\n\n";
     $content .= "\$title = " . var_export($data['title'] ?? 'Sans titre', true) . ";\n";
-    
-    // --- AJOUT DU PONT : IMAGE DE COUVERTURE POUR L'INDEX ---
     $content .= "\$cover = " . var_export($data['cover'] ?? '', true) . ";\n";
-    
     $content .= "\$category = " . var_export($data['category'] ?? 'Design', true) . ";\n";
     $content .= "\$date = " . var_export(date('d.m.Y'), true) . ";\n";
     $content .= "\$summary = " . var_export($data['summary'] ?? '', true) . ";\n";
-    $content .= "\$designSystem = " . var_export($data['designSystem'] ?? '', true) . ";\n";
-    $content .= "\$htmlContent = " . var_export($data['htmlContent'] ?? '', true) . ";\n";
+    $content .= "\$designSystem = " . var_export($ds, true) . ";\n";
+    
+    // DOUBLE SÉCURITÉ : On enregistre sous les deux noms de variables
+    $htmlContentRaw = $data['htmlContent'] ?? '';
+    $content .= "\$htmlContent = " . var_export($htmlContentRaw, true) . ";\n";
+    $content .= "\$content = " . var_export($htmlContentRaw, true) . ";\n"; // Doublon de sécurité
+    
     $content .= "?>";
 
     if (file_put_contents($file_path, $content)) {
         header('Content-Type: application/json');
-        echo json_encode(["status" => "success", "message" => "Projet publié !"]);
+        echo json_encode(["status" => "success", "message" => "Projet publié avec succès !"]);
     } else {
         header('Content-Type: application/json');
-        echo json_encode(["status" => "error", "message" => "Erreur d'écriture."]);
+        echo json_encode(["status" => "error", "message" => "Erreur d'écriture sur le serveur."]);
     }
 } else {
     header('Content-Type: application/json');

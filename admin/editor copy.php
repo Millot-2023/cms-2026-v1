@@ -14,10 +14,17 @@ $summary = "";
 $htmlContent = "";
 $designSystemArray = [ 'h1' => [ 'fontSize' => '64px' ], 'h2' => [ 'fontSize' => '42px' ], 'h3' => [ 'fontSize' => '30px' ], 'h4' => [ 'fontSize' => '24px' ], 'h5' => [ 'fontSize' => '18px' ], 'p' =>  [ 'fontSize' => '18px' ] ];
 
+// --- CORRECTION DU CHARGEMENT ---
 if (file_exists($content_dir . $slug . '/data.php')) {
     include $content_dir . $slug . '/data.php';
-    if (isset($content)) { $htmlContent = $content; }
-    if (isset($designSystem)) { $designSystemArray = $designSystem; }
+    
+    // On mappe les variables de data.php vers l'éditeur
+    if (isset($content)) { $htmlContent = $content; } // C'est ici que ça bloquait
+    if (isset($title))   { $title = $title; }
+    if (isset($summary)) { $summary = $summary; }
+    if (isset($designSystem)) {
+        $designSystemArray = $designSystem;
+    }
 }
 
 $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
@@ -30,7 +37,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap">
     <style id="dynamic-styles"></style>
     <style>
-        /* --- 0. CUSTOM SCROLLBAR --- */
+        /* --- 0. CUSTOM SCROLLBAR (TRAIT FIN BLEU) --- */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #007bff; border-radius: 10px; }
@@ -66,6 +73,7 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .sidebar-header h2 { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; margin: 0; color: var(--sidebar-muted); flex-grow: 1; }
         
         .sidebar-scroll { flex-grow: 1; overflow-y: auto; padding: 20px 25px; }
+        
         .sidebar-footer { padding: 25px; border-top: 1px solid var(--sidebar-border); background-color: #111111; display: flex; flex-direction: column; gap: 10px; }
 
         .admin-input { width: 100%; background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-text); padding: 12px; margin-bottom: 12px; font-size: 11px; border-radius: 4px; outline: none; box-sizing: border-box; resize: vertical; }
@@ -100,25 +108,23 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         .gauge-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 10px; color: var(--sidebar-muted); }
         .gauge-data { color: var(--sidebar-text); font-family: monospace; }
 
-        .canvas { flex-grow: 1; height: 100vh; overflow-y: auto; display: block; transition: padding-left 0.4s; box-sizing: border-box; padding: 80px 20px; }
+        .canvas { 
+            flex-grow: 1; height: 100vh; overflow-y: auto; display: block; transition: padding-left 0.4s; box-sizing: border-box; padding: 80px 20px; 
+        }
         body:not(.sidebar-hidden) .canvas { padding-left: 360px; }
 
         .paper { 
             width: 100%; max-width: 850px; background: #ffffff; color: #000000; min-height: 1100px; padding: 100px; 
             box-shadow: 0 40px 100px rgba(0,0,0,0.5); display: block; box-sizing: border-box; margin: 0 auto; position: relative;
-            overflow-wrap: break-word; word-wrap: break-word;
         }
 
-        /* --- LE FIX POUR LES FLOATS (CLEARFIX) --- */
-        .block-container::after, .float-block::after, .paper::after { 
-            content: ""; display: table; clear: both; 
-        }
+        .paper::after { content: ""; display: table; clear: both; }
 
         .block-container { position: relative; margin-bottom: 5px; width: 100%; box-sizing: border-box; clear: both; }
         .delete-block { position: absolute; left: -18px; top: 0; background: #ff4d4d; color: white; width: 18px; height: 18px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; opacity: 0; transition: opacity 0.2s; z-index: 10; }
         .block-container:hover .delete-block { opacity: 1; }
 
-        .float-block { width: 100%; position: relative; }
+        .float-block { overflow: hidden; margin-bottom: 20px; width: 100%; }
         
         .grid-block { display: grid; margin-bottom: 20px; width: 100%; clear: both; }
         .grid-item { background: transparent; padding: 0; box-sizing: border-box; min-width: 0; }
@@ -152,12 +158,17 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
                     <button class="tool-btn" onclick="addBlock('h4', 'Titre H4')">H4</button>
                     <button class="tool-btn" onclick="addBlock('h5', 'Titre H5')">H5</button>
                 </div>
+                
                 <button class="tool-btn" onclick="addBlock('p')">Paragraphe</button>
+                
                 <div class="row-styles">
                     <button class="tool-btn" onclick="execStyle('bold')">B</button>
                     <button class="tool-btn" onclick="execStyle('italic')">I</button>
-                    <div class="color-wrapper" title="Couleur de sélection"><input type="color" oninput="changeTextColor(this.value)"></div>
+                    <div class="color-wrapper" title="Couleur de sélection">
+                        <input type="color" oninput="changeTextColor(this.value)">
+                    </div>
                 </div>
+
                 <div class="row-align">
                     <button class="tool-btn" onclick="execStyle('justifyLeft')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 10H3M21 6H3M21 14H3M17 18H3"/></svg></button>
                     <button class="tool-btn" onclick="execStyle('justifyCenter')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 10H6M21 6H3M21 14H3M18 18H6"/></svg></button>
@@ -168,9 +179,15 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
 
             <span class="section-label">DISPOSITION (FLOAT)</span>
             <div class="row-float">
-                <button class="tool-btn" onclick="addFloatBlock('left')" title="Image Gauche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="8" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M14 4h7M14 8h7M3 14h18M3 18h18"/></svg></button>
-                <button class="tool-btn" onclick="addFloatBlock('full')" title="Image Large"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M3 14h18M3 18h18"/></svg></button>
-                <button class="tool-btn" onclick="addFloatBlock('right')" title="Image Droite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="13" y="3" width="8" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M3 4h7M3 8h7M3 14h18M3 18h18"/></svg></button>
+                <button class="tool-btn" onclick="addFloatBlock('left')" title="Image Gauche">
+                    <svg class="float-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="8" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M14 4h7M14 8h7M3 14h18M3 18h18"/></svg>
+                </button>
+                <button class="tool-btn" onclick="addFloatBlock('full')" title="Image Large">
+                    <svg class="float-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M3 14h18M3 18h18"/></svg>
+                </button>
+                <button class="tool-btn" onclick="addFloatBlock('right')" title="Image Droite">
+                    <svg class="float-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="13" y="3" width="8" height="8" fill="currentColor" fill-opacity="0.2"/><path d="M3 4h7M3 8h7M3 14h18M3 18h18"/></svg>
+                </button>
             </div>
             <div class="gauge-row">
                 <div class="gauge-info"><span>LARGEUR IMAGE</span><span class="gauge-data"><span id="val-img-width">40</span>%</span></div>
@@ -310,23 +327,36 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
         document.getElementById('editor-core').appendChild(container);
     }
 
+    function stringToSlug(str) {
+        return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+    }
+
     function publishProject() {
         const titleH1 = document.getElementById('main-title').innerText;
+        const slug = document.getElementById('inp-slug').value; // On garde le slug actuel
+        const summary = document.getElementById('inp-summary').value;
+
+        const firstImg = document.querySelector('#editor-core img');
+        const coverImage = firstImg ? firstImg.src : ""; 
+
         const coreClone = document.getElementById('editor-core').cloneNode(true);
         coreClone.querySelectorAll('.delete-block').forEach(el => el.remove());
         coreClone.querySelectorAll('[contenteditable]').forEach(el => el.removeAttribute('contenteditable'));
+        const cleanHtml = coreClone.innerHTML;
 
         const formData = new FormData();
-        formData.append('slug', document.getElementById('inp-slug').value);
+        formData.append('slug', slug);
         formData.append('title', titleH1);
-        formData.append('summary', document.getElementById('inp-summary').value);
+        formData.append('summary', summary);
         formData.append('designSystem', JSON.stringify(designSystem));
-        formData.append('htmlContent', coreClone.innerHTML);
-        formData.append('cover', document.querySelector('#editor-core img')?.src || '');
+        formData.append('htmlContent', cleanHtml);
+        formData.append('cover', coverImage); 
         formData.append('category', 'Design');
 
         fetch('save.php', { method: 'POST', body: formData })
-        .then(r => r.json()).then(res => alert(res.message));
+        .then(r => r.json())
+        .then(res => alert(res.message))
+        .catch(err => alert("Erreur de sauvegarde"));
     }
 
     function triggerUpload(el) { el.querySelector('.hidden-file-input').click(); }
@@ -337,21 +367,31 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
             const reader = new FileReader();
             reader.onload = function(e) {
                 const placeholder = input.parentElement;
-                placeholder.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">
-                                         <input type="file" class="hidden-file-input" style="display:none;" accept="image/*" onchange="handleImageSelect(this)">`;
-                const img = placeholder.querySelector('img');
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.width = '100%'; img.style.height = '100%'; img.style.objectFit = 'cover';
                 img.onclick = (event) => { event.stopPropagation(); setTarget('img', placeholder); };
-                img.ondblclick = (event) => { event.stopPropagation(); placeholder.querySelector('.hidden-file-input').click(); };
+                placeholder.innerHTML = ''; 
+                placeholder.appendChild(img);
+                
+                const newInput = document.createElement('input');
+                newInput.type = 'file'; newInput.className = 'hidden-file-input'; newInput.style.display = 'none'; newInput.accept = 'image/*';
+                newInput.onchange = function() { handleImageSelect(this); };
+                placeholder.appendChild(newInput);
                 setTarget('img', placeholder);
             };
             reader.readAsDataURL(file);
         }
     }
 
+    // RÉHYDRATATION : On recrée les containers et les croix si le HTML arrive "nu"
     window.addEventListener('DOMContentLoaded', () => {
         const core = document.getElementById('editor-core');
         if (!core) return;
-        Array.from(core.children).forEach(child => {
+
+        // Étape A : Si les éléments sont nus, on les emballe dans des block-containers
+        const children = Array.from(core.children);
+        children.forEach(child => {
             if (!child.classList.contains('block-container')) {
                 const wrap = document.createElement('div');
                 wrap.className = 'block-container';
@@ -359,33 +399,34 @@ $safeHtml = str_replace(["\r", "\n"], '', addslashes($htmlContent));
                 wrap.appendChild(child);
             }
         });
+
+        // Étape B : On remet les croix et les événements
         core.querySelectorAll('.block-container').forEach(container => {
             if (!container.querySelector('.delete-block')) {
                 const del = document.createElement('div');
-                del.className = 'delete-block'; del.innerHTML = '✕';
+                del.className = 'delete-block';
+                del.innerHTML = '✕';
                 del.onclick = (e) => { e.stopPropagation(); container.remove(); };
                 container.prepend(del);
             }
+
+            // On rend éditable les textes à l'intérieur
             container.querySelectorAll('p, h2, h3, h4, h5').forEach(txt => {
                 txt.setAttribute('contenteditable', 'true');
                 txt.onfocus = () => setTarget(txt.tagName.toLowerCase());
             });
+
+            // On réanime les placeholders d'images
             container.querySelectorAll('.img-placeholder').forEach(div => {
-                if(!div.querySelector('.hidden-file-input')) {
-                    const inp = document.createElement('input');
-                    inp.type = 'file'; inp.className = 'hidden-file-input'; inp.style.display = 'none'; inp.accept = 'image/*';
-                    inp.onchange = function() { handleImageSelect(this); };
-                    div.appendChild(inp);
-                }
                 div.onclick = () => setTarget('img', div);
-                div.ondblclick = (e) => { e.stopPropagation(); div.querySelector('.hidden-file-input').click(); };
+                div.ondblclick = (e) => { e.stopPropagation(); triggerUpload(div); };
                 const img = div.querySelector('img');
                 if (img) {
                     img.onclick = (e) => { e.stopPropagation(); setTarget('img', div); };
-                    img.ondblclick = (e) => { e.stopPropagation(); div.querySelector('.hidden-file-input').click(); };
                 }
             });
         });
+
         renderStyles();
         setTarget('h1');
     });
