@@ -1,17 +1,18 @@
 <?php
 /**
- * PROJET-CMS-2026 - SAUVEGARDE (STABLE)
+ * PROJET-CMS-2026 - SAUVEGARDE (VERSION ASSAINIE)
  * @author: Christophe Millot
  */
+
+// 1. Sécurisation et chargement de la configuration
+require_once '../core/config.php';
 
 $is_local = ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_NAME'] === 'localhost');
 if (!$is_local) { exit; }
 
-// 1. On récupère les données peu importe le format d'envoi
+// 2. Récupération des données (JSON ou POST)
 $json = file_get_contents('php://input');
 $decoded = json_decode($json, true);
-
-// On fusionne les données du JSON et du POST classique
 $data = $decoded ? array_merge($_POST, $decoded) : $_POST;
 
 if ($data && isset($data['slug'])) {
@@ -25,30 +26,32 @@ if ($data && isset($data['slug'])) {
 
     $file_path = $dir . "/data.php";
     
-    // 2. Préparation du Design System (on le décode si c'est du JSON string)
+    // 3. Préparation du Design System
     $ds = $data['designSystem'];
     if(is_string($ds)) {
         $ds = json_decode($ds, true);
     }
     
-    // 3. Construction du fichier PHP
-    $content = "<?php\n";
-    $content .= "/** Fichier généré par Studio CMS **/\n\n";
-    $content .= "\$title = " . var_export($data['title'] ?? 'Sans titre', true) . ";\n";
-    $content .= "\$cover = " . var_export($data['cover'] ?? '', true) . ";\n";
-    $content .= "\$category = " . var_export($data['category'] ?? 'Design', true) . ";\n";
-    $content .= "\$date = " . var_export(date('d.m.Y'), true) . ";\n";
-    $content .= "\$summary = " . var_export($data['summary'] ?? '', true) . ";\n";
-    $content .= "\$designSystem = " . var_export($ds, true) . ";\n";
+    // 4. Construction du fichier PHP (Formatage rigoureux)
+    $content_file = "<?php\n";
+    $content_file .= "/** Fichier généré par Studio CMS - " . date('d.m.Y H:i') . " **/\n\n";
+    $content_file .= "\$title = " . var_export($data['title'] ?? 'Sans titre', true) . ";\n";
+    $content_file .= "\$cover = " . var_export($data['cover'] ?? '', true) . ";\n";
+    $content_file .= "\$category = " . var_export($data['category'] ?? 'Design', true) . ";\n";
+    $content_file .= "\$date = " . var_export(date('d.m.Y'), true) . ";\n";
+    $content_file .= "\$summary = " . var_export($data['summary'] ?? '', true) . ";\n";
+    $content_file .= "\$designSystem = " . var_export($ds, true) . ";\n";
     
-    // DOUBLE SÉCURITÉ : On enregistre sous les deux noms de variables
+    // On conserve la double variable pour la compatibilité ascendante (Legacy)
+    // Mais on prépare la transition vers une variable unique propre
     $htmlContentRaw = $data['htmlContent'] ?? '';
-    $content .= "\$htmlContent = " . var_export($htmlContentRaw, true) . ";\n";
-    $content .= "\$content = " . var_export($htmlContentRaw, true) . ";\n"; // Doublon de sécurité
+    $content_file .= "\$htmlContent = " . var_export($htmlContentRaw, true) . ";\n";
+    $content_file .= "\$content = " . var_export($htmlContentRaw, true) . ";\n"; 
     
-    $content .= "?>";
+    $content_file .= "?>";
 
-    if (file_put_contents($file_path, $content)) {
+    // 5. Écriture physique
+    if (file_put_contents($file_path, $content_file)) {
         header('Content-Type: application/json');
         echo json_encode(["status" => "success", "message" => "Projet publié avec succès !"]);
     } else {

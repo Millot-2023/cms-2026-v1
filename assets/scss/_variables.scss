@@ -3,13 +3,13 @@
    ========================================================================== */
 
 // 1. Couleurs (Charte Evolution)
-$black-sidebar: #1A1A1A;
+$black-sidebar: #000000; // Rectifié de #1A1A1A à #000000 selon directives
 $white:         #FFFFFF;
 $gray-light:    #F5F5F5;
 $accent:        #007BFF; // Bleu action
 
 // 2. Structure & Layout
-$sidebar-width:  393px; 
+$sidebar-width:  340px; // Aligné sur la largeur réelle de l'éditeur (340px)
 $header-height:  60px;
 
 // 3. Typographie (Fondations)

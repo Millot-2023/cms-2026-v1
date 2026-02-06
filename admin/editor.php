@@ -1,28 +1,61 @@
 <?php
 /**
- * PROJET-CMS-2026 - ÉDITEUR DESIGN SYSTEM (RESTO)
+ * PROJET-CMS-2026 - ÉDITEUR DESIGN SYSTEM (VERSION STABILISÉE)
  * @author: Christophe Millot
  */
+
+// 1. Chargement de la configuration centrale
+require_once '../core/config.php';
+
 $is_local = ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_NAME'] === 'localhost');
 if (!$is_local) { die("Acces reserve."); exit; }
 
-
-
-
 $content_dir = "../content/";
-// On écoute 'project' et on ne met AUCUNE valeur par défaut pour éviter les dossiers fantômes
+$trash_dir   = "../content/_trash/";
+
+// --- LOGIQUE DE GESTION DE LA CORBEILLE (AJOUTÉE POUR STABILITÉ) ---
+if (isset($_GET['action']) && isset($_GET['slug'])) {
+    $action = $_GET['action'];
+    $slug   = $_GET['slug'];
+
+    if ($action === 'restore') {
+        // Découpage pour retrouver le nom d'origine (Ymd-His_nom)
+        $parts = explode('_', $slug, 2);
+        $original_name = isset($parts[1]) ? $parts[1] : $slug;
+        
+        if (rename($trash_dir . $slug, $content_dir . $original_name)) {
+            header('Location: ' . BASE_URL . 'index.php?status=restored');
+            exit;
+        }
+    }
+
+    if ($action === 'purge') {
+        $target = $trash_dir . $slug;
+        // Fonction récursive simple pour supprimer le dossier
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($target, RecursiveDirectoryIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST
+        );
+        foreach ($files as $fileinfo) {
+            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
+            $todo($fileinfo->getRealPath());
+        }
+        if (rmdir($target)) {
+            header('Location: trash.php?status=purged');
+            exit;
+        }
+    }
+}
+// --- FIN LOGIQUE CORBEILLE ---
+
 $slug = isset($_GET['project']) ? $_GET['project'] : '';
 
 if (empty($slug)) {
-    header('Location: ../index.php');
+    header('Location: ' . BASE_URL . 'index.php');
     exit;
 }
 
-
-
-
-
-// Valeurs par défaut
+// Valeurs par défaut (Assainissement)
 $title = "Titre du Projet";
 $category = "Design";
 $summary = "";
@@ -36,10 +69,10 @@ $designSystemArray = [
     'p' =>  [ 'fontSize' => '18px' ] 
 ];
 
-// Chargement des données réelles
+// 2. Chargement des données réelles
 if (file_exists($content_dir . $slug . '/data.php')) {
     include $content_dir . $slug . '/data.php';
-    if (isset($content)) { $htmlContent = $content; }
+    if (isset($content)) { $htmlContent = $content; } // Compatibilité ascendante
     if (isset($designSystem)) { $designSystemArray = $designSystem; }
 }
 ?>
@@ -47,7 +80,7 @@ if (file_exists($content_dir . $slug . '/data.php')) {
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Éditeur Pro - CMS 2026</title>
+    <title>Éditeur Pro - <?php echo SITE_NAME; ?></title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap">
     <style id="dynamic-styles"></style>
     <style>
@@ -204,7 +237,7 @@ if (file_exists($content_dir . $slug . '/data.php')) {
 
         <div class="sidebar-footer">
             <button onclick="publishProject()" class="btn-publish">PUBLIER</button>
-            <a href="../index.php" class="btn-exit">QUITTER</a>
+            <a href="<?php echo BASE_URL; ?>index.php" class="btn-exit">QUITTER</a>
         </div>
     </aside>
 
@@ -277,8 +310,8 @@ if (file_exists($content_dir . $slug . '/data.php')) {
             document.getElementById('val-img-width').innerText = currentW;
         }
     }
-/*ICI LE LOREM*/
-    function addBlock(tag, txt = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.") {
+
+    function addBlock(tag, txt = "Nouveau contenu rédactionnel...") {
         const container = document.createElement('div');
         container.className = 'block-container';
         container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><${tag} contenteditable="true" onfocus="setTarget('${tag}')">${txt}</${tag}>`;
@@ -298,20 +331,7 @@ if (file_exists($content_dir . $slug . '/data.php')) {
             <div onclick="triggerUpload(this)" style="${style} background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">
                 IMAGE <input type="file" style="display:none;" onchange="handleImageSelect(this)">
             </div>
-
-
-
-
-            <p contenteditable="true" onfocus="setTarget('p')">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>`;
-
-
-
-
-
-
-
-
-            
+            <p contenteditable="true" onfocus="setTarget('p')">Texte d'accompagnement...</p>`;
         document.getElementById('editor-core').appendChild(container);
     }
 
@@ -319,55 +339,36 @@ if (file_exists($content_dir . $slug . '/data.php')) {
         const container = document.createElement('div');
         container.className = 'block-container';
         let items = "";
-        for(let i=0; i<cols; i++) items += `<div style="flex:1"><p contenteditable="true" onfocus="setTarget('p')">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p></div>`;
+        for(let i=0; i<cols; i++) items += `<div style="flex:1"><p contenteditable="true" onfocus="setTarget('p')">Contenu colonne...</p></div>`;
         container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="grid-block" style="display:flex; gap:${currentGutter};">${items}</div>`;
         document.getElementById('editor-core').appendChild(container);
     }
 
-
-
-
-
-
-
-
-
-//chargemenr d'image à l'infini
-function triggerUpload(el) {
-    el.querySelector('input').click();
-}
-
-function handleImageSelect(input) {
-    const file = input.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const placeholder = input.parentElement;
-            
-            // Injection de l'image et du nouvel input
-            placeholder.innerHTML = `
-                <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">
-                <input type="file" style="display:none;" onchange="handleImageSelect(this)">
-            `;
-            
-            const img = placeholder.querySelector('img');
-            
-            // Correction : ajout de triggerUpload pour relancer l'explorateur au clic
-            img.onclick = (event) => {
-                event.stopPropagation();
-                setTarget('img', placeholder);
-                triggerUpload(placeholder);
-            };
-            
-            setTarget('img', placeholder);
-        };
-        reader.readAsDataURL(file);
+    function triggerUpload(el) {
+        el.querySelector('input').click();
     }
-}
 
-
-
-
+    function handleImageSelect(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const placeholder = input.parentElement;
+                placeholder.innerHTML = `
+                    <img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">
+                    <input type="file" style="display:none;" onchange="handleImageSelect(this)">
+                `;
+                const img = placeholder.querySelector('img');
+                img.onclick = (event) => {
+                    event.stopPropagation();
+                    setTarget('img', placeholder);
+                    triggerUpload(placeholder);
+                };
+                setTarget('img', placeholder);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
 
     function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
     function execStyle(cmd) { document.execCommand(cmd, false, null); }
