@@ -1,6 +1,6 @@
 <?php
 /**
- * PROJET-CMS-2026 - ARCHITECTURE NETTOYÉE
+ * PROJET-CMS-2026 - ARCHITECTURE NETTOYÉE + SYSTÈME DE SUPPRESSION
  * Focus : Alignement Catégorie/Date et uniformité visuelle
  * @author: Christophe Millot
  */
@@ -42,31 +42,37 @@ require_once 'includes/hero.php';
             <?php
             $content_path = 'content/';
             if (is_dir($content_path)) {
-                // On exclut les dossiers techniques et la corbeille
                 $folders = array_diff(scandir($content_path), array('..', '.', '_trash'));
                 
                 foreach ($folders as $folder) {
-                    // Ignorer les dossiers cachés ou de service
                     if (strpos($folder, '_') === 0) continue;
 
                     $project_dir = $content_path . $folder;
                     $data_file = $project_dir . '/data.php';
                     
                     if (file_exists($data_file)) {
-                        // 1. Reset systématique des variables pour l'intégrité des cartes
                         $title = "Sans titre";
                         $category = "Non classé";
                         $date = "--/--/--";
                         $cover = "";
                         $summary = "";
 
-                        // 2. Inclusion des données du projet
                         include $data_file; 
                         ?>
-                        <article class="grid-block">
+                        <article class="grid-block" style="position: relative;">
+                            
+                            <a href="javascript:void(0);" 
+                               onclick="confirmDelete('<?php echo $folder; ?>')" 
+                               class="btn-trash-overlay" 
+                               title="Supprimer définitivement">×</a>
+
                             <div class="card-image">
                                 <?php if(!empty($cover)): ?>
-                                    <img src="<?php echo $cover; ?>" alt="<?php echo htmlspecialchars($title); ?>">
+                                    <?php 
+                                        // Détection si c'est un fichier local ou du base64 (pour compatibilité)
+                                        $image_src = (strpos($cover, 'data:image') === 0) ? $cover : $content_path . $folder . '/' . $cover;
+                                    ?>
+                                    <img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($title); ?>">
                                 <?php else: ?>
                                     <img src="assets/img/image-template.png" alt="Pas d'image">
                                 <?php endif; ?>
@@ -102,5 +108,42 @@ require_once 'includes/hero.php';
         </div> 
     </main>
 </div>
+
+<script>
+function confirmDelete(slug) {
+    const confirmation = confirm("ALERTE SÉCURITÉ - Christophe :\n\nTu es sur le point de supprimer le dossier [" + slug + "].\nCette action supprimera tous les fichiers associés.\n\nConfirmer la suppression ?");
+    
+    if (confirmation) {
+        window.location.href = "admin/delete.php?project=" + slug;
+    }
+}
+</script>
+
+<style>
+.btn-trash-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    background: #000; /* Respect de ton identité noire */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    z-index: 100;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.btn-trash-overlay:hover {
+    background: #ff0000; /* Signal visuel de danger */
+    transform: scale(1.1);
+}
+</style>
 
 <?php require_once 'includes/footer.php'; ?>
