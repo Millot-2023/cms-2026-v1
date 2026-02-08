@@ -31,6 +31,13 @@
     - **Système Poubelle :** Ajout d'une croix de suppression sur les cartes du cockpit avec confirmation JS de sécurité.
     - **Nettoyage Chirurgical :** Création de `admin/delete.php` pour l'effacement complet des dossiers projets (données + images).
 
+### 5. Branche : `feat/ui-uniformization` [TERMINE / MERGED] [2026-02-08]
+- **Objectif :** Alignement militaire de l'interface et résilience de l'éditeur.
+- **Résultat :**
+    - **Uniformité :** Verrouillage des cartes à 220px de hauteur et titres sur une seule ligne (`ellipsis`).
+    - **Intelligence Éditeur :** Sécurisation du `publishProject` pour détecter le titre même après suppression du bloc par défaut (fallback sélecteur H1).
+    - **Isolation CSS :** Séparation des scopes de styles entre le Cockpit (1.1rem) et le Studio (2.5rem).
+
 ---
 
 ## Historique des Décisions IA (Discipline de Code)
@@ -39,3 +46,4 @@
 - **[2026-02-06] :** Stabilisation du cockpit. Respect strict de la sidebar noire (#000000). Interdiction formelle de fragmenter les fichiers PHP.
 - **[2026-02-07] :** **Optimisation de la Data :** Abandon du stockage Base64 au profit de fichiers physiques pour garantir la légèreté de `data.php` et la rapidité d'affichage.
 - **[2026-02-07] :** **Mise en place de la démolition contrôlée :** Intégration du système de suppression récursive des dossiers de contenu.
+- **[2026-02-08] :** **Verrouillage de la Rigueur Visuelle :** Application du `!important` sur la typographie des cartes pour contrer l'héritage de `_bases.scss`.

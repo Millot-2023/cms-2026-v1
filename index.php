@@ -1,7 +1,7 @@
 <?php
 /**
- * PROJET-CMS-2026 - ARCHITECTURE NETTOYÉE + SYSTÈME DE SUPPRESSION
- * Focus : Alignement Catégorie/Date et uniformité visuelle
+ * PROJET-CMS-2026 - ARCHITECTURE NETTOYÉE
+ * Focus : Correction structurelle et restauration des accès
  * @author: Christophe Millot
  */
 require_once 'core/config.php';
@@ -31,7 +31,7 @@ require_once 'includes/hero.php';
                     
                     <p>Initialiser un nouvel article ou une nouvelle étude de cas dans le CMS.</p>
                     
-                    <div class="card-footer">
+                    <div class="card-footer" style="margin-top: auto;">
                         <a href="admin/editor.php?project=nouveau-projet-<?php echo time(); ?>" class="btn-create" style="display: block; text-align: center; background: #000; color: #fff; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: bold; border: 1px solid #444;">
                             CRÉER
                         </a>
@@ -59,7 +59,7 @@ require_once 'includes/hero.php';
 
                         include $data_file; 
                         ?>
-                        <article class="grid-block">
+                        <article class="grid-block" style="position: relative;">
                             
                             <a href="javascript:void(0);" 
                                onclick="confirmDelete('<?php echo $folder; ?>')" 
@@ -71,7 +71,7 @@ require_once 'includes/hero.php';
                                     <?php 
                                         $image_src = (strpos($cover, 'data:image') === 0) ? $cover : $content_path . $folder . '/' . $cover;
                                     ?>
-<img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($title); ?>">
+                                <img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($title); ?>">
                                 <?php else: ?>
                                     <img src="assets/img/image-template.png" alt="Pas d'image">
                                 <?php endif; ?>
@@ -88,14 +88,17 @@ require_once 'includes/hero.php';
                                 
                                 <p><?php echo mb_strimwidth(strip_tags($summary), 0, 140, "..."); ?></p>
                                 
-                                <div class="card-footer" style="display: flex; gap: 10px;">
-                                    <a href="admin/editor.php?project=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; border: 1px solid #555; color: #fff; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; background: #333;">
-                                        ÉDITER
-                                    </a>
-                                    <a href="article.php?slug=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; background: #444; color: #fff; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem;">
-                                        LIRE
-                                    </a>
-                                </div>
+                                <div class="card-footer" style="display: flex; align-items: center; gap: 10px; margin-top: auto;">
+                                    <div style="display: flex; flex: 1; gap: 10px;">
+                                        <a href="admin/editor.php?project=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; border: 1px solid #555; color: #fff; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; background: #333;">
+                                            ÉDITER
+                                        </a>
+                                        <a href="article.php?slug=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; background: #444; color: #fff; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem;">
+                                            LIRE
+                                        </a>
+                                    </div>
+
+                                    </div>
                             </div>
                         </article>
                         <?php
@@ -103,14 +106,13 @@ require_once 'includes/hero.php';
                 }
             }
             ?>
-
         </div> 
     </main>
 </div>
 
 <script>
 function confirmDelete(slug) {
-    const confirmation = confirm("ALERTE SÉCURITÉ - Christophe :\n\nTu es sur le point de supprimer le dossier [" + slug + "].\nCette action supprimera tous les fichiers associés.\n\nConfirmer la suppression ?");
+    const confirmation = confirm("ALERTE SÉCURITÉ - Christophe :\n\nConfirmer la suppression du dossier [" + slug + "] ?");
     if (confirmation) {
         window.location.href = "admin/delete.php?project=" + slug;
     }
@@ -137,11 +139,7 @@ function confirmDelete(slug) {
     transition: all 0.2s ease;
     border: 1px solid rgba(255,255,255,0.2);
 }
-
-.btn-trash-overlay:hover {
-    background: #ff0000;
-    transform: scale(1.1);
-}
+.btn-trash-overlay:hover { background: #ff0000; transform: scale(1.1); }
 </style>
 
 <?php require_once 'includes/footer.php'; ?>
