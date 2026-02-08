@@ -24,7 +24,7 @@ require_once 'includes/hero.php';
                     <header class="article-header">
                         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
                             <span class="category" style="font-weight: bold; color: #888;">SYSTÈME</span>
-                            <p class="date" style="margin: 0; color: #666;"><?php echo date('d F Y'); ?></p>
+                            <p class="date" style="margin: 0; color: #666;"><?php echo date('d.m.Y'); ?></p>
                         </div>
                         <h1 class="main-article-title">Nouveau Projet</h1>
                     </header>
