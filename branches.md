@@ -38,6 +38,13 @@
     - **Intelligence Éditeur :** Sécurisation du `publishProject` pour détecter le titre même après suppression du bloc par défaut (fallback sélecteur H1).
     - **Isolation CSS :** Séparation des scopes de styles entre le Cockpit (1.1rem) et le Studio (2.5rem).
 
+### 6. Branche : `feat/hero-refinement` [TERMINE / MERGED] [2026-02-08]
+- **Objectif :** Nettoyage sémantique de la page d'accueil et stabilisation du rendu visuel.
+- **Résultat :**
+    - **Sémantique :** Suppression du texte placeholder "Le futur du CMS..." (décision autonome IA révoquée).
+    - **Identité :** Intégration du message officiel : « **Bienvenue sur mon projet** ».
+    - **Robustesse CSS :** Migration du style vers `_hero.scss` avec classe `.hero-subtitle` (color: $white) pour éliminer le besoin de styles inline.
+
 ---
 
 ## Historique des Décisions IA (Discipline de Code)
@@ -47,3 +54,4 @@
 - **[2026-02-07] :** **Optimisation de la Data :** Abandon du stockage Base64 au profit de fichiers physiques pour garantir la légèreté de `data.php` et la rapidité d'affichage.
 - **[2026-02-07] :** **Mise en place de la démolition contrôlée :** Intégration du système de suppression récursive des dossiers de contenu.
 - **[2026-02-08] :** **Verrouillage de la Rigueur Visuelle :** Application du `!important` sur la typographie des cartes pour contrer l'héritage de `_bases.scss`.
+- **[2026-02-08] :** **Neutralisation des initiatives sémantiques :** Interdiction stricte pour l'IA de générer du contenu texte sans instruction directe.

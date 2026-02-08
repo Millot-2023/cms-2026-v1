@@ -19,6 +19,8 @@
 - **stabilite-editeur-2026** : Finalisation ergonomie, bouton QUITTER fixe, nettoyage fichiers temporaires.
 - **feat/ui-refinement** : Grille Militaire (220px), `object-fit: cover`, isolation structurelle.
 - **feat/trash-and-clean** : Système de suppression récursive (`admin/delete.php`), extraction du Base64 vers fichiers réels.
+- **feat/ui-uniformization** : Alignement 220px, ellipsis titres, résilience sélecteur H1 éditeur.
+- **feat/hero-refinement** [2026-02-08] : Nettoyage sémantique accueil, intégration "Bienvenue sur mon projet", robustesse SCSS.
 
 ---
 
@@ -33,6 +35,9 @@
 - **Surface d'Attaque Minimale :** Limitation des vecteurs d'attaque par l'usage de fichiers statiques en production.
 - **Flat-file CMS :** Stockage des données dans des fichiers individuels (data.php) sans base de données SQL.
 - **Slug :** Identifiant unique du projet correspondant au nom de son dossier dans `content/`.
+
+### Lexique de Travail (IA & Christophe Millot)
+- **Push / Allez on push ! :** Ordre formel de mettre le code en sécurité par la mise à jour immédiate du catalogue `branches.md` et la validation des fichiers.
 
 ---
 
@@ -55,6 +60,7 @@
 - **[2026-02-06] :** Interdiction de fragmenter les fichiers (envoi de 100% du code).
 - **[2026-02-07] :** Priorité au CSS robuste sur le SVG pour l'architecture.
 - **[2026-02-07] :** Suppression systématique du Base64 dans `data.php` au profit de fichiers physiques dans le dossier projet.
+- **[2026-02-08] :** **Neutralité Sémantique :** L'IA a interdiction formelle de générer des textes de remplissage sans ordre direct.
 
 ---
 

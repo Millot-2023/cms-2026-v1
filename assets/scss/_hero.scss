@@ -26,6 +26,41 @@
         transform: scale(1) !important;
     }
 
+    .hero-content {
+        text-align: center;
+        z-index: 2;
+
+        .hero-title {
+            color: $white;
+            font-size: 3rem;
+            margin: 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: textAppear 0.8s ease-out 0.5s forwards;
+
+            body.no-anim & {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+            }
+        }
+
+        .hero-subtitle {
+            color: $white;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: textAppear 0.8s ease-out 0.7s forwards;
+
+            body.no-anim & {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: translateY(0) !important;
+            }
+        }
+    }
+
     // LE CHEVRON (Ancre)
     .scroll-anchor {
         position: absolute;
@@ -47,21 +82,6 @@
             display: block;
             animation: bounce 2s infinite;
         }
-    }
-}
-
-.hero-section h1 {
-    color: $white;
-    font-size: 3rem;
-    opacity: 0;
-    transform: translateY(20px);
-    animation: textAppear 0.8s ease-out 0.5s forwards;
-
-    // Désactivation pour le mode travail
-    body.no-anim & {
-        animation: none !important;
-        opacity: 1 !important;
-        transform: translateY(0) !important;
     }
 }
 
