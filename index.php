@@ -23,16 +23,16 @@ require_once 'includes/hero.php';
                 <div class="card-content">
                     <header class="article-header">
                         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                            <span class="category" style="font-weight: bold; color: #666;">SYSTÈME</span>
-                            <p class="date" style="margin: 0; color: #999;"><?php echo date('d F Y'); ?></p>
+                            <span class="category" style="font-weight: bold; color: #888;">SYSTÈME</span>
+                            <p class="date" style="margin: 0; color: #666;"><?php echo date('d F Y'); ?></p>
                         </div>
-                        <h1 class="main-article-title" style="margin-top: 0.5rem;">Nouveau Projet</h1>
+                        <h1 class="main-article-title">Nouveau Projet</h1>
                     </header>
                     
                     <p>Initialiser un nouvel article ou une nouvelle étude de cas dans le CMS.</p>
                     
-                    <div class="card-footer" style="margin-top: auto; padding-top: 1rem;">
-                        <a href="admin/editor.php?project=nouveau-projet-<?php echo time(); ?>" class="btn-create" style="display: block; text-align: center; background: #000; color: #fff; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                    <div class="card-footer">
+                        <a href="admin/editor.php?project=nouveau-projet-<?php echo time(); ?>" class="btn-create" style="display: block; text-align: center; background: #000; color: #fff; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: bold; border: 1px solid #444;">
                             CRÉER
                         </a>
                     </div>
@@ -59,7 +59,7 @@ require_once 'includes/hero.php';
 
                         include $data_file; 
                         ?>
-                        <article class="grid-block" style="position: relative;">
+                        <article class="grid-block">
                             
                             <a href="javascript:void(0);" 
                                onclick="confirmDelete('<?php echo $folder; ?>')" 
@@ -69,10 +69,9 @@ require_once 'includes/hero.php';
                             <div class="card-image">
                                 <?php if(!empty($cover)): ?>
                                     <?php 
-                                        // Détection si c'est un fichier local ou du base64 (pour compatibilité)
                                         $image_src = (strpos($cover, 'data:image') === 0) ? $cover : $content_path . $folder . '/' . $cover;
                                     ?>
-                                    <img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($title); ?>">
+<img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($title); ?>">
                                 <?php else: ?>
                                     <img src="assets/img/image-template.png" alt="Pas d'image">
                                 <?php endif; ?>
@@ -81,19 +80,19 @@ require_once 'includes/hero.php';
                             <div class="card-content">
                                 <header class="article-header">
                                     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;">
-                                        <span class="category" style="font-weight: bold; color: #666;"><?php echo htmlspecialchars($category); ?></span>
-                                        <p class="date" style="margin: 0; color: #999;"><?php echo htmlspecialchars($date); ?></p>
+                                        <span class="category" style="font-weight: bold; color: #888;"><?php echo htmlspecialchars($category); ?></span>
+                                        <p class="date" style="margin: 0; color: #666;"><?php echo htmlspecialchars($date); ?></p>
                                     </div>
-                                    <h1 class="main-article-title" style="margin-top: 0.5rem;"><?php echo htmlspecialchars($title); ?></h1>
+                                    <h1 class="main-article-title"><?php echo htmlspecialchars($title); ?></h1>
                                 </header>
                                 
-                                <p><?php echo substr(strip_tags($summary), 0, 100) . '...'; ?></p>
+                                <p><?php echo mb_strimwidth(strip_tags($summary), 0, 140, "..."); ?></p>
                                 
-                                <div class="card-footer" style="margin-top: auto; padding-top: 1rem; display: flex; gap: 10px;">
-                                    <a href="admin/editor.php?project=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; border: 2px solid #000; color: #000; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.8rem;">
+                                <div class="card-footer" style="display: flex; gap: 10px;">
+                                    <a href="admin/editor.php?project=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; border: 1px solid #555; color: #fff; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; background: #333;">
                                         ÉDITER
                                     </a>
-                                    <a href="article.php?slug=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; background: #eee; color: #000; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.8rem;">
+                                    <a href="article.php?slug=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; background: #444; color: #fff; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem;">
                                         LIRE
                                     </a>
                                 </div>
@@ -112,7 +111,6 @@ require_once 'includes/hero.php';
 <script>
 function confirmDelete(slug) {
     const confirmation = confirm("ALERTE SÉCURITÉ - Christophe :\n\nTu es sur le point de supprimer le dossier [" + slug + "].\nCette action supprimera tous les fichiers associés.\n\nConfirmer la suppression ?");
-    
     if (confirmation) {
         window.location.href = "admin/delete.php?project=" + slug;
     }
@@ -126,7 +124,7 @@ function confirmDelete(slug) {
     right: 10px;
     width: 28px;
     height: 28px;
-    background: #000; /* Respect de ton identité noire */
+    background: #000;
     color: #fff;
     text-decoration: none;
     border-radius: 50%;
@@ -141,7 +139,7 @@ function confirmDelete(slug) {
 }
 
 .btn-trash-overlay:hover {
-    background: #ff0000; /* Signal visuel de danger */
+    background: #ff0000;
     transform: scale(1.1);
 }
 </style>

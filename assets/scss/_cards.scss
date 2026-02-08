@@ -1,60 +1,81 @@
-// --- CMS-2026 : Partial Cards ---
-// Gère l'uniformité visuelle de la grille de projets
+/* FICHIER : assets/scss/_cards.scss 
+   PROJET : CMS-2026
+   OBJECTIF : Grille militaire 220px avec effet Hover (Profondeur)
+*/
 
-.grid-block {
-    display: flex;
-    flex-direction: column;
-    height: 100%; // Force la carte à prendre toute la hauteur disponible dans sa cellule
-    background: #fff;
+// On cible spécifiquement les articles ET les blocs de grille (pour Nouveau Projet)
+article.grid-block, .grid-block {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: 400px; // Sécurité pour l'alignement
+    
+    // --- MÉMOIRE DESIGN (Mode Sombre testé le 08-02-2026) ---
+    // background: #262626 !important;
+    // color: #fff !important;
+
+    // ÉTAT ACTUEL : Fond clair pour visibilité standard
+    background: #ffffff !important; 
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid #f0f0f0;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #e0e0e0 !important; 
+    transition: box-shadow 0.3s ease-in-out !important;
+    position: relative;
 
+    // L'EFFET DE SURVOL (HOVER)
     &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important; 
+        border-color: #ccc !important;
+        z-index: 10;
+        cursor: pointer;
     }
-}
 
-.card-image {
-    width: 100%;
-    height: 220px; // Hauteur fixe verrouillée pour l'alignement
-    overflow: hidden;
-    background: #1a1a1a;
-
-    img {
+    // Verrouillage de la vignette (Hauteur Militaire)
+    .card-image {
+        height: 220px !important; 
         width: 100%;
-        height: 100%;
-        object-fit: cover; // Remplit l'espace sans déformer
-        object-position: center;
-        display: block;
-    }
-}
-
-.card-content {
-    padding: 1.5rem;
-    flex-grow: 1; // Permet au contenu de pousser le footer vers le bas
-    display: flex;
-    flex-direction: column;
-    color: #000;
-
-    h1, .main-article-title {
-        font-size: 1.25rem;
-        margin: 0.5rem 0;
-        line-height: 1.2;
+        overflow: hidden;
+        
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover !important;
+            display: block;
+        }
     }
 
-    p {
-        font-size: 0.9rem;
-        color: #666;
-        line-height: 1.5;
-        margin-bottom: 1.5rem;
-    }
-}
+    .card-content {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+        color: #333 !important; 
 
-/* Fix pour l'alignement du bouton en bas de carte */
-.card-footer {
-    margin-top: auto; 
-    width: 100%;
+        // ON FORCE LE TITRE SUR UNE LIGNE (Correction spécificité)
+        h1.main-article-title, .main-article-title {
+            color: #000 !important;
+            font-size: 1.1rem !important; // On écrase les 2.5rem de _bases.scss
+            font-weight: 700 !important;
+            margin-top: 0.5rem !important;
+            margin-bottom: 0.5rem !important;
+            line-height: 1.2 !important;
+            
+            // Verrouillage "Une seule ligne"
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            display: block !important;
+        }
+        
+        p {
+            color: #666 !important;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+    }
+
+    .card-footer {
+        margin-top: auto; // Pousse les boutons en bas
+        padding: 1rem;
+    }
 }

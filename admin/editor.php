@@ -119,6 +119,29 @@ if (file_exists($content_dir . $slug . '/data.php')) {
         .sidebar-scroll { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 20px 25px; }
         .sidebar-footer { padding: 25px; border-top: 1px solid var(--sidebar-border); background-color: #000000; display: flex; flex-direction: column; gap: 10px; }
 
+
+
+
+/* --- CORRECTIF RIGUEUR : ISOLATION ÉDITEUR --- */
+#main-title, .paper h1 {
+    font-size: 2.5rem !important; 
+    line-height: 1.2 !important;
+    white-space: normal !important; 
+    overflow: visible !important;
+    text-overflow: clip !important;
+    width: 100% !important;
+    display: block !important;
+    margin-bottom: 1.5rem !important;
+}
+
+
+
+
+
+
+
+
+
         .admin-input { width: 100%; background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-text); padding: 12px; margin-bottom: 12px; font-size: 11px; border-radius: 4px; outline: none; display: block; }
         .section-label { font-size: 9px; color: var(--sidebar-muted); text-transform: uppercase; margin-top: 25px; margin-bottom: 10px; display: block; }
 
@@ -421,16 +444,59 @@ if (file_exists($content_dir . $slug . '/data.php')) {
         document.getElementById('t-icon').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
     }
 
-    function publishProject() {
-        const formData = new FormData();
-        formData.append('slug', document.getElementById('inp-slug').value);
-        formData.append('designSystem', JSON.stringify(designSystem));
-        formData.append('htmlContent', document.getElementById('editor-core').innerHTML);
-        formData.append('title', document.getElementById('main-title').innerText);
-        formData.append('summary', document.getElementById('inp-summary').value);
-        formData.append('coverImage', coverData); 
-        fetch('save.php', { method: 'POST', body: formData }).then(r => r.json()).then(res => alert(res.message));
+
+
+
+
+
+
+
+
+
+
+function publishProject() {
+    const formData = new FormData();
+    
+    // RECHERCHE SÉCURISÉE DU TITRE
+    let titleElement = document.getElementById('main-title');
+    if (!titleElement) {
+        // Si le titre par défaut est supprimé, on prend le premier H1 du contenu
+        titleElement = document.querySelector('#editor-core h1');
     }
+    
+    // Si vraiment aucun H1 n'existe, on met un titre par défaut
+    const projectTitle = titleElement ? titleElement.innerText : "Nouveau Projet";
+
+    formData.append('slug', document.getElementById('inp-slug').value);
+    formData.append('designSystem', JSON.stringify(designSystem));
+    formData.append('htmlContent', document.getElementById('editor-core').innerHTML);
+    formData.append('title', projectTitle); 
+    formData.append('summary', document.getElementById('inp-summary').value);
+    formData.append('coverImage', coverData); 
+    
+    fetch('save.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(res => {
+        alert(res.message);
+        // Si succès, on peut envisager un retour à l'index automatique
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Erreur de liaison : Vérifie ta connexion ou le fichier save.php");
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
     window.addEventListener('DOMContentLoaded', () => { renderStyles(); });
     </script>

@@ -5,6 +5,7 @@
 // 1. CONFIGURATION
 @use "variables" as *;
 @use "reset";
+@use "bases"; // Ajout de bases pour tes polices et couleurs de fond
 
 @use "editor";
 
@@ -13,20 +14,12 @@
 
 // 3. COMPOSANTS
 @use "header";
-
-
-
 @use "hero";
-
+@use "cards";    // <--- INDISPENSABLE : Ton effet hover est ici !
 @use "article";
-
 @use "evolution";
-
 @use "footer";
-
 @use "admin";
-
-
 
 /* ==========================================================================
    VERROUILLAGE FINAL DU CALAGE
@@ -44,14 +37,13 @@ body {
     width: 100%;
     margin: 0 auto;
     display: block;
-    // Sécurité : on s'assure que le contenu du main respecte le rythme
     padding-top: $space-between-paragraphs;
 }
 
 hr {
     border: 0;
     border-top: 3px solid #e0e0e0;
-    margin: $space-between-paragraphs 0; // Utilisation de ta variable !
+    margin: $space-between-paragraphs 0;
     display: block;
     width: 100%;
 }

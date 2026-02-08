@@ -56,6 +56,43 @@ body.evolution-open {
 /* ==========================================================================
    MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
    ========================================================================== */
+/* ==========================================================================
+   _BASE.SCSS - LE PONT ENTRE VARIABLES ET HTML
+   ========================================================================== */
+body {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #000000;
+  background-color: #F5F5F5;
+}
+
+h1, .paper h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
 :root {
   --sidebar-bg: #111;
   --text-muted: #888;
@@ -220,20 +257,15 @@ body.evolution-open {
   min-width: 250px; /* Aligne 3 colonnes sur desktop, empile sur mobile */
 }
 
-/* Fallback si tu n'as pas encore republié tes tests */
+/* COMMENTE OU SUPPRIME CE BLOC DANS _grid.scss */
+/*
 .grid-block:not(.article-header-view) {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  gap: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
 }
-
+*/
 /* RESPONSIVE MOBILE (Base 393px) */
 @media (max-width: 800px) {
   .master-grid {
@@ -578,6 +610,85 @@ body.no-anim .hero-section h1 {
             transform: translateY(-5px);
   }
 }
+/* FICHIER : assets/scss/_cards.scss 
+   PROJET : CMS-2026
+   OBJECTIF : Grille militaire 220px avec effet Hover (Profondeur)
+*/
+article.grid-block, .grid-block {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-box-direction: normal !important;
+      -ms-flex-direction: column !important;
+          flex-direction: column !important;
+  height: auto !important;
+  min-height: 400px;
+  background: #ffffff !important;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0 !important;
+  -webkit-transition: -webkit-box-shadow 0.3s ease-in-out !important;
+  transition: -webkit-box-shadow 0.3s ease-in-out !important;
+  transition: box-shadow 0.3s ease-in-out !important;
+  transition: box-shadow 0.3s ease-in-out, -webkit-box-shadow 0.3s ease-in-out !important;
+  position: relative;
+}
+article.grid-block:hover, .grid-block:hover {
+  -webkit-box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+  border-color: #ccc !important;
+  z-index: 10;
+  cursor: pointer;
+}
+article.grid-block .card-image, .grid-block .card-image {
+  height: 220px !important;
+  width: 100%;
+  overflow: hidden;
+}
+article.grid-block .card-image img, .grid-block .card-image img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+  display: block;
+}
+article.grid-block .card-content, .grid-block .card-content {
+  padding: 1.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  color: #333 !important;
+}
+article.grid-block .card-content h1.main-article-title, article.grid-block .card-content .main-article-title, .grid-block .card-content h1.main-article-title, .grid-block .card-content .main-article-title {
+  color: #000 !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: block !important;
+}
+article.grid-block .card-content p, .grid-block .card-content p {
+  color: #666 !important;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+article.grid-block .card-footer, .grid-block .card-footer {
+  margin-top: auto;
+  padding: 1rem;
+}
+
 /* ==========================================================================
    MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
    ========================================================================== */
