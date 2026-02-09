@@ -32,7 +32,7 @@ require_once 'includes/hero.php';
                     <p>Initialiser un nouvel article ou une nouvelle étude de cas dans le CMS.</p>
                     
                     <div class="card-footer" style="margin-top: auto;">
-                        <a href="admin/editor.php?project=nouveau-projet-<?php echo time(); ?>" class="btn-create" style="display: block; text-align: center; background: #000; color: #fff; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: bold; border: 1px solid #444;">
+                        <a href="admin/editor.php?project=nouveau-projet-<?php echo time(); ?>" class="btn-create" style="display: block; text-align: center; padding: 0.8rem; border-radius: 8px; text-decoration: none; font-weight: bold; border: 1px solid #444;">
                             CRÉER
                         </a>
                     </div>
@@ -52,29 +52,22 @@ require_once 'includes/hero.php';
                     $data_file = $project_dir . '/data.php';
                     
                     if (file_exists($data_file)) {
-                        // Valeurs par défaut pour l'affichage
                         $title = "Sans titre";
                         $category = "Non classé";
                         $date = "--/--/--";
                         $cover = "";
                         $summary = "";
 
-                        // Chargement Hybride
                         $data_loaded = include $data_file;
 
                         if (is_array($data_loaded)) {
-                            // Format Tableau
                             $title    = $data_loaded['title'] ?? $folder;
                             $category = $data_loaded['category'] ?? "Non classé";
                             $date     = $data_loaded['date'] ?? "--/--/--";
                             $cover    = $data_loaded['cover'] ?? "";
                             $summary  = $data_loaded['summary'] ?? "";
-                        } else {
-                            // Format Variables (déjà chargées par l'include ci-dessus)
-                            // Les variables $title, $category, $date, $cover, $summary sont utilisées si elles existent
                         }
 
-                        // Préparation de l'URL de l'image
                         $image_src = "assets/img/image-template.png";
                         if (!empty($cover)) {
                             $image_src = (strpos($cover, 'data:image') === 0) ? $cover : $content_path . $folder . '/' . $cover;
@@ -104,10 +97,10 @@ require_once 'includes/hero.php';
                                 
                                 <div class="card-footer" style="display: flex; align-items: center; gap: 10px; margin-top: auto;">
                                     <div style="display: flex; flex: 1; gap: 10px;">
-                                        <a href="admin/editor.php?project=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; border: 1px solid #555; color: #fff; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem; background: #333;">
+                                        <a href="admin/editor.php?project=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; border: 1px solid #555; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem;">
                                             ÉDITER
                                         </a>
-                                        <a href="article.php?slug=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; background: #444; color: #fff; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem;">
+                                        <a href="article.php?slug=<?php echo $folder; ?>" class="btn-open" style="flex: 1; text-align: center; border: 1px solid #555; padding: 0.6rem; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 0.75rem;">
                                             LIRE
                                         </a>
                                     </div>

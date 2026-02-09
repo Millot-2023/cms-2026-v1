@@ -635,6 +635,42 @@ body.no-anim .hero-section .hero-content .hero-subtitle {
    PROJET : CMS-2026
    OBJECTIF : Grille militaire 220px avec effet Hover (Profondeur)
 */
+.btn-open, .btn-edit, .btn-create, .card-footer a {
+  -webkit-transition: all 0.3s ease-in-out !important;
+  transition: all 0.3s ease-in-out !important;
+  display: inline-block;
+  text-decoration: none;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #555;
+  cursor: pointer !important;
+  width: 100%;
+  text-align: center;
+  padding: 0.8rem;
+  border-radius: 6px;
+  font-weight: bold;
+}
+.btn-open:hover, .btn-edit:hover, .btn-create:hover, .card-footer a:hover {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.card-footer {
+  margin-top: auto;
+  padding: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+}
+.card-footer .btn-open, .card-footer .btn-edit {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: auto;
+}
+
 article.grid-block, .grid-block {
   display: -webkit-box !important;
   display: -ms-flexbox !important;
@@ -660,7 +696,6 @@ article.grid-block:hover, .grid-block:hover {
           box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
   border-color: #ccc !important;
   z-index: 10;
-  cursor: pointer;
 }
 article.grid-block .card-image, .grid-block .card-image {
   height: 220px !important;
@@ -686,15 +721,12 @@ article.grid-block .card-content, .grid-block .card-content {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
-  color: #333 !important;
 }
-article.grid-block .card-content h1.main-article-title, article.grid-block .card-content .main-article-title, .grid-block .card-content h1.main-article-title, .grid-block .card-content .main-article-title {
+article.grid-block .card-content h1.main-article-title, .grid-block .card-content h1.main-article-title {
   color: #000 !important;
   font-size: 1.1rem !important;
   font-weight: 700 !important;
-  margin-top: 0.5rem !important;
-  margin-bottom: 0.5rem !important;
-  line-height: 1.2 !important;
+  margin: 0.5rem 0;
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
@@ -704,10 +736,6 @@ article.grid-block .card-content p, .grid-block .card-content p {
   color: #666 !important;
   font-size: 0.9rem;
   line-height: 1.4;
-}
-article.grid-block .card-footer, .grid-block .card-footer {
-  margin-top: auto;
-  padding: 1rem;
 }
 
 /* ==========================================================================
