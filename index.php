@@ -68,9 +68,21 @@ require_once 'includes/hero.php';
                             $summary  = $data_loaded['summary'] ?? "";
                         }
 
+                        // --- LOGIQUE DE CACHE-BUSTING POUR LE LECTEUR ---
                         $image_src = "assets/img/image-template.png";
                         if (!empty($cover)) {
-                            $image_src = (strpos($cover, 'data:image') === 0) ? $cover : $content_path . $folder . '/' . $cover;
+                            if (strpos($cover, 'data:image') === 0) {
+                                $image_src = $cover;
+                            } else {
+                                $full_img_path = $content_path . $folder . '/' . $cover;
+                                if (file_exists($full_img_path)) {
+                                    // On ajoute le timestamp de modification (?v=123456) pour forcer l'actualisation
+                                    $v = filemtime($full_img_path);
+                                    $image_src = $full_img_path . "?v=" . $v;
+                                } else {
+                                    $image_src = "assets/img/image-template.png";
+                                }
+                            }
                         }
                         ?>
                         <article class="grid-block" style="position: relative;">

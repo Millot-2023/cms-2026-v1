@@ -1,15 +1,16 @@
 # Suivi du Projet : Evolution (Système Hybride)
 
-## Vision Stratégique [2026-02-02]
+## Vision Stratégique [2026-02-09]
 - **Concept :** CMS Dynamique Local (XAMPP) -> Export Statique Production (Nuxit).
 - **Surface d'Attaque :** Nulle (Fichiers .php de données convertis ou sécurisés).
-- **Architecture :** Article > Sections (Grid-block). Système de stockage : Flat-file (data.php).
+- **Architecture V3 :** Isolation par Iframe (Séparation stricte Interface / Contenu).
+- **Objectif :** Élimination totale de la dette technique (Zéro style inline, Zéro !important).
 
 ## État des Blocs (Cahier des Charges)
 - **[A] Contenu :** ✅ Validé (CRUD dossiers/fichiers opérationnel).
 - **[B] Sécurité :** ✅ Validé (Filtrage IP locale + Verrouillage Sidebar).
-- **[C] Interface :** ✅ Validé (Cockpit avec Poubelle, Sidebar noire #000000).
-- **[D] Rendu :** ✅ Validé (Grille 220px, Images extraites du Base64).
+- **[C] Interface :** ⚠️ En refonte (Migration vers architecture propre V3).
+- **[D] Rendu :** ⚠️ En refonte (Passage au rendu isolé via Iframe).
 - **[E] Export :** ⚪ En attente.
 
 ---
@@ -27,31 +28,25 @@
 
 ### 4. Branche : `feat/trash-and-clean` [TERMINE / MERGED]
 - **Objectif :** Allègement du poids des données et gestion de la suppression.
-- **Résultat :** - **Extraction Physique :** Conversion automatique du Base64 en fichiers images réels lors de la sauvegarde (`admin/save.php`).
-    - **Système Poubelle :** Ajout d'une croix de suppression sur les cartes du cockpit avec confirmation JS de sécurité.
-    - **Nettoyage Chirurgical :** Création de `admin/delete.php` pour l'effacement complet des dossiers projets (données + images).
 
-### 5. Branche : `feat/ui-uniformization` [TERMINE / MERGED] [2026-02-08]
+### 5. Branche : `feat/ui-uniformization` [TERMINE / MERGED]
 - **Objectif :** Alignement militaire de l'interface et résilience de l'éditeur.
-- **Résultat :**
-    - **Uniformité :** Verrouillage des cartes à 220px de hauteur et titres sur une seule ligne (`ellipsis`).
-    - **Intelligence Éditeur :** Sécurisation du `publishProject` pour détecter le titre même après suppression du bloc par défaut (fallback sélecteur H1).
-    - **Isolation CSS :** Séparation des scopes de styles entre le Cockpit (1.1rem) et le Studio (2.5rem).
 
-### 6. Branche : `feat/hero-refinement` [TERMINE / MERGED] [2026-02-08]
-- **Objectif :** Nettoyage sémantique de la page d'accueil et stabilisation du rendu visuel.
-- **Résultat :**
-    - **Sémantique :** Suppression du texte placeholder "Le futur du CMS..." (décision autonome IA révoquée).
-    - **Identité :** Intégration du message officiel : « **Bienvenue sur mon projet** ».
-    - **Robustesse CSS :** Migration du style vers `_hero.scss` avec classe `.hero-subtitle` (color: $white) pour éliminer le besoin de styles inline.
+### 6. Branche : `feat/hero-refinement` [TERMINE / MERGED]
+- **Objectif :** Nettoyage sémantique et stabilisation du rendu visuel.
+
+### 7. Branche : `arch/v3-clean-start` [EN COURS]
+- **Objectif :** Refonte structurelle "Zéro Conflit".
+- **Actions :**
+    - Suppression du JavaScript et du CSS interne de `editor.php`.
+    - Mise en place du pont de communication (Bridge) entre la Sidebar et l'Iframe.
+    - Centralisation de la logique métier dans `assets/js/evolution.js`.
 
 ---
 
 ## Historique des Décisions IA (Discipline de Code)
 - **[2026-01-30] :** Nommage du fichier de suivi "branches.md".
-- **[2026-02-02] :** Validation du moteur de sauvegarde.
-- **[2026-02-06] :** Stabilisation du cockpit. Respect strict de la sidebar noire (#000000). Interdiction formelle de fragmenter les fichiers PHP.
-- **[2026-02-07] :** **Optimisation de la Data :** Abandon du stockage Base64 au profit de fichiers physiques pour garantir la légèreté de `data.php` et la rapidité d'affichage.
-- **[2026-02-07] :** **Mise en place de la démolition contrôlée :** Intégration du système de suppression récursive des dossiers de contenu.
-- **[2026-02-08] :** **Verrouillage de la Rigueur Visuelle :** Application du `!important` sur la typographie des cartes pour contrer l'héritage de `_bases.scss`.
-- **[2026-02-08] :** **Neutralisation des initiatives sémantiques :** Interdiction stricte pour l'IA de générer du contenu texte sans instruction directe.
+- **[2026-02-06] :** Interdiction formelle de fragmenter les fichiers PHP.
+- **[2026-02-08] :** Constat de dette technique (usage abusif de !important).
+- **[2026-02-09] :** **Pivot Stratégique V3 :** Décision de basculer vers une isolation par Iframe pour garantir l'intégrité du code et la propreté du SCSS.
+- **[2026-02-09] :** **Audit de Rigueur :** Interdiction de tout style inline ou injection JS directe dans le DOM de l'interface.
