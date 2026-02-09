@@ -1,18 +1,12 @@
 <?php
 /**
- * PROJET-CMS-2026 - GESTION DE LA CORBEILLE
- * Version stabilisée pour Christophe Millot
+ * PROJET-CMS-2026 - GESTION DE LA CORBEILLE (FIX WARNING)
  */
 require_once '../core/config.php';
 
-// 1. SÉCURITÉ LOCALE
 $is_local = ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_NAME'] === 'localhost');
-if (!$is_local) { 
-    die("Acces reserve."); 
-    exit; 
-}
+if (!$is_local) { exit; }
 
-// 2. INCLUDES
 include '../includes/header.php'; 
 ?>
 
@@ -20,70 +14,80 @@ include '../includes/header.php';
     <main id="main">
         <header class="section-header" style="margin-bottom: 2rem;">
             <h1 class="section-title">Corbeille (Archives)</h1>
-            <p><a href="<?php echo BASE_URL; ?>index.php" style="text-decoration: none; color: #666;">← Retour à l'accueil</a></p>
+            <p><a href="<?php echo BASE_URL; ?>admin.php" style="text-decoration: none; color: #666;">← Retour au Dashboard</a></p>
         </header>
 
-        <div class="grid-container">
+        <div class="grid-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;">
             <?php
             $trash_path = '../content/_trash/';
-            
             if (is_dir($trash_path)) {
                 $folders = array_diff(scandir($trash_path), array('..', '.'));
-                
-                if (empty($folders)) {
-                    echo "<div style='grid-column: 1/-1; padding: 40px; text-align: center; background: #f9f9f9; border-radius: 20px; border: 2px dashed #ccc;'>";
-                    echo "<p style='color: #999;'>La corbeille est vide.</p>";
-                    echo "</div>";
-                }
-
                 foreach ($folders as $folder) {
                     $project_dir = $trash_path . $folder;
+                    $data_file = $project_dir . '/data.php';
 
-                    // Découpage du nom : Ymd-His_nom-du-projet
-                    $parts = explode('_', $folder, 2);
-                    $display_name = isset($parts[1]) ? $parts[1] : $folder;
-                    
-                    // Formatage sécurisé de la date de suppression
-                    $date_brute = $parts[0]; // Ymd-His
-                    $date_f = "Date inconnue";
-                    if(strlen($date_brute) >= 15) {
-                        $date_f = substr($date_brute, 6, 2) . '/' . substr($date_brute, 4, 2) . '/' . substr($date_brute, 0, 4) . ' à ' . substr($date_brute, 9, 2) . ':' . substr($date_brute, 11, 2);
-                    }
-                    ?>
-                    
-                    <article class="grid-block card-trash" style="opacity: 0.7; border: 1px dashed #ccc; background: #fff; border-radius: 12px; overflow: hidden;">
-                        <div class="card-content" style="padding: 20px;">
-                            <div class="card-meta" style="display: flex; justify-content: space-between; font-size: 0.7rem; margin-bottom: 1rem;">
-                                <span class="category" style="color: #ff4444; font-weight: bold; text-transform: uppercase;">ARCHIVE</span>
-                                <span class="date" style="color: #999;">Supprimé le <?php echo $date_f; ?></span>
+                    if (file_exists($data_file)) {
+                        // FIX : On inclut le fichier. S'il contient des variables comme $title, elles seront dispos.
+                        $project_data = include $data_file;
+
+                        /**
+                         * GESTION DU FORMAT DE DATA.PHP
+                         * On vérifie si $project_data est un tableau (cas du return)
+                         * Sinon on cherche si les variables $title et $summary ont été injectées
+                         */
+                        $display_title = "Sans titre";
+                        $display_summary = "Aucun résumé.";
+
+                        if (is_array($project_data)) {
+                            $display_title = $project_data['title'] ?? $display_title;
+                            $display_summary = $project_data['summary'] ?? $display_summary;
+                            $display_cat = $project_data['category'] ?? 'PROJET';
+                        } else {
+                            // Si data.php utilise des variables classiques ($title = ...)
+                            $display_title = isset($title) ? $title : $display_title;
+                            $display_summary = isset($summary) ? $summary : $display_summary;
+                            $display_cat = isset($category) ? $category : 'PROJET';
+                        }
+
+                        $cover_path = $project_dir . '/cover.jpg';
+                        $cover_url = file_exists($cover_path) ? $cover_path : BASE_URL . 'assets/img/image-template.png';
+
+                        $parts = explode('_', $folder, 2);
+                        $date_f = (isset($parts[0]) && strlen($parts[0]) >= 8) ? substr($parts[0], 6, 2) . '/' . substr($parts[0], 4, 2) . '/' . substr($parts[0], 0, 4) : "??/??/????";
+                        ?>
+                        
+                        <article class="grid-block" style="filter: grayscale(0.5); border: 1px solid #ddd; position: relative; background:#fff;">
+                            <div style="position: absolute; top: 10px; right: 10px; background: #ff4444; color: #fff; padding: 4px 8px; font-size: 0.6rem; font-weight: bold; border-radius: 4px; z-index: 10;">
+                                ARCHIVE : <?php echo $date_f; ?>
                             </div>
-                            
-                            <h3 style="color: #333; margin: 0 0 10px 0; font-size: 1.1rem;"><?php echo htmlspecialchars(strtoupper($display_name)); ?></h3>
-                            
-                            <p class="summary" style="margin-bottom: 1.5rem; font-style: italic; font-size: 0.8rem; color: #666; word-break: break-all;">
-                                Dossier : <?php echo htmlspecialchars($folder); ?>
-                            </p>
-                            
-                            <div class="card-action" style="display: flex; gap: 10px;">
-                                <a href="editor.php?action=restore&slug=<?php echo urlencode($folder); ?>" 
-                                   class="btn-open" 
-                                   style="background: #e1f5fe; color: #0288d1; flex: 1; text-align: center; font-size: 0.7rem; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold;">
-                                    RESTAURER
-                                </a>
+
+                            <div class="card-image" style="height: 200px; overflow: hidden; background: #eee;">
+                                <img src="<?php echo $cover_url; ?>" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+
+                            <div class="card-content" style="padding: 20px;">
+                                <div class="card-meta">
+                                    <span class="category" style="color:#ff4444;"><?php echo htmlspecialchars($display_cat); ?></span>
+                                </div>
+                                <h3 class="card-title" style="margin-top:10px; font-weight:bold;"><?php echo htmlspecialchars($display_title); ?></h3>
+                                <p class="card-summary" style="font-size: 0.8rem; color: #666; margin-bottom:20px;"><?php echo htmlspecialchars($display_summary); ?></p>
                                 
-                                <a href="editor.php?action=purge&slug=<?php echo urlencode($folder); ?>" 
-                                   class="btn-open" 
-                                   style="background: #ffebee; color: #c62828; flex: 1; text-align: center; font-size: 0.7rem; padding: 10px; border-radius: 6px; text-decoration: none; font-weight: bold;" 
-                                   onclick="return confirm('Détruire DEFINITIVEMENT ce dossier ?');">
-                                    DÉTRUIRE
-                                </a>
+                                <div class="card-action" style="display: flex; gap: 10px;">
+                                    <a href="editor.php?action=restore&slug=<?php echo urlencode($folder); ?>" 
+                                       class="btn-open" style="background: #222; color: #fff; flex: 1; text-align: center; padding: 12px; border-radius: 4px; text-decoration: none; font-size: 0.75rem; font-weight:bold;">
+                                        RESTAURER
+                                    </a>
+                                    <a href="editor.php?action=purge&slug=<?php echo urlencode($folder); ?>" 
+                                       style="color: #ff4444; font-size: 0.7rem; align-self: center; text-decoration: underline;"
+                                       onclick="return confirm('Action irréversible !');">
+                                        DÉTRUIRE
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                    </article>
-                    <?php
+                        </article>
+                        <?php
+                    }
                 }
-            } else {
-                echo "<div style='grid-column: 1/-1; padding: 40px; text-align: center; color: #666;'>Le dossier de stockage des archives (<code>_trash</code>) n'existe pas encore.</div>";
             }
             ?>
         </div>

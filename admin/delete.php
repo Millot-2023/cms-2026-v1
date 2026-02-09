@@ -1,6 +1,6 @@
 <?php
 /**
- * PROJET-CMS-2026 - SUPPRESSION CHIRURGICALE
+ * PROJET-CMS-2026 - MISE À LA CORBEILLE (ARCHIVAGE)
  * @author: Christophe Millot
  */
 
@@ -10,28 +10,28 @@ $is_local = ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_NAME'] 
 if (!$is_local) { exit; }
 
 if (isset($_GET['project'])) {
+    // Nettoyage rigoureux du nom
     $project = preg_replace('/[^A-Za-z0-9-]+/', '-', $_GET['project']);
-    $target = "../content/" . $project;
+    $source = "../content/" . $project;
+    
+    // Préparation de la destination avec le format Ymd-His_nom
+    $trash_root = "../content/_trash/";
+    $timestamp = date("Ymd-His");
+    $destination = $trash_root . $timestamp . "_" . $project;
 
-    if (is_dir($target)) {
-        // Fonction récursive pour vider le dossier avant suppression
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($target, RecursiveDirectoryIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::CHILD_FIRST
-        );
-
-        foreach ($files as $fileinfo) {
-            $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
-            $todo($fileinfo->getRealPath());
+    if (is_dir($source)) {
+        // Création du dossier _trash si inexistant
+        if (!is_dir($trash_root)) {
+            mkdir($trash_root, 0777, true);
         }
-        
-        rmdir($target);
-        
-        // Redirection vers le cockpit avec succès
-        header("Location: ../index.php?status=deleted");
-        exit;
+
+        // DEPLACEMENT (RENAME) au lieu de la boucle récursive RecursiveIteratorIterator
+        if (rename($source, $destination)) {
+            header("Location: ../admin.php?status=trashed");
+            exit;
+        }
     }
 }
 
-header("Location: ../index.php?status=error");
+header("Location: ../admin.php?status=error");
 exit;
