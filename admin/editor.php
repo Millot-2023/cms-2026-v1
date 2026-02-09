@@ -65,10 +65,32 @@ $designSystemArray = [
     'p' =>  [ 'fontSize' => '18px' ] 
 ];
 
-if (file_exists($content_dir . $slug . '/data.php')) {
-    include $content_dir . $slug . '/data.php';
-    if (isset($content)) { $htmlContent = $content; }
-    if (isset($designSystem)) { $designSystemArray = $designSystem; }
+// --- CHARGEMENT HYBRIDE (ANCIENNE ET NOUVELLE MÉTHODE) ---
+$data_path = $content_dir . $slug . '/data.php';
+if (file_exists($data_path)) {
+    $data_loaded = include $data_path;
+    
+    if (is_array($data_loaded)) {
+        // Nouvelle structure (return array)
+        $title = $data_loaded['title'] ?? $title;
+        $category = $data_loaded['category'] ?? $category;
+        $summary = $data_loaded['summary'] ?? $summary;
+        $cover = $data_loaded['cover'] ?? $cover;
+        $htmlContent = $data_loaded['htmlContent'] ?? $htmlContent;
+        $designSystemArray = $data_loaded['designSystem'] ?? $designSystemArray;
+    } else {
+        // Ancienne structure (variables $title, $content...)
+        if (isset($title)) { $title = $title; }
+        if (isset($content)) { $htmlContent = $content; }
+        if (isset($designSystem)) { $designSystemArray = $designSystem; }
+    }
+}
+
+// Construction de l'URL de la cover pour l'aperçu
+$cover_path = "";
+if (!empty($cover)) {
+    // Si c'est un nom de fichier (ex: cover.jpg), on ajoute le chemin relatif au dossier content
+    $cover_path = (strpos($cover, 'data:image') === 0) ? $cover : $content_dir . $slug . '/' . $cover;
 }
 ?>
 <!DOCTYPE html>
@@ -119,28 +141,17 @@ if (file_exists($content_dir . $slug . '/data.php')) {
         .sidebar-scroll { flex-grow: 1; overflow-y: auto; overflow-x: hidden; padding: 20px 25px; }
         .sidebar-footer { padding: 25px; border-top: 1px solid var(--sidebar-border); background-color: #000000; display: flex; flex-direction: column; gap: 10px; }
 
-
-
-
-/* --- CORRECTIF RIGUEUR : ISOLATION ÉDITEUR --- */
-#main-title, .paper h1 {
-    font-size: 2.5rem !important; 
-    line-height: 1.2 !important;
-    white-space: normal !important; 
-    overflow: visible !important;
-    text-overflow: clip !important;
-    width: 100% !important;
-    display: block !important;
-    margin-bottom: 1.5rem !important;
-}
-
-
-
-
-
-
-
-
+        /* --- CORRECTIF RIGUEUR : ISOLATION ÉDITEUR --- */
+        #main-title, .paper h1 {
+            font-size: 2.5rem !important; 
+            line-height: 1.2 !important;
+            white-space: normal !important; 
+            overflow: visible !important;
+            text-overflow: clip !important;
+            width: 100% !important;
+            display: block !important;
+            margin-bottom: 1.5rem !important;
+        }
 
         .admin-input { width: 100%; background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-text); padding: 12px; margin-bottom: 12px; font-size: 11px; border-radius: 4px; outline: none; display: block; }
         .section-label { font-size: 9px; color: var(--sidebar-muted); text-transform: uppercase; margin-top: 25px; margin-bottom: 10px; display: block; }
@@ -172,7 +183,6 @@ if (file_exists($content_dir . $slug . '/data.php')) {
         
         input[type="range"] { width: 100%; accent-color: #fff; display: block; cursor: pointer; }
 
-        /* CANVAS */
         .canvas { 
             position: absolute; top: 0; left: 340px; right: 0; bottom: 0;
             overflow-y: auto; overflow-x: hidden; padding: 40px 20px;
@@ -192,12 +202,10 @@ if (file_exists($content_dir . $slug . '/data.php')) {
             box-shadow: 0 40px 100px rgba(0,0,0,0.5); margin: 0 auto; position: relative;
         }
 
-        /* BLOCS ÉDITEUR */
         .block-container { position: relative; margin-bottom: 5px; width: 100%; clear: both; }
         .delete-block { position: absolute; left: -18px; top: 0; background: #ff4d4d; color: white; width: 18px; height: 18px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; opacity: 0; z-index: 10; }
         .block-container:hover .delete-block { opacity: 1; }
 
-        /* NOUVELLE CLASSE POUR ÉVITER LES CONFLITS AVEC _ARTICLES.SCSS */
         .editor-grid { display: flex; flex-wrap: wrap; width: 100%; }
         .editor-grid > div { flex: 1; min-width: 200px; }
         
@@ -228,8 +236,8 @@ if (file_exists($content_dir . $slug . '/data.php')) {
         <div class="sidebar-scroll">
             <span class="section-label">APERÇU CARTE</span>
             <div class="preview-card-container" id="preview-container">
-                <?php if(!empty($cover)): ?>
-                    <img src="<?php echo $cover; ?>" id="img-cover-preview">
+                <?php if(!empty($cover_path)): ?>
+                    <img src="<?php echo $cover_path; ?>" id="img-cover-preview">
                 <?php else: ?>
                     <span style="font-size:8px; color:#444;">AUCUNE IMAGE</span>
                 <?php endif; ?>
@@ -318,7 +326,7 @@ if (file_exists($content_dir . $slug . '/data.php')) {
     let currentImageElement = null;
     let designSystem = <?php echo json_encode($designSystemArray); ?>;
     let currentGutter = '20px';
-    let coverData = "<?php echo $cover; ?>"; 
+    let coverData = "<?php echo (strpos($cover, 'data:image') === 0) ? $cover : ''; ?>"; 
     const LOREM_TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
 
     function renderStyles() {
@@ -413,7 +421,6 @@ if (file_exists($content_dir . $slug . '/data.php')) {
         for(let i=0; i<cols; i++) {
             items += `<div style="flex:1"><p contenteditable="true" onfocus="setTarget('p')">${LOREM_TEXT}</p></div>`;
         }
-        // NOUVELLE CLASSE editor-grid
         container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="editor-grid">${items}</div>`;
         document.getElementById('editor-core').appendChild(container);
     }
@@ -444,59 +451,29 @@ if (file_exists($content_dir . $slug . '/data.php')) {
         document.getElementById('t-icon').innerText = document.body.classList.contains('light-mode') ? '☀️' : '🌙';
     }
 
+    function publishProject() {
+        const formData = new FormData();
+        let titleElement = document.getElementById('main-title');
+        if (!titleElement) { titleElement = document.querySelector('#editor-core h1'); }
+        const projectTitle = titleElement ? titleElement.innerText : "Nouveau Projet";
 
-
-
-
-
-
-
-
-
-
-function publishProject() {
-    const formData = new FormData();
-    
-    // RECHERCHE SÉCURISÉE DU TITRE
-    let titleElement = document.getElementById('main-title');
-    if (!titleElement) {
-        // Si le titre par défaut est supprimé, on prend le premier H1 du contenu
-        titleElement = document.querySelector('#editor-core h1');
+        formData.append('slug', document.getElementById('inp-slug').value);
+        formData.append('designSystem', JSON.stringify(designSystem));
+        formData.append('htmlContent', document.getElementById('editor-core').innerHTML);
+        formData.append('title', projectTitle); 
+        formData.append('summary', document.getElementById('inp-summary').value);
+        formData.append('coverImage', coverData); 
+        
+        fetch('save.php', { method: 'POST', body: formData })
+        .then(r => r.json())
+        .then(res => {
+            alert(res.message);
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Erreur de liaison : Vérifie ta connexion ou le fichier save.php");
+        });
     }
-    
-    // Si vraiment aucun H1 n'existe, on met un titre par défaut
-    const projectTitle = titleElement ? titleElement.innerText : "Nouveau Projet";
-
-    formData.append('slug', document.getElementById('inp-slug').value);
-    formData.append('designSystem', JSON.stringify(designSystem));
-    formData.append('htmlContent', document.getElementById('editor-core').innerHTML);
-    formData.append('title', projectTitle); 
-    formData.append('summary', document.getElementById('inp-summary').value);
-    formData.append('coverImage', coverData); 
-    
-    fetch('save.php', { method: 'POST', body: formData })
-    .then(r => r.json())
-    .then(res => {
-        alert(res.message);
-        // Si succès, on peut envisager un retour à l'index automatique
-    })
-    .catch(err => {
-        console.error(err);
-        alert("Erreur de liaison : Vérifie ta connexion ou le fichier save.php");
-    });
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
     window.addEventListener('DOMContentLoaded', () => { renderStyles(); });
     </script>

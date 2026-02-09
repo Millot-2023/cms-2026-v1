@@ -14,7 +14,7 @@ include '../includes/header.php';
     <main id="main">
         <header class="section-header" style="margin-bottom: 2rem;">
             <h1 class="section-title">Corbeille (Archives)</h1>
-            <p><a href="<?php echo BASE_URL; ?>admin.php" style="text-decoration: none; color: #666;">← Retour au Dashboard</a></p>
+            <p><a href="../index.php" style="text-decoration: none; color: #666;">← Retour au Dashboard</a></p>
         </header>
 
         <div class="grid-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px;">
@@ -75,12 +75,12 @@ include '../includes/header.php';
                                 <div class="card-action" style="display: flex; gap: 10px;">
                                     <a href="editor.php?action=restore&slug=<?php echo urlencode($folder); ?>" 
                                        class="btn-open" style="background: #222; color: #fff; flex: 1; text-align: center; padding: 12px; border-radius: 4px; text-decoration: none; font-size: 0.75rem; font-weight:bold;">
-                                        RESTAURER
+                                         RESTAURER
                                     </a>
                                     <a href="editor.php?action=purge&slug=<?php echo urlencode($folder); ?>" 
                                        style="color: #ff4444; font-size: 0.7rem; align-self: center; text-decoration: underline;"
                                        onclick="return confirm('Action irréversible !');">
-                                        DÉTRUIRE
+                                         DÉTRUIRE
                                     </a>
                                 </div>
                             </div>

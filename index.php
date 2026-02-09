@@ -1,7 +1,7 @@
 <?php
 /**
  * PROJET-CMS-2026 - ARCHITECTURE NETTOYÉE
- * Focus : Correction structurelle et restauration des accès
+ * Focus : Correction structurelle et restauration des accès (Version Stabilisée)
  * @author: Christophe Millot
  */
 require_once 'core/config.php';
@@ -46,18 +46,39 @@ require_once 'includes/hero.php';
                 
                 foreach ($folders as $folder) {
                     if (strpos($folder, '_') === 0) continue;
+                    if (!is_dir($content_path . $folder)) continue;
 
                     $project_dir = $content_path . $folder;
                     $data_file = $project_dir . '/data.php';
                     
                     if (file_exists($data_file)) {
+                        // Valeurs par défaut pour l'affichage
                         $title = "Sans titre";
                         $category = "Non classé";
                         $date = "--/--/--";
                         $cover = "";
                         $summary = "";
 
-                        include $data_file; 
+                        // Chargement Hybride
+                        $data_loaded = include $data_file;
+
+                        if (is_array($data_loaded)) {
+                            // Format Tableau
+                            $title    = $data_loaded['title'] ?? $folder;
+                            $category = $data_loaded['category'] ?? "Non classé";
+                            $date     = $data_loaded['date'] ?? "--/--/--";
+                            $cover    = $data_loaded['cover'] ?? "";
+                            $summary  = $data_loaded['summary'] ?? "";
+                        } else {
+                            // Format Variables (déjà chargées par l'include ci-dessus)
+                            // Les variables $title, $category, $date, $cover, $summary sont utilisées si elles existent
+                        }
+
+                        // Préparation de l'URL de l'image
+                        $image_src = "assets/img/image-template.png";
+                        if (!empty($cover)) {
+                            $image_src = (strpos($cover, 'data:image') === 0) ? $cover : $content_path . $folder . '/' . $cover;
+                        }
                         ?>
                         <article class="grid-block" style="position: relative;">
                             
@@ -67,14 +88,7 @@ require_once 'includes/hero.php';
                                title="Supprimer définitivement">×</a>
 
                             <div class="card-image">
-                                <?php if(!empty($cover)): ?>
-                                    <?php 
-                                        $image_src = (strpos($cover, 'data:image') === 0) ? $cover : $content_path . $folder . '/' . $cover;
-                                    ?>
                                 <img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($title); ?>">
-                                <?php else: ?>
-                                    <img src="assets/img/image-template.png" alt="Pas d'image">
-                                <?php endif; ?>
                             </div>
                             
                             <div class="card-content">
@@ -97,8 +111,7 @@ require_once 'includes/hero.php';
                                             LIRE
                                         </a>
                                     </div>
-
-                                    </div>
+                                </div>
                             </div>
                         </article>
                         <?php

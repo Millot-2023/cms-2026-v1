@@ -1,6 +1,6 @@
 <?php
 /**
- * PROJET-CMS-2026 - SAUVEGARDE (VERSION RIGOUREUSE & OPTIMISÉE)
+ * PROJET-CMS-2026 - SAUVEGARDE (VERSION HARMONISÉE)
  * @author: Christophe Millot
  */
 
@@ -21,58 +21,49 @@ if ($data && isset($data['slug'])) {
 
     $file_path = $dir . "/data.php";
     
-    // Traitement du Design System
-    $ds = $data['designSystem'] ?? [];
-    if(is_string($ds)) {
-        $ds = json_decode($ds, true);
+    // 1. Récupération des données existantes pour ne pas perdre l'image si inchangée
+    $existingData = [];
+    if (file_exists($file_path)) {
+        $loaded = include $file_path;
+        if (is_array($loaded)) { $existingData = $loaded; }
     }
+
+    // 2. Traitement du Design System
+    $ds = $data['designSystem'] ?? [];
+    if(is_string($ds)) { $ds = json_decode($ds, true); }
     
     $htmlContentRaw = $data['htmlContent'] ?? '';
+    $coverValue = $data['coverImage'] ?? ($existingData['cover'] ?? '');
 
-    // --- TRAITEMENT DE L'IMAGE DE COUVERTURE (EXTRACTION DU BASE64) ---
-    $coverValue = $data['coverImage'] ?? ($data['cover'] ?? '');
-    
-    // Si c'est du Base64 (commence par data:image...)
+    // 3. Extraction de l'image (Base64 -> Fichier)
     if (strpos($coverValue, 'data:image') === 0) {
-        // Extraction des données binaires
         list($type, $coverData) = explode(';', $coverValue);
         list(, $coverData)      = explode(',', $coverData);
         $coverData = base64_decode($coverData);
-        
-        // Définition de l'extension
-        $ext = 'jpg';
-        if (strpos($type, 'png') !== false) { $ext = 'png'; }
-        if (strpos($type, 'webp') !== false) { $ext = 'webp'; }
-        
+        $ext = (strpos($type, 'png') !== false) ? 'png' : 'jpg';
         $fileName = "cover." . $ext;
-        $fullPath = $dir . "/" . $fileName;
-        
-        // On sauvegarde le fichier physique
-        file_put_contents($fullPath, $coverData);
-        
-        // On remplace la valeur Base64 par le nom du fichier pour data.php
+        file_put_contents($dir . "/" . $fileName, $coverData);
         $coverValue = $fileName;
     }
-    // -----------------------------------------------------------------
 
-    $content_file = "<?php\n";
-    $content_file .= "/** Fichier généré par Studio CMS - " . date('d.m.Y H:i') . " **/\n\n";
-    $content_file .= "\$title = " . var_export($data['title'] ?? 'Sans titre', true) . ";\n";
-    
-    // Ici, $coverValue ne contient plus que "cover.jpg" au lieu de 1Mo de texte
-    $content_file .= "\$cover = " . var_export($coverValue, true) . ";\n";
-    
-    $content_file .= "\$category = " . var_export($data['category'] ?? 'Design', true) . ";\n";
-    $content_file .= "\$date = " . var_export(date('d.m.Y'), true) . ";\n";
-    $content_file .= "\$summary = " . var_export($data['summary'] ?? '', true) . ";\n";
-    $content_file .= "\$designSystem = " . var_export($ds, true) . ";\n";
-    $content_file .= "\$htmlContent = " . var_export($htmlContentRaw, true) . ";\n";
-    $content_file .= "\$content = " . var_export($htmlContentRaw, true) . ";\n"; 
-    $content_file .= "?>";
+    // 4. CRÉATION DU TABLEAU DE DONNÉES UNIQUE
+    $finalData = [
+        'title'        => $data['title'] ?? ($existingData['title'] ?? 'Sans titre'),
+        'cover'        => $coverValue,
+        'category'     => $data['category'] ?? ($existingData['category'] ?? 'Design'),
+        'date'         => $existingData['date'] ?? date('d.m.Y'),
+        'updated'      => date('Y-m-d H:i:s'),
+        'summary'      => $data['summary'] ?? ($existingData['summary'] ?? ''),
+        'designSystem' => $ds,
+        'htmlContent'  => $htmlContentRaw
+    ];
+
+    $content_file = "<?php\n/** Fichier généré par Studio CMS - " . date('d.m.Y H:i') . " **/\n";
+    $content_file .= "return " . var_export($finalData, true) . ";\n?>";
 
     header('Content-Type: application/json');
     if (file_put_contents($file_path, $content_file)) {
-        echo json_encode(["status" => "success", "message" => "Projet publié avec succès !"]);
+        echo json_encode(["status" => "success", "message" => "Projet enregistré dans le cockpit !"]);
     } else {
         echo json_encode(["status" => "error", "message" => "Erreur d'écriture."]);
     }

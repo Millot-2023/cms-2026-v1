@@ -25,13 +25,15 @@ if (isset($_GET['project'])) {
             mkdir($trash_root, 0777, true);
         }
 
-        // DEPLACEMENT (RENAME) au lieu de la boucle récursive RecursiveIteratorIterator
+        // DEPLACEMENT (RENAME)
         if (rename($source, $destination)) {
-            header("Location: ../admin.php?status=trashed");
+            // CORRECTION : Retour au Cockpit (index.php)
+            header("Location: ../index.php?status=trashed");
             exit;
         }
     }
 }
 
-header("Location: ../admin.php?status=error");
+// CORRECTION : Retour au Cockpit (index.php) en cas d'erreur
+header("Location: ../index.php?status=error");
 exit;

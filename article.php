@@ -9,7 +9,26 @@ $slug = $_GET['slug'] ?? '';
 $data_file = 'content/' . $slug . '/data.php';
 
 if ($slug && file_exists($data_file)) {
-    include $data_file;
+    // 1. CHARGEMENT HYBRIDE
+    $data_loaded = include $data_file;
+
+    // Valeurs par défaut pour éviter les Warnings
+    $title = $title ?? "Sans titre";
+    $category = $category ?? "Design";
+    $date = $date ?? date('d/m/Y');
+    $summary = $summary ?? "";
+    $designSystem = $designSystem ?? [];
+    $htmlContent = $htmlContent ?? 'Aucun contenu.';
+
+    // 2. EXTRACTION SI FORMAT TABLEAU
+    if (is_array($data_loaded)) {
+        $title        = $data_loaded['title'] ?? $title;
+        $category     = $data_loaded['category'] ?? $category;
+        $date         = $data_loaded['date'] ?? $date;
+        $summary      = $data_loaded['summary'] ?? $summary;
+        $designSystem = $data_loaded['designSystem'] ?? $designSystem;
+        $htmlContent  = $data_loaded['htmlContent'] ?? $htmlContent;
+    }
 } else {
     header("Location: index.php");
     exit;
@@ -19,7 +38,7 @@ require_once 'includes/header.php';
 require_once 'includes/hero.php'; 
 
 // Sécurité : On s'assure que le contenu ne contient aucune balise 'contenteditable' résiduelle
-$finalHtml = str_replace('contenteditable="true"', '', $content ?? 'Aucun contenu.');
+$finalHtml = str_replace('contenteditable="true"', '', $htmlContent);
 ?>
 
 <style>
@@ -39,7 +58,7 @@ if (isset($designSystem) && is_array($designSystem)) {
 
 /* 2. STRUCTURE ET FLUX */
 .master-grid {
-    margin-top: 50px;
+    /*margin-top: 50px;*/
     clear: both;
     position: relative;
     z-index: 10;
@@ -98,10 +117,10 @@ if (isset($designSystem) && is_array($designSystem)) {
             
             <header class="article-header-view">
                 <span class="category" style="text-transform: uppercase; letter-spacing: 2px; font-size: 12px; color: #666;">
-                    <?php echo htmlspecialchars($category ?? 'Design'); ?>
+                    <?php echo htmlspecialchars($category); ?>
                 </span>
                 <h1 class="main-article-title"><?php echo htmlspecialchars($title); ?></h1>
-                <p class="date" style="font-size: 13px; color: #999;">Publié le <?php echo $date ?? date('d/m/Y'); ?></p>
+                <p class="date" style="font-size: 13px; color: #999;">Publié le <?php echo $date; ?></p>
             </header>
 
             <div class="article-content">
@@ -116,6 +135,10 @@ if (isset($designSystem) && is_array($designSystem)) {
                     <?php echo $finalHtml; ?>
                 </div>
             </div>
+            
+            <footer style="margin-top: 60px; padding-top: 20px; border-top: 1px solid #eee;">
+                 <p><a href="index.php" style="text-decoration: none; color: white; font-weight: bold;">← Retour au Dashboard</a></p>
+            </footer>
         </article>
     </main>
 </div>

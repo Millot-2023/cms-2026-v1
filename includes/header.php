@@ -34,8 +34,8 @@
     <nav class="nav-container">
         <ul class="nav-links">
             <li><a href="<?php echo BASE_URL; ?>index.php">Accueil</a></li>
-            <li><a href="#">Articles</a></li>
-            <li><a href="<?php echo BASE_URL; ?>admin/editor.php">Editeur</a></li>
+            <li><a href="articles.php">Articles</a></li>
+            <?php /* <li><a href="<?php echo BASE_URL; ?>admin/editor.php">Editeur</a></li> */ ?>
             
             <?php if ($is_local): ?>
                 <li>
