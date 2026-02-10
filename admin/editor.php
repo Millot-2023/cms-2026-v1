@@ -92,7 +92,8 @@ if (file_exists($data_path)) {
 
 $cover_path = "";
 if (!empty($cover)) {
-    $cover_path = (strpos($cover, 'data:image') === 0) ? $cover : $current_project_dir . $cover;
+    // Correction du chemin pour l'affichage dans l'éditeur
+    $cover_path = (strpos($cover, 'data:image') === 0) ? $cover : BASE_URL . 'content/' . $slug . '/' . $cover;
 }
 ?>
 <!DOCTYPE html>
@@ -351,11 +352,10 @@ if (!empty($cover)) {
     function handleCoverChange(input) {
         var file = input.files[0];
         if (file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                coverData = e.target.result; 
-                var prev = document.getElementById('preview-container');
-                if(prev) prev.innerHTML = '<img src="' + coverData + '">';
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                coverData = e.target.result;
+                document.getElementById('preview-container').innerHTML = `<img src="${coverData}">`;
             };
             reader.readAsDataURL(file);
         }
@@ -375,25 +375,23 @@ if (!empty($cover)) {
             var summaryVal = elSummary ? elSummary.value : "";
             var htmlVal = elCore ? elCore.innerHTML : "";
 
-            var formData = new FormData();
-            formData.append('slug', slugVal);
-            formData.append('title', titleVal);
-            formData.append('date', dateVal);
-            formData.append('summary', summaryVal);
-            formData.append('coverImage', coverData); 
-            formData.append('htmlContent', htmlVal);
-            formData.append('designSystem', JSON.stringify(designSystem));
-
-            fetch('save.php', { method: 'POST', body: formData })
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
-                if(data.status === "success") {
-                    alert(data.message);
-                    if(data.fileName) coverData = data.fileName;
-                } else { alert("Erreur serveur : " + data.message); }
-            })
-            .catch(function(err) { alert("ERREUR RÉSEAU"); });
-        } catch (e) { alert("Erreur critique script : " + e.message); }
+        fetch('save.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === "success") {
+                alert(data.message);
+                if(data.fileName) { coverData = data.fileName; }
+            } else {
+                alert("Erreur : " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("ERREUR RÉSEAU");
+        });
     }
 
     function exportForGmail() {

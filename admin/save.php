@@ -7,7 +7,7 @@
 header('Content-Type: application/json');
 require_once '../core/config.php';
 
-// Sécurité : accès local uniquement
+// Sécurité : Uniquement accessible en local
 $is_local = ($_SERVER['REMOTE_ADDR'] === '127.0.0.1' || $_SERVER['SERVER_NAME'] === 'localhost');
 if (!$is_local) {
     echo json_encode(['status' => 'error', 'message' => 'Accès refusé.']);
@@ -21,55 +21,69 @@ $summary     = $_POST['summary'] ?? '';
 $htmlContent = $_POST['htmlContent'] ?? '';
 $coverData   = $_POST['coverImage'] ?? ''; 
 
-// RÉCUPÉRATION DU DESIGN SYSTEM (JSON envoyé par editor-engine.js)
-$designSystemRaw = $_POST['designSystem'] ?? '[]';
-$designSystemArray = json_decode($designSystemRaw, true) ?? [];
-
-if (empty($slug)) {
-    echo json_encode(['status' => 'error', 'message' => 'Slug manquant.']);
-    exit;
-}
-
-$project_dir = "../content/" . $slug . "/";
-if (!is_dir($project_dir)) {
-    mkdir($project_dir, 0777, true);
-}
-
-// 2. Gestion de l'image de couverture (Extraction physique)
-$cover_filename = "thumb.jpg"; 
-if (strpos($coverData, 'data:image') === 0) {
-    $data_parts = explode(',', $coverData);
-    if (count($data_parts) > 1) {
-        $img_binary = base64_decode($data_parts[1]);
-        file_put_contents($project_dir . $cover_filename, $img_binary);
+if ($data && isset($data['slug'])) {
+    // Nettoyage du slug pour le nom du dossier
+    $slug = preg_replace('/[^A-Za-z0-9-]+/', '-', strtolower($data['slug']));
+    $dir = "../content/" . $slug;
+    
+    if (!file_exists($dir)) { 
+        mkdir($dir, 0777, true); 
     }
 } elseif (!empty($coverData)) {
     $cover_filename = basename($coverData);
 }
 
-// 3. Préparation du fichier data.php (Format propre et persistant)
-$php_data = "<?php\n";
-$php_data .= "/**\n * DATA DU PROJET : " . strtoupper($slug) . "\n * Généré le : " . date('Y-m-d H:i:s') . "\n */\n\n";
-$php_data .= "return [\n";
-$php_data .= "    'title'        => " . var_export($title, true) . ",\n";
-$php_data .= "    'slug'         => " . var_export($slug, true) . ",\n";
-$php_data .= "    'category'     => 'Design',\n"; 
-$php_data .= "    'summary'      => " . var_export($summary, true) . ",\n";
-$php_data .= "    'cover'        => " . var_export($cover_filename, true) . ",\n";
-$php_data .= "    'htmlContent'  => " . var_export($htmlContent, true) . ",\n";
-$php_data .= "    'designSystem' => " . var_export($designSystemArray, true) . "\n"; 
-$php_data .= "];\n";
+    $file_path = $dir . "/data.php";
+    
+    // 1. Récupération des données existantes pour ne pas perdre l'image si inchangée
+    $existingData = [];
+    if (file_exists($file_path)) {
+        // On utilise @ pour éviter les messages d'erreur si le fichier est mal formé
+        $loaded = @include $file_path;
+        if (is_array($loaded)) { $existingData = $loaded; }
+    }
 
-// 4. Écriture sécurisée sur le disque
-if (file_put_contents($project_dir . "data.php", $php_data)) {
-    echo json_encode([
-        'status'  => 'success',
-        'message' => 'Projet et Design System mis à jour avec succès.',
-        'fileName'=> $cover_filename
-    ]);
-} else {
-    echo json_encode([
-        'status'  => 'error',
-        'message' => 'Erreur lors de l\'écriture du fichier data.php'
-    ]);
+    // 2. Traitement du Design System
+    $ds = $data['designSystem'] ?? [];
+    if(is_string($ds)) { $ds = json_decode($ds, true); }
+    
+    $htmlContentRaw = $data['htmlContent'] ?? '';
+    $coverValue = $data['coverImage'] ?? ($existingData['cover'] ?? '');
+
+    // 3. Extraction de l'image (Base64 -> Fichier)
+    if (strpos($coverValue, 'data:image') === 0) {
+        list($type, $coverData) = explode(';', $coverValue);
+        list(, $coverData)      = explode(',', $coverData);
+        $coverData = base64_decode($coverData);
+        $ext = (strpos($type, 'png') !== false) ? 'png' : 'jpg';
+        $fileName = "cover." . $ext;
+        file_put_contents($dir . "/" . $fileName, $coverData);
+        $coverValue = $fileName;
+    }
+
+    // 4. CRÉATION DU TABLEAU DE DONNÉES UNIQUE
+    // Note : On garde var_export mais on s'assure que les données sont propres
+    $finalData = [
+        'title'        => $data['title'] ?? ($existingData['title'] ?? 'Sans titre'),
+        'cover'        => $coverValue,
+        'category'     => $data['category'] ?? ($existingData['category'] ?? 'Design'),
+        'date'         => $existingData['date'] ?? date('d.m.Y'),
+        'updated'      => date('Y-m-d H:i:s'),
+        'summary'      => $data['summary'] ?? ($existingData['summary'] ?? ''),
+        'designSystem' => $ds,
+        'htmlContent'  => $htmlContentRaw
+    ];
+
+    // Génération du contenu du fichier PHP
+    $content_file = "<?php\n/** Fichier généré par Studio CMS - " . date('d.m.Y H:i') . " **/\n";
+    $content_file .= "return " . var_export($finalData, true) . ";\n";
+    $content_file .= "?>";
+
+    // Envoi de la réponse au format JSON (pour ton éditeur en JS)
+    header('Content-Type: application/json');
+    if (file_put_contents($file_path, $content_file)) {
+        echo json_encode(["status" => "success", "message" => "Projet enregistré dans le cockpit !"]);
+    } else {
+        echo json_encode(["status" => "error", "message" => "Erreur d'écriture dans : " . $file_path]);
+    }
 }
