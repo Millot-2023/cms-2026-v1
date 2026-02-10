@@ -1,6 +1,6 @@
 <?php
 /**
- * PROJET-CMS-2026 - ÉDITEUR DESIGN SYSTEM (VERSION v3.0)
+ * PROJET-CMS-2026 - ÉDITEUR DESIGN SYSTEM (VERSION v3.0.3-FIX)
  * @author: Christophe Millot
  */
 
@@ -233,7 +233,7 @@ if (!empty($cover)) {
 
         <div class="sidebar-footer">
             <button onclick="exportForGmail()" class="btn-gmail">✉️ EXPORT GMAIL</button>
-            <button onclick="publishProject()" class="btn-publish">PUBLIER</button>
+            <button id="btn-publish-trigger" onclick="publishProject()" class="btn-publish">PUBLIER</button>
             <a href="<?php echo BASE_URL; ?>index.php" class="btn-exit">QUITTER</a>
         </div>
     </aside>
@@ -254,40 +254,58 @@ if (!empty($cover)) {
     </main>
 
     <script>
-    let currentTag = 'h1';
-    let currentImageElement = null;
-    let designSystem = <?php echo json_encode($designSystemArray); ?>;
-    let coverData = "<?php echo $cover; ?>"; 
-    const LOREM_TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.<br><br>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<br><br>Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris.";
+    // 1. Déclarations globales
+    var coverData = "<?php echo $cover; ?>"; 
+    var currentTag = 'h1';
+    var currentImageElement = null;
+    var designSystem = <?php echo json_encode($designSystemArray); ?>;
+    var LOREM_TEXT = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
+    // 2. Fonctions de rendu et UI
     function renderStyles() {
-        let css = ".paper { display: flow-root; padding-top: 40px !important; }\n"; 
-        for (let tag in designSystem) {
-            css += `.paper ${tag}, #main-title { 
-                font-size: ${designSystem[tag].fontSize}; 
-                margin-top: 0 !important; 
-                line-height: 1.1 !important; 
-                margin-bottom: 4em; 
-                outline: none; 
-            }\n`;
+        var dynStyle = document.getElementById('dynamic-styles');
+        if(!dynStyle) return;
+        var css = ".paper { display: flow-root; padding-top: 40px !important; }\n"; 
+        for (var tag in designSystem) {
+            var isHeading = tag.startsWith('h');
+            var marginBottom = isHeading ? '0.5em' : '1.5em'; 
+            var marginTop = isHeading ? '1.2em' : '0em';
+            css += ".paper " + tag + ", #main-title { font-size: " + designSystem[tag].fontSize + "; line-height: 1.1 !important; margin-top: " + (tag === 'h1' ? '0' : marginTop) + " !important; margin-bottom: " + marginBottom + " !important; outline: none; display: block; }\n";
         }
-        document.getElementById('dynamic-styles').innerHTML = css;
+        dynStyle.innerHTML = css;
     }
 
     function resizePaper(width) {
-        const paper = document.getElementById('paper');
-        paper.style.width = width;
-        if(width === '100%') {
-            paper.style.maxWidth = "850px";
-        } else {
-            paper.style.maxWidth = width;
+        var paper = document.getElementById('paper');
+        if(paper) {
+            paper.style.width = width;
+            paper.style.maxWidth = (width === '100%') ? "850px" : width;
+        }
+    }
+
+    function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
+    function toggleTheme() { document.body.classList.toggle('light-mode'); }
+
+    // 3. Gestion des blocs et styles
+    function setTarget(tag, imgEl) {
+        currentTag = tag;
+        currentImageElement = imgEl || null;
+        var label = document.getElementById('target-label');
+        if(label) label.innerText = tag.toUpperCase();
+        if(designSystem[tag]) {
+            var val = parseInt(designSystem[tag].fontSize);
+            var slider = document.getElementById('slider-size');
+            var display = document.getElementById('val-size');
+            if(slider) slider.value = val;
+            if(display) display.innerText = val;
         }
     }
 
     function updateStyle(prop, val, displayId) {
         if(designSystem[currentTag]) {
             designSystem[currentTag][prop] = val; 
-            document.getElementById(displayId).innerText = val.replace('px', ''); 
+            var display = document.getElementById(displayId);
+            if(display) display.innerText = val.replace('px', ''); 
             renderStyles();
         }
     }
@@ -295,50 +313,45 @@ if (!empty($cover)) {
     function updateImageWidth(val) {
         if(currentImageElement) {
             currentImageElement.style.width = val + '%';
-            document.getElementById('val-img-width').innerText = val;
+            var display = document.getElementById('val-img-width');
+            if(display) display.innerText = val;
         }
     }
 
-    function setTarget(tag, imgEl = null) {
-        currentTag = tag;
-        currentImageElement = imgEl;
-        document.getElementById('target-label').innerText = tag.toUpperCase();
-        if(designSystem[tag]) {
-            let val = parseInt(designSystem[tag].fontSize);
-            document.getElementById('slider-size').value = val;
-            document.getElementById('val-size').innerText = val;
-        }
-    }
-
-    function addBlock(tag, txt = LOREM_TEXT) {
-        const container = document.createElement('div');
+    function addBlock(tag, txt) {
+        txt = txt || LOREM_TEXT;
+        var container = document.createElement('div');
         container.className = 'block-container';
-        container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><${tag} contenteditable="true" onfocus="setTarget('${tag}')">${txt}</${tag}>`;
-        document.getElementById('editor-core').appendChild(container);
-        container.querySelector(tag).focus();
+        container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><' + tag + ' contenteditable="true" onfocus="setTarget(\'' + tag + '\')">' + txt + '</' + tag + '>';
+        var core = document.getElementById('editor-core');
+        if(core) core.appendChild(container);
     }
 
     function addFloatBlock(type) {
-        const container = document.createElement('div');
+        var container = document.createElement('div');
         container.className = 'block-container';
-        let width = (type === 'full') ? "100%" : "40%";
-        let style = (type === 'left') ? `float:left; margin:0 20px 10px 0; width:${width};` : (type === 'right') ? `float:right; margin:0 0 10px 20px; width:${width};` : `width:${width}; margin-bottom:20px; clear:both;`;
-        container.innerHTML = `<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="image-placeholder" onclick="setTarget('img', this); event.stopPropagation();" ondblclick="triggerUpload(this)" style="${style} background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">IMAGE <input type="file" style="display:none;" onchange="handleImageSelect(this)"></div><p contenteditable="true" onfocus="setTarget('p')">${LOREM_TEXT}</p>`;
-        document.getElementById('editor-core').appendChild(container);
+        var width = (type === 'full') ? "100%" : "40%";
+        var style = (type === 'left') ? "float:left; margin:0 20px 10px 0; width:" + width + ";" : (type === 'right') ? "float:right; margin:0 0 10px 20px; width:" + width + ";" : "width:" + width + "; margin-bottom:20px; clear:both;";
+        container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="image-placeholder" onclick="setTarget(\'img\', this); event.stopPropagation();" ondblclick="triggerUpload(this)" style="' + style + ' background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">IMAGE <input type="file" style="display:none;" onchange="handleImageSelect(this)"></div><p contenteditable="true" onfocus="setTarget(\'p\')">' + LOREM_TEXT + '</p>';
+        var core = document.getElementById('editor-core');
+        if(core) core.appendChild(container);
     }
 
-    function triggerUpload(el) { el.querySelector('input').click(); }
+    function triggerUpload(el) { 
+        var inp = el.querySelector('input');
+        if(inp) inp.click(); 
+    }
 
     function handleImageSelect(input) {
-        const file = input.files[0];
+        var file = input.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const placeholder = input.parentElement;
-                placeholder.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;"><input type="file" style="display:none;" onchange="handleImageSelect(this)">`;
-                const img = placeholder.querySelector('img');
-                img.onclick = (event) => { event.stopPropagation(); setTarget('img', placeholder); };
-                img.ondblclick = (event) => { event.stopPropagation(); triggerUpload(placeholder); };
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var placeholder = input.parentElement;
+                placeholder.innerHTML = '<img src="' + e.target.result + '" style="width:100%; height:100%; object-fit:cover;"><input type="file" style="display:none;" onchange="handleImageSelect(this)">';
+                var img = placeholder.querySelector('img');
+                img.onclick = function(ev) { ev.stopPropagation(); setTarget('img', placeholder); };
+                img.ondblclick = function(ev) { ev.stopPropagation(); triggerUpload(placeholder); };
                 setTarget('img', placeholder);
             };
             reader.readAsDataURL(file);
@@ -346,73 +359,91 @@ if (!empty($cover)) {
     }
 
     function handleCoverChange(input) {
-        const file = input.files[0];
+        var file = input.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
+            var reader = new FileReader();
+            reader.onload = function(e) {
                 coverData = e.target.result; 
-                document.getElementById('preview-container').innerHTML = `<img src="${coverData}">`;
+                var prev = document.getElementById('preview-container');
+                if(prev) prev.innerHTML = '<img src="' + coverData + '">';
             };
             reader.readAsDataURL(file);
         }
     }
 
+    // 4. Sauvegarde et Export
     function publishProject() {
-        const slug = document.getElementById('inp-slug').value;
-        const title = document.getElementById('main-title').innerText;
-        const summary = document.getElementById('inp-summary').value;
-        const htmlContent = document.getElementById('editor-core').innerHTML;
+        try {
+            var elSlug = document.getElementById('inp-slug');
+            var elTitle = document.getElementById('main-title');
+            var elSummary = document.getElementById('inp-summary');
+            var elCore = document.getElementById('editor-core');
 
-        const formData = new FormData();
-        formData.append('slug', slug);
-        formData.append('title', title);
-        formData.append('summary', summary);
-        formData.append('coverImage', coverData); 
-        formData.append('htmlContent', htmlContent);
-        formData.append('designSystem', JSON.stringify(designSystem));
-
-        fetch('save.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === "success") {
-                alert(data.message);
-                if(data.fileName) {
-                    coverData = data.fileName;
-                }
+            // --- CORRECTION SECURITE TITRE ---
+            // Si l'utilisateur a supprimé le bloc titre initial, on cherche le premier H1 du core
+            // ou on prend une valeur par défaut pour éviter le plantage du script.
+            var titleVal = "Sans titre";
+            if(elTitle) {
+                titleVal = elTitle.innerText;
             } else {
-                alert("Erreur : " + data.message);
+                var backupTitle = elCore.querySelector('h1');
+                if(backupTitle) titleVal = backupTitle.innerText;
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert("ERREUR RÉSEAU");
-        });
+
+            if(!elSlug || !elCore) {
+                alert("Erreur fatale : Un élément structurel (Slug ou Editeur) est manquant.");
+                return;
+            }
+
+            var slugVal = elSlug.value;
+            var summaryVal = elSummary ? elSummary.value : "";
+            var htmlVal = elCore.innerHTML;
+
+            var formData = new FormData();
+            formData.append('slug', slugVal);
+            formData.append('title', titleVal);
+            formData.append('summary', summaryVal);
+            formData.append('coverImage', coverData); 
+            formData.append('htmlContent', htmlVal);
+            formData.append('designSystem', JSON.stringify(designSystem));
+
+            fetch('save.php', { method: 'POST', body: formData })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if(data.status === "success") {
+                    alert(data.message);
+                    if(data.fileName) coverData = data.fileName;
+                } else {
+                    alert("Erreur serveur : " + data.message);
+                }
+            })
+            .catch(function(err) { alert("ERREUR RÉSEAU"); });
+        } catch (e) {
+            alert("Erreur critique script : " + e.message);
+        }
     }
 
     function exportForGmail() {
-        const titleText = document.getElementById('main-title').innerText;
-        const editorCore = document.getElementById('editor-core');
-        const temp = document.createElement('div');
-        temp.innerHTML = editorCore.innerHTML;
-        temp.querySelectorAll('.delete-block, input').forEach(x => x.remove());
-        for (let tag in designSystem) {
-            temp.querySelectorAll(tag).forEach(el => { el.style.fontSize = designSystem[tag].fontSize; el.style.fontFamily = "Arial, sans-serif"; });
-        }
-        const emailTemplate = `<div style="padding:40px; font-family:Arial; max-width:800px; margin:auto;"><h1>${titleText}</h1>${temp.innerHTML}</div>`;
-        const blob = new Blob([emailTemplate], { type: 'text/html' });
-        const data = [new ClipboardItem({ 'text/html': blob })];
-        navigator.clipboard.write(data).then(() => alert("COPIÉ POUR GMAIL !"));
+        var elTitle = document.getElementById('main-title');
+        var elCore = document.getElementById('editor-core');
+        if(!elCore) return;
+
+        var titleText = elTitle ? elTitle.innerText : "Projet";
+        var temp = document.createElement('div');
+        temp.innerHTML = elCore.innerHTML;
+        temp.querySelectorAll('.delete-block, input').forEach(function(x) { x.remove(); });
+        var emailTemplate = '<div style="padding:40px; font-family:Arial; max-width:800px; margin:auto;"><h1>' + titleText + '</h1>' + temp.innerHTML + '</div>';
+        var blob = new Blob([emailTemplate], { type: 'text/html' });
+        var data = [new ClipboardItem({ 'text/html': blob })];
+        navigator.clipboard.write(data).then(function() { alert("COPIÉ POUR GMAIL !"); });
     }
 
-    function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
     function execStyle(cmd) { document.execCommand(cmd, false, null); }
     function changeTextColor(color) { document.execCommand('foreColor', false, color); }
-    function toggleTheme() { document.body.classList.toggle('light-mode'); }
 
-    window.addEventListener('DOMContentLoaded', renderStyles);
+    window.onload = function() {
+        renderStyles();
+    };
     </script>
 </body>
 </html>
