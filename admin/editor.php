@@ -1,6 +1,6 @@
 <?php
 /**
- * PROJET-CMS-2026 - ÉDITEUR DESIGN SYSTEM (VERSION v3.0.3-FIX)
+ * PROJET-CMS-2026 - ÉDITEUR DESIGN SYSTEM (VERSION v3.0.4-FIX)
  * @author: Christophe Millot
  */
 
@@ -55,6 +55,7 @@ $title = "Titre du Projet";
 $category = "Design";
 $summary = "";
 $cover = ""; 
+$date = date("d/m/Y"); // Restauration de la date du jour
 $htmlContent = "";
 $designSystemArray = [ 
     'h1' => [ 'fontSize' => '64px' ], 
@@ -66,7 +67,15 @@ $designSystemArray = [
 ];
 
 // --- CHARGEMENT HYBRIDE ---
-$data_path = $content_dir . $slug . '/data.php';
+$is_in_trash = false;
+$current_project_dir = $content_dir . $slug . '/';
+
+if (!file_exists($current_project_dir)) {
+    $current_project_dir = $trash_dir . $slug . '/';
+    $is_in_trash = true;
+}
+
+$data_path = $current_project_dir . 'data.php';
 if (file_exists($data_path)) {
     $data_loaded = include $data_path;
     
@@ -75,6 +84,7 @@ if (file_exists($data_path)) {
         $category = $data_loaded['category'] ?? $category;
         $summary = $data_loaded['summary'] ?? $summary;
         $cover = $data_loaded['cover'] ?? $cover;
+        $date = $data_loaded['date'] ?? $date;
         $htmlContent = $data_loaded['htmlContent'] ?? $htmlContent;
         $designSystemArray = $data_loaded['designSystem'] ?? $designSystemArray;
     }
@@ -82,7 +92,7 @@ if (file_exists($data_path)) {
 
 $cover_path = "";
 if (!empty($cover)) {
-    $cover_path = (strpos($cover, 'data:image') === 0) ? $cover : $content_dir . $slug . '/' . $cover;
+    $cover_path = (strpos($cover, 'data:image') === 0) ? $cover : $current_project_dir . $cover;
 }
 ?>
 <!DOCTYPE html>
@@ -115,7 +125,6 @@ if (!empty($cover)) {
         .sidebar-header h2 { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; margin: 0; color: var(--sidebar-muted); flex-grow: 1; }
         
         .sidebar-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 20px 25px; }
-        
         .sidebar-footer { padding: 20px 25px; border-top: 1px solid var(--sidebar-border); background-color: #000000; flex-shrink: 0; }
         
         .admin-input { width: 100%; background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-text); padding: 12px; margin-bottom: 12px; font-size: 11px; border-radius: 4px; outline: none; }
@@ -124,6 +133,9 @@ if (!empty($cover)) {
         .preview-card-container { width: 100%; aspect-ratio: 16/9; background: #111; border: 1px solid var(--sidebar-border); border-radius: 4px; overflow: hidden; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; }
         .preview-card-container img { width: 100%; height: 100%; object-fit: cover; }
         
+        /* Voile gris pour la corbeille */
+        .img-trash { filter: grayscale(100%) opacity(0.5); }
+
         .tool-btn { background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-muted); height: 40px; cursor: pointer; font-size: 10px; font-weight: bold; border-radius: 4px; transition: 0.2s; text-transform: uppercase; display: flex; align-items: center; justify-content: center; width: 100%; margin-bottom: 5px; }
         .tool-btn:hover { border-color: #555; color: #fff; }
 
@@ -138,28 +150,9 @@ if (!empty($cover)) {
         .canvas { position: absolute; top: 0; left: 340px; right: 0; bottom: 0; overflow-y: auto; padding: 40px 20px; transition: left 0.3s ease; }
         body.sidebar-hidden .canvas { left: 0; }
         
-        .paper {
-            width: 100%;
-            max-width: 850px;
-            background: #ffffff;
-            color: #000000;
-            min-height: 1100px;
-            padding: 0px 60px; 
-            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
-            margin: 0 auto;
-            position: relative;
-            display: flow-root; 
-            transition: width 0.3s ease, max-width 0.3s ease;
-        }
+        .paper { width: 100%; max-width: 850px; background: #ffffff; color: #000000; min-height: 1100px; padding: 0px 60px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); margin: 0 auto; position: relative; display: flow-root; transition: width 0.3s ease, max-width 0.3s ease; }
 
-        #main-title {
-            margin-top: 0 !important;
-            padding-top: 0 !important;
-            line-height: 0.8 !important; 
-            display: inline-block; 
-            width: 100%;
-        }
-
+        #main-title { margin-top: 0 !important; padding-top: 0 !important; line-height: 0.8 !important; display: inline-block; width: 100%; }
         .block-container { position: relative; margin-bottom: 5px; width: 100%; clear: both; }
         .delete-block { position: absolute; left: -18px; top: 0; background: #ff4d4d; color: white; width: 18px; height: 18px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; opacity: 0; z-index: 10; }
         .block-container:hover .delete-block { opacity: 1; }
@@ -168,7 +161,6 @@ if (!empty($cover)) {
         .row-styles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
         .row-float { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
         .sidebar-trigger { position: fixed; top: 20px; left: 20px; z-index: 500; background: var(--accent); color: var(--canvas-bg); border: none; width: 40px; height: 40px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-
         .responsive-switcher { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
     </style>
 </head>
@@ -186,7 +178,7 @@ if (!empty($cover)) {
             <span class="section-label">APERÇU CARTE</span>
             <div class="preview-card-container" id="preview-container">
                 <?php if(!empty($cover_path)): ?>
-                    <img src="<?php echo $cover_path; ?>" id="img-cover-preview">
+                    <img src="<?php echo $cover_path; ?>" id="img-cover-preview" class="<?php echo $is_in_trash ? 'img-trash' : ''; ?>">
                 <?php else: ?>
                     <span style="font-size:8px; color:#444;">AUCUNE IMAGE</span>
                 <?php endif; ?>
@@ -196,6 +188,7 @@ if (!empty($cover)) {
 
             <span class="section-label">MÉTADONNÉES</span>
             <input type="text" id="inp-slug" class="admin-input" value="<?php echo htmlspecialchars($slug); ?>" readonly>
+            <input type="text" id="inp-date" class="admin-input" value="<?php echo htmlspecialchars($date); ?>" readonly>
             <textarea id="inp-summary" class="admin-input" placeholder="Résumé" style="height:60px;"><?php echo htmlspecialchars($summary); ?></textarea>
 
             <span class="section-label">TYPOGRAPHIE</span>
@@ -254,14 +247,12 @@ if (!empty($cover)) {
     </main>
 
     <script>
-    // 1. Déclarations globales
     var coverData = "<?php echo $cover; ?>"; 
     var currentTag = 'h1';
     var currentImageElement = null;
     var designSystem = <?php echo json_encode($designSystemArray); ?>;
     var LOREM_TEXT = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
-    // 2. Fonctions de rendu et UI
     function renderStyles() {
         var dynStyle = document.getElementById('dynamic-styles');
         if(!dynStyle) return;
@@ -286,7 +277,6 @@ if (!empty($cover)) {
     function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
     function toggleTheme() { document.body.classList.toggle('light-mode'); }
 
-    // 3. Gestion des blocs et styles
     function setTarget(tag, imgEl) {
         currentTag = tag;
         currentImageElement = imgEl || null;
@@ -371,37 +361,24 @@ if (!empty($cover)) {
         }
     }
 
-    // 4. Sauvegarde et Export
     function publishProject() {
         try {
             var elSlug = document.getElementById('inp-slug');
+            var elDate = document.getElementById('inp-date');
             var elTitle = document.getElementById('main-title');
             var elSummary = document.getElementById('inp-summary');
             var elCore = document.getElementById('editor-core');
 
-            // --- CORRECTION SECURITE TITRE ---
-            // Si l'utilisateur a supprimé le bloc titre initial, on cherche le premier H1 du core
-            // ou on prend une valeur par défaut pour éviter le plantage du script.
-            var titleVal = "Sans titre";
-            if(elTitle) {
-                titleVal = elTitle.innerText;
-            } else {
-                var backupTitle = elCore.querySelector('h1');
-                if(backupTitle) titleVal = backupTitle.innerText;
-            }
-
-            if(!elSlug || !elCore) {
-                alert("Erreur fatale : Un élément structurel (Slug ou Editeur) est manquant.");
-                return;
-            }
-
-            var slugVal = elSlug.value;
+            var titleVal = elTitle ? elTitle.innerText : "Sans titre";
+            var slugVal = elSlug ? elSlug.value : "";
+            var dateVal = elDate ? elDate.value : "";
             var summaryVal = elSummary ? elSummary.value : "";
-            var htmlVal = elCore.innerHTML;
+            var htmlVal = elCore ? elCore.innerHTML : "";
 
             var formData = new FormData();
             formData.append('slug', slugVal);
             formData.append('title', titleVal);
+            formData.append('date', dateVal);
             formData.append('summary', summaryVal);
             formData.append('coverImage', coverData); 
             formData.append('htmlContent', htmlVal);
@@ -413,21 +390,16 @@ if (!empty($cover)) {
                 if(data.status === "success") {
                     alert(data.message);
                     if(data.fileName) coverData = data.fileName;
-                } else {
-                    alert("Erreur serveur : " + data.message);
-                }
+                } else { alert("Erreur serveur : " + data.message); }
             })
             .catch(function(err) { alert("ERREUR RÉSEAU"); });
-        } catch (e) {
-            alert("Erreur critique script : " + e.message);
-        }
+        } catch (e) { alert("Erreur critique script : " + e.message); }
     }
 
     function exportForGmail() {
         var elTitle = document.getElementById('main-title');
         var elCore = document.getElementById('editor-core');
         if(!elCore) return;
-
         var titleText = elTitle ? elTitle.innerText : "Projet";
         var temp = document.createElement('div');
         temp.innerHTML = elCore.innerHTML;
@@ -441,9 +413,7 @@ if (!empty($cover)) {
     function execStyle(cmd) { document.execCommand(cmd, false, null); }
     function changeTextColor(color) { document.execCommand('foreColor', false, color); }
 
-    window.onload = function() {
-        renderStyles();
-    };
+    window.onload = function() { renderStyles(); };
     </script>
 </body>
 </html>

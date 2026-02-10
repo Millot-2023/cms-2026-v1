@@ -1,6 +1,6 @@
 <?php
 /**
- * PROJET-CMS-2026 - GESTION DE LA CORBEILLE (FIX WARNING & NAV)
+ * PROJET-CMS-2026 - GESTION DE LA CORBEILLE (VERSION RESTAURÉE - EFFET VOILÉ CIBLÉ)
  * @author: Christophe Millot
  */
 require_once '../core/config.php';
@@ -28,38 +28,43 @@ include '../includes/header.php';
                     $data_file = $project_dir . '/data.php';
 
                     if (file_exists($data_file)) {
-                        // FIX : Inclusion sécurisée
                         $project_data = include $data_file;
 
                         $display_title = "Sans titre";
                         $display_summary = "Aucun résumé.";
                         $display_cat = 'PROJET';
+                        $cover = "";
 
                         if (is_array($project_data)) {
                             $display_title = $project_data['title'] ?? $display_title;
                             $display_summary = $project_data['summary'] ?? $display_summary;
                             $display_cat = $project_data['category'] ?? 'PROJET';
-                        } else {
-                            // Support variables globales si le include ne retourne pas de tableau
-                            if (isset($title)) { $display_title = $title; }
-                            if (isset($summary)) { $display_summary = $summary; }
-                            if (isset($category)) { $display_cat = $category; }
+                            $cover = $project_data['cover'] ?? "";
                         }
 
-                        $cover_path = $project_dir . '/cover.jpg';
-                        $cover_url = file_exists($cover_path) ? $cover_path : BASE_URL . 'assets/img/image-template.png';
+                        $image_src = BASE_URL . "assets/img/image-template.png";
+                        if (!empty($cover)) {
+                            if (strpos($cover, 'data:image') === 0) {
+                                $image_src = $cover;
+                            } else {
+                                $full_img_path = $project_dir . '/' . $cover;
+                                if (file_exists($full_img_path)) {
+                                    $image_src = $full_img_path;
+                                }
+                            }
+                        }
 
                         $parts = explode('_', $folder, 2);
                         $date_f = (isset($parts[0]) && strlen($parts[0]) >= 8) ? substr($parts[0], 6, 2) . '/' . substr($parts[0], 4, 2) . '/' . substr($parts[0], 0, 4) : "??/??/????";
                         ?>
                         
-                        <article class="grid-block" style="filter: grayscale(0.5); border: 1px solid #ddd; position: relative; background:#fff;">
+                        <article class="grid-block" style="border: 1px solid #ddd; position: relative; background:#fff;">
                             <div style="position: absolute; top: 10px; right: 10px; background: #ff4444; color: #fff; padding: 4px 8px; font-size: 0.6rem; font-weight: bold; border-radius: 4px; z-index: 10;">
                                 ARCHIVE : <?php echo $date_f; ?>
                             </div>
 
                             <div class="card-image" style="height: 200px; overflow: hidden; background: #eee;">
-                                <img src="<?php echo $cover_url; ?>" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="<?php echo $image_src; ?>" alt="" style="width: 100%; height: 100%; object-fit: cover; filter: grayscale(0.8) opacity(0.5);">
                             </div>
 
                             <div class="card-content" style="padding: 20px;">

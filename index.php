@@ -54,7 +54,10 @@ require_once 'includes/hero.php';
                     if (file_exists($data_file)) {
                         $title = "Sans titre";
                         $category = "Non classé";
-                        $date = "--/--/--";
+                        
+                        // FALLBACK SÉCURISÉ : On prend la date de création du dossier par défaut
+                        $date = date("d.m.Y", filemtime($project_dir));
+                        
                         $cover = "";
                         $summary = "";
 
@@ -63,12 +66,14 @@ require_once 'includes/hero.php';
                         if (is_array($data_loaded)) {
                             $title    = $data_loaded['title'] ?? $folder;
                             $category = $data_loaded['category'] ?? "Non classé";
-                            $date     = $data_loaded['date'] ?? "--/--/--";
+                            // Si la date existe dans le fichier, on l'utilise, sinon on garde la date du dossier
+                            if (!empty($data_loaded['date']) && $data_loaded['date'] !== "--/--/--") {
+                                $date = $data_loaded['date'];
+                            }
                             $cover    = $data_loaded['cover'] ?? "";
                             $summary  = $data_loaded['summary'] ?? "";
                         }
 
-                        // --- LOGIQUE DE CACHE-BUSTING POUR LE LECTEUR ---
                         $image_src = "assets/img/image-template.png";
                         if (!empty($cover)) {
                             if (strpos($cover, 'data:image') === 0) {
@@ -76,17 +81,13 @@ require_once 'includes/hero.php';
                             } else {
                                 $full_img_path = $content_path . $folder . '/' . $cover;
                                 if (file_exists($full_img_path)) {
-                                    // On ajoute le timestamp de modification (?v=123456) pour forcer l'actualisation
                                     $v = filemtime($full_img_path);
                                     $image_src = $full_img_path . "?v=" . $v;
-                                } else {
-                                    $image_src = "assets/img/image-template.png";
                                 }
                             }
                         }
                         ?>
                         <article class="grid-block" style="position: relative;">
-                            
                             <a href="javascript:void(0);" 
                                onclick="confirmDelete('<?php echo $folder; ?>')" 
                                class="btn-trash-overlay" 
