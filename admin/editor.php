@@ -104,66 +104,59 @@ if (!empty($cover)) {
     <title>ÉDITEUR - <?php echo SITE_NAME; ?></title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap">
     <style id="dynamic-styles"></style>
-    <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-thumb { background: #007bff; border-radius: 10px; }
-        :root {
-            --sidebar-bg: #000000;
-            --sidebar-border: #333333;
-            --sidebar-text: #ffffff;
-            --sidebar-muted: #666666;
-            --sidebar-input: #1a1a1a;
-            --canvas-bg: #1a1a1a;
-            --accent: #ffffff;
-        }
-        body.light-mode { --canvas-bg: #e0e0e0; --accent: #000000; }
-        html, body { margin: 0; padding: 0; height: 100vh; overflow: hidden; font-family: 'Inter', sans-serif; background-color: var(--canvas-bg); color: var(--accent); }
-        
-        .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 340px; background-color: #000000; border-right: 1px solid var(--sidebar-border); display: flex; flex-direction: column; z-index: 1000; color: #ffffff; transition: transform 0.3s ease; }
-        body.sidebar-hidden .sidebar { transform: translateX(-340px); }
-        
-        .sidebar-header { padding: 40px 25px 25px; border-bottom: 1px solid var(--sidebar-border); display: flex; align-items: center; gap: 15px; }
-        .sidebar-header h2 { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; margin: 0; color: var(--sidebar-muted); flex-grow: 1; }
-        
-        .sidebar-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 20px 25px; }
-        .sidebar-footer { padding: 20px 25px; border-top: 1px solid var(--sidebar-border); background-color: #000000; flex-shrink: 0; }
-        
-        .admin-input { width: 100%; background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-text); padding: 12px; margin-bottom: 12px; font-size: 11px; border-radius: 4px; outline: none; }
-        .section-label { font-size: 9px; color: var(--sidebar-muted); text-transform: uppercase; margin-top: 25px; margin-bottom: 10px; display: block; }
-        
-        .preview-card-container { width: 100%; aspect-ratio: 16/9; background: #111; border: 1px solid var(--sidebar-border); border-radius: 4px; overflow: hidden; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; }
-        .preview-card-container img { width: 100%; height: 100%; object-fit: cover; }
-        
-        .img-trash { filter: grayscale(100%) opacity(0.5); }
+    <link rel="stylesheet" href="../assets/css/main.css">
+<style>
 
-        .tool-btn { background-color: var(--sidebar-input); border: 1px solid var(--sidebar-border); color: var(--sidebar-muted); height: 40px; cursor: pointer; font-size: 10px; font-weight: bold; border-radius: 4px; transition: 0.2s; text-transform: uppercase; display: flex; align-items: center; justify-content: center; width: 100%; margin-bottom: 5px; }
-        .tool-btn:hover { border-color: #555; color: #fff; }
+    /* Base de l'icône */
+    .ico-align {
+        width: 20px;
+        height: 14px;
+        position: relative;
+        border-top: 2px solid #666; /* Ligne de texte */
+        border-bottom: 2px solid #666; /* Ligne de texte */
+    }
+    /* Le petit carré symbolisant l'image */
+    .ico-align::before {
+        content: "";
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: #fff;
+        top: 3px;
+    }
+    /* Positionnement du carré */
+    .ico-left::before  { left: 0; }
+    .ico-right::before { right: 0; }
+    /* Cas particulier : Pleine largeur (on remplace le carré par une ligne centrale) */
+    .ico-full::before {
+        width: 20px;
+        height: 2px;
+        background: #666;
+        top: 5px;
+        left: 0;
+    }
+    /* Ligne centrale pour gauche et droite */
+    .ico-left::after, .ico-right::after {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 2px;
+        background: #666;
+        top: 6px;
+    }
+    .ico-left::after  { right: 0; }
+    .ico-right::after { left: 0; }
 
-        .btn-gmail { background:#ea4335 !important; color:#ffffff !important; border:none; padding:15px; font-weight:900; cursor:pointer; text-transform:uppercase; font-size:10px; border-radius:4px; width: 100%; margin-bottom: 10px; display: block; text-align: center; }
-        .btn-publish { background:#ffffff !important; color:#000000 !important; border:none; padding:15px; font-weight:900; cursor:pointer; text-transform:uppercase; font-size:10px; border-radius:4px; width: 100%; margin-bottom: 10px; display: block; text-align: center; }
-        .btn-exit { color:var(--sidebar-muted); text-align:center; font-size:10px; text-decoration:none; border:1px solid var(--sidebar-border); padding:10px; border-radius:4px; text-transform:uppercase; font-weight:bold; display: block; width: 100%; }
+</style>
 
-        .gauge-row { background-color: var(--sidebar-input); padding: 15px; border-radius: 6px; margin-bottom: 10px; border: 1px solid var(--sidebar-border); }
-        .gauge-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 10px; color: var(--sidebar-muted); }
-        input[type="range"] { width: 100%; accent-color: #fff; cursor: pointer; }
 
-        .canvas { position: absolute; top: 0; left: 340px; right: 0; bottom: 0; overflow-y: auto; padding: 40px 20px; transition: left 0.3s ease; }
-        body.sidebar-hidden .canvas { left: 0; }
-        
-        .paper { width: 100%; max-width: 850px; background: #ffffff; color: #000000; min-height: 1100px; padding: 0px 60px; box-shadow: 0 40px 100px rgba(0,0,0,0.5); margin: 0 auto; position: relative; display: flow-root; transition: width 0.3s ease, max-width 0.3s ease; }
 
-        #main-title { margin-top: 0 !important; padding-top: 0 !important; line-height: 0.8 !important; display: inline-block; width: 100%; }
-        .block-container { position: relative; margin-bottom: 5px; width: 100%; clear: both; }
-        .delete-block { position: absolute; left: -18px; top: 0; background: #ff4d4d; color: white; width: 18px; height: 18px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 9px; cursor: pointer; opacity: 0; z-index: 10; }
-        .block-container:hover .delete-block { opacity: 1; }
-        
-        .row-h { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-        .row-styles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .row-float { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 8px; }
-        .sidebar-trigger { position: fixed; top: 20px; left: 20px; z-index: 500; background: var(--accent); color: var(--canvas-bg); border: none; width: 40px; height: 40px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .responsive-switcher { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-    </style>
+
+
+
+
+
+
 </head>
 <body class="dark-mode"> 
     <button class="sidebar-trigger" onclick="toggleSidebar()">☰</button>
@@ -213,12 +206,36 @@ if (!empty($cover)) {
                 <input type="range" id="slider-size" min="8" max="120" value="64" oninput="updateStyle('fontSize', this.value+'px', 'val-size')">
             </div>
 
+
             <span class="section-label">DISPOSITION (FLOAT)</span>
-            <div class="row-float">
-                <button class="tool-btn" onclick="addFloatBlock('left')">GAUCHE</button>
-                <button class="tool-btn" onclick="addFloatBlock('full')">LARGE</button>
-                <button class="tool-btn" onclick="addFloatBlock('right')">DROITE</button>
-            </div>
+
+
+
+
+
+
+
+
+
+
+<div class="row-float">
+    <button class="tool-btn" onclick="addFloatBlock('left')" title="Aligner à gauche">
+        <div class="ico-align ico-left"></div>
+    </button>
+    <button class="tool-btn" onclick="addFloatBlock('full')" title="Pleine largeur">
+        <div class="ico-align ico-full"></div>
+    </button>
+    <button class="tool-btn" onclick="addFloatBlock('right')" title="Aligner à droite">
+        <div class="ico-align ico-right"></div>
+    </button>
+</div>
+
+
+
+
+
+
+
             <div class="gauge-row">
                 <div class="gauge-info"><span>IMAGE WIDTH</span><span id="val-img-width">40</span>%</div>
                 <input type="range" id="slider-img-width" min="10" max="100" value="40" oninput="updateImageWidth(this.value)">
