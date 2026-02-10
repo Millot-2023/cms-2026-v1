@@ -1,11 +1,11 @@
 <?php
 /**
- * CMS-2026 v2.0 - Configuration racine
+ * CMS-2026 v3.0 - Configuration racine
  * @author: Christophe Millot
  */
 
 define('SITE_NAME', 'CMS-2026 v2.0');
-define('BASE_URL', 'http://localhost/cms-2026-v2/');
+define('BASE_URL', 'http://localhost/cms-2026-v3/');
 define('ASSETS_URL', BASE_URL . 'assets/');
 define('INC_PATH', __DIR__ . '/../includes/');
 
