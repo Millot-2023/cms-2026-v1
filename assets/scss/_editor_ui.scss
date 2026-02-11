@@ -306,84 +306,158 @@ input[type="range"] { width: 100%; accent-color: #fff; cursor: pointer; }
 .ico-just-center { border-top: 2px solid #fff; border-bottom: 2px solid #fff; &::after { top: 4px; left: 3px; width: 12px; height: 2px; } }
 .ico-just-right { border-top: 2px solid #fff; border-bottom: 2px solid #fff; &::after { top: 4px; right: 0; width: 12px; height: 2px; } }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Icônes de FLOAT (Le carré représente l'image)
-.ico-float-left {
-    border-top: 2px solid #555;
-    &::before { content: ""; position: absolute; top: 0; left: 0; width: 7px; height: 7px; background: #fff; } // Carré EN HAUT à gauche
-    &::after { top: 4px; right: 0; width: 8px; height: 2px; } // Ligne de texte à côté
+/* ICÔNES DE POSITIONNEMENT (REVISITÉES SELON SCHÉMA) */
+.ico-ui {
+    display: inline-block;
+    width: 20px;
+    height: 14px;
+    position: relative;
 }
 
+// Image à Gauche
+.ico-float-left {
+    // Simule les lignes de texte en arrière-plan
+    border-top: 2px solid #555; 
+    &::after {
+        content: "";
+        position: absolute;
+        top: 4px; left: 0;
+        width: 100%; height: 2px;
+        background: #555;
+        box-shadow: 0 4px 0 #555, 0 8px 0 #555; // Lignes supplémentaires
+    }
+    // Le carré blanc (l'image) par-dessus
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 9px; height: 7px;
+        background: #fff;
+        z-index: 2;
+    }
+}
+
+// Image Pleine Largeur
+.ico-full {
+    border-top: 2px solid #555;
+    &::before {
+        content: "";
+        position: absolute;
+        top: 2px; left: 0;
+        width: 100%; height: 8px;
+        background: #fff; // Rectangle blanc central
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0; left: 0;
+        width: 100%; height: 2px;
+        background: #555;
+    }
+}
+
+// Image à Droite
 .ico-float-right {
     border-top: 2px solid #555;
-    &::before { content: ""; position: absolute; top: 0; right: 0; width: 7px; height: 7px; background: #fff; } // Carré EN HAUT à droite
-    &::after { top: 4px; left: 0; width: 8px; height: 2px; } // Ligne de texte à côté
+    &::after {
+        content: "";
+        position: absolute;
+        top: 4px; left: 0;
+        width: 100%; height: 2px;
+        background: #555;
+        box-shadow: 0 4px 0 #555, 0 8px 0 #555;
+    }
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0; right: 0;
+        width: 9px; height: 7px;
+        background: #fff;
+        z-index: 2;
+    }
 }
 
-.ico-full {
-    border-top: 2px solid #fff; border-bottom: 2px solid #fff;
-    &::after { top: 4px; left: 0; width: 100%; height: 2px; background: #fff; }
-}
 
-/* GRILLES DU COCKPIT MISE À JOUR */
+
+
+/* === RÉPARATION DES GRILLES DU COCKPIT === */
 .sidebar-scroll {
-    .row-h, .row-styles, .row-align, .row-float { 
+    // On active la grille pour chaque rangée
+    .row-h, .row-styles, .row-align, .row-float, .row-cols { 
         display: grid !important; 
         gap: 8px !important; 
         margin-bottom: 12px !important;
         
+        // On s'assure que les boutons ne prennent pas toute la hauteur
         .tool-btn {
             margin-bottom: 0 !important; 
             height: 38px !important;
-            background: var(--sidebar-input) !important;
             @include flex-center;
-            
-            &:hover { background: #222 !important; }
+            width: 100% !important;
         }
     }
     
-    .row-h { grid-template-columns: repeat(5, 1fr) !important; } // H1 à H5
-    .row-styles { grid-template-columns: repeat(3, 1fr) !important; } // Gras, Ital, Lien
-    .row-align { grid-template-columns: repeat(3, 1fr) !important; } // Gauche, Centre, Droite
-    .row-float { grid-template-columns: repeat(3, 1fr) !important; } // Float L, Full, Float R
+    // On définit le nombre de colonnes pour chaque type de rangée
+    .row-h      { grid-template-columns: repeat(5, 1fr) !important; } // H1 à H5
+    .row-styles { grid-template-columns: repeat(3, 1fr) !important; } // B, I, Color
+    .row-align  { grid-template-columns: repeat(3, 1fr) !important; } // Gauche, Centre, Droite
+    .row-float  { grid-template-columns: repeat(3, 1fr) !important; } // Float L, Full, Float R
+    .row-cols   { grid-template-columns: repeat(2, 1fr) !important; } // 2 Cols, 3 Cols
 }
 
-
-
-
-/* GRILLES DANS LE CONTENU (PAPER) */
-.grid-2nd, .grid-3rd {
-    display: grid;
-    gap: 20px;
-    margin: 20px 0;
-    width: 100%;
-
-    // Sur Mobile (dans le paper quand il est réduit ou via Media Query)
-    @media (max-width: 600px) {
-        grid-template-columns: 1fr !important;
-    }
-}
-
-.grid-2nd { grid-template-columns: repeat(2, 1fr); }
-.grid-3rd { grid-template-columns: repeat(3, 1fr); }
-
-.col-content {
-    border: 1px dashed #ddd; // Aide visuelle dans l'éditeur
-    padding: 10px;
-    min-height: 50px;
-    outline: none;
-}
-
-/* ICÔNES COCKPIT */
-.ico-col-2::before, .ico-col-2::after { content:""; position:absolute; top:0; width:8px; height:14px; border:1px solid #fff; }
-.ico-col-2::before { left:0; } .ico-col-2::after { right:0; }
-
+/* PETIT AJUSTEMENT POUR L'ICÔNE COLONNE (Optionnel) */
 .ico-col-3 {
-    display: flex; gap: 2px;
-    span { flex:1; height:14px; border:1px solid #fff; }
+    display: flex !important;
+    gap: 2px;
+    width: 100%;
+    span { flex: 1; height: 10px; border: 1px solid #fff; }
 }
+/*ICONES DE COLEONNES*/
 
-/* Ligne Cockpit */
-.row-cols { grid-template-columns: repeat(2, 1fr) !important; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

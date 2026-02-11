@@ -590,66 +590,95 @@ body.sidebar-hidden .canvas {
   height: 2px;
 }
 
+/* ICÔNES DE POSITIONNEMENT (REVISITÉES SELON SCHÉMA) */
+.ico-ui {
+  display: inline-block;
+  width: 20px;
+  height: 14px;
+  position: relative;
+}
+
 .ico-float-left {
   border-top: 2px solid #555;
+}
+.ico-float-left::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #555;
+  -webkit-box-shadow: 0 4px 0 #555, 0 8px 0 #555;
+          box-shadow: 0 4px 0 #555, 0 8px 0 #555;
 }
 .ico-float-left::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 7px;
+  width: 9px;
   height: 7px;
   background: #fff;
+  z-index: 2;
 }
-.ico-float-left::after {
-  top: 4px;
-  right: 0;
-  width: 8px;
+
+.ico-full {
+  border-top: 2px solid #555;
+}
+.ico-full::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: #fff;
+}
+.ico-full::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   height: 2px;
+  background: #555;
 }
 
 .ico-float-right {
   border-top: 2px solid #555;
+}
+.ico-float-right::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #555;
+  -webkit-box-shadow: 0 4px 0 #555, 0 8px 0 #555;
+          box-shadow: 0 4px 0 #555, 0 8px 0 #555;
 }
 .ico-float-right::before {
   content: "";
   position: absolute;
   top: 0;
   right: 0;
-  width: 7px;
+  width: 9px;
   height: 7px;
   background: #fff;
-}
-.ico-float-right::after {
-  top: 4px;
-  left: 0;
-  width: 8px;
-  height: 2px;
+  z-index: 2;
 }
 
-.ico-full {
-  border-top: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-}
-.ico-full::after {
-  top: 4px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: #fff;
-}
-
-/* GRILLES DU COCKPIT MISE À JOUR */
-.sidebar-scroll .row-h, .sidebar-scroll .row-styles, .sidebar-scroll .row-align, .sidebar-scroll .row-float {
+/* === RÉPARATION DES GRILLES DU COCKPIT === */
+.sidebar-scroll .row-h, .sidebar-scroll .row-styles, .sidebar-scroll .row-align, .sidebar-scroll .row-float, .sidebar-scroll .row-cols {
   display: grid !important;
   gap: 8px !important;
   margin-bottom: 12px !important;
 }
-.sidebar-scroll .row-h .tool-btn, .sidebar-scroll .row-styles .tool-btn, .sidebar-scroll .row-align .tool-btn, .sidebar-scroll .row-float .tool-btn {
+.sidebar-scroll .row-h .tool-btn, .sidebar-scroll .row-styles .tool-btn, .sidebar-scroll .row-align .tool-btn, .sidebar-scroll .row-float .tool-btn, .sidebar-scroll .row-cols .tool-btn {
   margin-bottom: 0 !important;
   height: 38px !important;
-  background: var(--sidebar-input) !important;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -659,9 +688,7 @@ body.sidebar-hidden .canvas {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-}
-.sidebar-scroll .row-h .tool-btn:hover, .sidebar-scroll .row-styles .tool-btn:hover, .sidebar-scroll .row-align .tool-btn:hover, .sidebar-scroll .row-float .tool-btn:hover {
-  background: #222 !important;
+  width: 100% !important;
 }
 .sidebar-scroll .row-h {
   grid-template-columns: repeat(5, 1fr) !important;
@@ -675,7 +702,27 @@ body.sidebar-hidden .canvas {
 .sidebar-scroll .row-float {
   grid-template-columns: repeat(3, 1fr) !important;
 }
+.sidebar-scroll .row-cols {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
 
+/* PETIT AJUSTEMENT POUR L'ICÔNE COLONNE (Optionnel) */
+.ico-col-3 {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  gap: 2px;
+  width: 100%;
+}
+.ico-col-3 span {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  height: 10px;
+  border: 1px solid #fff;
+}
+
+/*ICONES DE COLEONNES*/
 /* TRIGGER SIDEBAR */
 .sidebar-trigger {
   position: fixed;

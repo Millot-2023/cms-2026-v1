@@ -92,7 +92,6 @@ if (file_exists($data_path)) {
 
 $cover_path = "";
 if (!empty($cover)) {
-    // Correction du chemin pour gérer le dossier corbeille si nécessaire
     $sub_folder = $is_in_trash ? 'content/_trash/' : 'content/';
     $cover_path = (strpos($cover, 'data:image') === 0) ? $cover : BASE_URL . $sub_folder . $slug . '/' . $cover;
 }
@@ -105,19 +104,6 @@ if (!empty($cover)) {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap">
     <style id="dynamic-styles"></style>
     <link rel="stylesheet" href="../assets/css/main.css">
-<style>
-
-
-</style>
-
-
-
-
-
-
-
-
-
 </head>
 <body class="dark-mode"> 
     <button class="sidebar-trigger" onclick="toggleSidebar()">☰</button>
@@ -167,61 +153,42 @@ if (!empty($cover)) {
                 <input type="range" id="slider-size" min="8" max="120" value="64" oninput="updateStyle('fontSize', this.value+'px', 'val-size')">
             </div>
 
+            <span class="section-label">DISPOSITION (FLOAT)</span>
+            <div class="row-float">
+                <button class="tool-btn" onclick="addFloatBlock('left')" title="Aligner à gauche">
+                    <div class="ico-ui ico-float-left"></div>
+                </button>
+                <button class="tool-btn" onclick="addFloatBlock('full')" title="Pleine largeur">
+                    <div class="ico-ui ico-full"></div>
+                </button>
+                <button class="tool-btn" onclick="addFloatBlock('right')" title="Aligner à droite">
+                    <div class="ico-ui ico-float-right"></div>
+                </button>
+            </div>
 
-<span class="section-label">DISPOSITION (FLOAT)</span>
-<div class="row-float">
-    <button class="tool-btn" onclick="addFloatBlock('left')" title="Aligner à gauche">
-        <div class="ico-align ico-left"></div>
-    </button>
-    <button class="tool-btn" onclick="addFloatBlock('full')" title="Pleine largeur">
-        <div class="ico-align ico-full"></div>
-    </button>
-    <button class="tool-btn" onclick="addFloatBlock('right')" title="Aligner à droite">
-        <div class="ico-align ico-right"></div>
-    </button>
-</div>
+            <span class="section-label">ALIGNEMENT TEXTE</span>
+            <div class="row-align">
+                <button class="tool-btn" onclick="execStyle('justifyLeft')" title="Aligner à gauche">
+                    <div class="ico-ui ico-just-left"></div>
+                </button>
+                <button class="tool-btn" onclick="execStyle('justifyCenter')" title="Centrer">
+                    <div class="ico-ui ico-just-center"></div>
+                </button>
+                <button class="tool-btn" onclick="execStyle('justifyRight')" title="Aligner à droite">
+                    <div class="ico-ui ico-just-right"></div>
+                </button>
+            </div>
 
-<span class="section-label">ALIGNEMENT TEXTE</span>
-<div class="row-align">
-    <button class="tool-btn" onclick="execStyle('justifyLeft')" title="Aligner à gauche">
-        <div class="ico-ui ico-just-left"></div>
-    </button>
-    <button class="tool-btn" onclick="execStyle('justifyCenter')" title="Centrer">
-        <div class="ico-ui ico-just-center"></div>
-    </button>
-    <button class="tool-btn" onclick="execStyle('justifyRight')" title="Aligner à droite">
-        <div class="ico-ui ico-just-right"></div>
-    </button>
-</div>
+            <span class="section-label">COLONNES</span>
+            <div class="row-cols" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
+                <button class="tool-btn" onclick="addGridBlock(2)">2 COLONNES</button>
+                <button class="tool-btn" onclick="addGridBlock(3)">3 COLONNES</button>
+            </div>
 
-
-
-
-
-
-                <!--ICONES DE COLONNES-->
-
-
-<span class="section-label">COLONNES</span>
-<div class="row-cols" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
-    <button class="tool-btn" onclick="addGridBlock(2)">2 COLONNES</button>
-    <button class="tool-btn" onclick="addGridBlock(3)">3 COLONNES</button>
-</div>
-
-<div class="gauge-row">
-    <div class="gauge-info"><span>ESPACEMENT (GUTTER)</span><span id="val-gutter">20</span>px</div>
-    <input type="range" id="slider-gutter" min="0" max="100" value="20" oninput="updateGutter(this.value)">
-</div>
-
-
-
-
-
-
-
-
-
-
+            <div class="gauge-row">
+                <div class="gauge-info"><span>ESPACEMENT (GUTTER)</span><span id="val-gutter">20</span>px</div>
+                <input type="range" id="slider-gutter" min="0" max="100" value="20" oninput="updateGutter(this.value)">
+            </div>
 
             <div class="gauge-row">
                 <div class="gauge-info"><span>IMAGE WIDTH</span><span id="val-img-width">40</span>%</div>
@@ -252,12 +219,18 @@ if (!empty($cover)) {
     </main>
 
     <script>
+    // =========================================================
+    // 1. VARIABLES GLOBALES & CONFIGURATION
+    // =========================================================
     var coverData = "<?php echo $cover; ?>"; 
     var currentTag = 'h1';
     var currentImageElement = null;
     var designSystem = <?php echo json_encode($designSystemArray); ?>;
     var LOREM_TEXT = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
 
+    // =========================================================
+    // 2. MOTEUR DE RENDU ET UI
+    // =========================================================
     function renderStyles() {
         var dynStyle = document.getElementById('dynamic-styles');
         if(!dynStyle) return;
@@ -279,9 +252,12 @@ if (!empty($cover)) {
         }
     }
 
-    function toggleSidebar() { document.body.classList.toggle('sidebar-hidden'); }
+    function toggleSidebar() { document.body.classList.toggle('sidebar-hidden');}
     function toggleTheme() { document.body.classList.toggle('light-mode'); }
 
+    // =========================================================
+    // 3. GESTION DES CIBLES ET STYLES DYNAMIQUES
+    // =========================================================
     function setTarget(tag, imgEl) {
         currentTag = tag;
         currentImageElement = imgEl || null;
@@ -313,6 +289,9 @@ if (!empty($cover)) {
         }
     }
 
+    // =========================================================
+    // 4. INSERTION DE BLOCS (TEXTE, FLOAT, IMAGE)
+    // =========================================================
     function addBlock(tag, txt) {
         txt = txt || LOREM_TEXT;
         var container = document.createElement('div');
@@ -365,6 +344,9 @@ if (!empty($cover)) {
         }
     }
 
+    // =========================================================
+    // 5. FONCTIONS DE SAUVEGARDE ET EXPORT
+    // =========================================================
     function publishProject() {
         try {
             var elSlug = document.getElementById('inp-slug');
@@ -420,47 +402,31 @@ if (!empty($cover)) {
 
     window.onload = function() { renderStyles(); };
 
-
-
-
-//SCRIPT COLLONNES
-
-function addGridBlock(num) {
-    var container = document.createElement('div');
-    container.className = 'block-container';
-    
-    // On prépare le contenu des colonnes avec ton texte de test
-    var colsHtml = '';
-    for(var i=0; i < num; i++) {
-        // Chaque colonne reçoit le LOREM_TEXT et devient éditable
-        colsHtml += '<div class="col-item" contenteditable="true" onfocus="setTarget(\'grid\', this.parentElement)" style="flex:1; min-height:100px; outline:none; border:1px dashed #ddd; padding:0px;">' + LOREM_TEXT + '</div>';
+    // =========================================================
+    // 6. GESTION DES COLONNES (GRID SYSTEM)
+    // =========================================================
+    function addGridBlock(num) {
+        var container = document.createElement('div');
+        container.className = 'block-container';
+        var colsHtml = '';
+        for(var i=0; i < num; i++) {
+            colsHtml += '<div class="col-item" contenteditable="true" onfocus="setTarget(\'grid\', this.parentElement)" style="flex:1; min-height:100px; outline:none; border:0px dashed #ddd; padding:0px;">' + LOREM_TEXT + '</div>';
+        }
+        container.innerHTML = `
+            <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
+            <div class="grid-wrapper" onclick="setTarget('grid', this)" style="display:flex; gap:20px; margin-bottom:20px; width:100%; clear:both;">
+                ${colsHtml}
+            </div>`;
+        var core = document.getElementById('editor-core');
+        if(core) core.appendChild(container);
     }
-    
-    // Structure avec Flexbox pour que le Gutter (gap) fonctionne
-    container.innerHTML = `
-        <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
-        <div class="grid-wrapper" onclick="setTarget('grid', this)" style="display:flex; gap:20px; margin-bottom:20px; width:100%; clear:both;">
-            ${colsHtml}
-        </div>`;
-        
-    var core = document.getElementById('editor-core');
-    if(core) core.appendChild(container);
-}
 
-function updateGutter(val) {
-    // Si on a sélectionné une grille (le target est 'grid')
-    if(currentTag === 'grid' && currentImageElement) {
-        currentImageElement.style.gap = val + 'px';
-        document.getElementById('val-gutter').innerText = val;
+    function updateGutter(val) {
+        if(currentTag === 'grid' && currentImageElement) {
+            currentImageElement.style.gap = val + 'px';
+            document.getElementById('val-gutter').innerText = val;
+        }
     }
-}
-
-
-
-
-
-
-
     </script>
 </body>
 </html>
