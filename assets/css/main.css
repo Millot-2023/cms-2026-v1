@@ -2,6 +2,7 @@
 /* ==========================================================================
    MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
    ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700&display=swap");
 /* ==========================================================================
    VARIABLES GLOBALES - PROJET CMS 2026
    ========================================================================== */
@@ -51,6 +52,27 @@ button, input, textarea {
 /* Verrouillage du scroll lors de l'ouverture d'Evolution (Optionnel) */
 body.evolution-open {
   overflow: hidden;
+}
+
+/*LETRINES*/
+/* Le style de ta lettrine tel que sur ton image */
+/* LETTRINES */
+.has-lettrine {
+  border: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+}
+.has-lettrine::first-letter {
+  float: left;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 3.5rem;
+  line-height: 1;
+  /*padding: 4px 10px;*/
+  margin-right: 6px;
+  /*margin-top: 4px; */
+  font-weight: 900;
+  display: block;
 }
 
 /* ==========================================================================
@@ -723,27 +745,6 @@ body.sidebar-hidden .canvas {
 }
 
 /*ICONES DE COLEONNES*/
-/*LETRINES*/
-/* Le style de ta lettrine tel que sur ton image */
-/* LETTRINES */
-.has-lettrine {
-  border: none !important;
-  outline: none !important;
-  text-decoration: none !important;
-}
-.has-lettrine::first-letter {
-  float: left;
-  background-color: #ffffff;
-  color: #000000;
-  font-size: 3.5rem;
-  line-height: 1;
-  padding: 4px 10px;
-  margin-right: 12px;
-  margin-top: 4px;
-  font-weight: 900;
-  display: block;
-}
-
 /* TRIGGER SIDEBAR */
 .sidebar-trigger {
   position: fixed;
