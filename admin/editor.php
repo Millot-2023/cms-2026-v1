@@ -168,17 +168,7 @@ if (!empty($cover)) {
             </div>
 
 
-            <span class="section-label">DISPOSITION (FLOAT)</span>
-
-
-
-
-
-
-
-
-
-
+<span class="section-label">DISPOSITION (FLOAT)</span>
 <div class="row-float">
     <button class="tool-btn" onclick="addFloatBlock('left')" title="Aligner à gauche">
         <div class="ico-align ico-left"></div>
@@ -190,6 +180,42 @@ if (!empty($cover)) {
         <div class="ico-align ico-right"></div>
     </button>
 </div>
+
+<span class="section-label">ALIGNEMENT TEXTE</span>
+<div class="row-align">
+    <button class="tool-btn" onclick="execStyle('justifyLeft')" title="Aligner à gauche">
+        <div class="ico-ui ico-just-left"></div>
+    </button>
+    <button class="tool-btn" onclick="execStyle('justifyCenter')" title="Centrer">
+        <div class="ico-ui ico-just-center"></div>
+    </button>
+    <button class="tool-btn" onclick="execStyle('justifyRight')" title="Aligner à droite">
+        <div class="ico-ui ico-just-right"></div>
+    </button>
+</div>
+
+
+
+
+
+
+                <!--ICONES DE COLONNES-->
+
+
+<span class="section-label">COLONNES</span>
+<div class="row-cols" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px;">
+    <button class="tool-btn" onclick="addGridBlock(2)">2 COLONNES</button>
+    <button class="tool-btn" onclick="addGridBlock(3)">3 COLONNES</button>
+</div>
+
+<div class="gauge-row">
+    <div class="gauge-info"><span>ESPACEMENT (GUTTER)</span><span id="val-gutter">20</span>px</div>
+    <input type="range" id="slider-gutter" min="0" max="100" value="20" oninput="updateGutter(this.value)">
+</div>
+
+
+
+
 
 
 
@@ -393,6 +419,48 @@ if (!empty($cover)) {
     function changeTextColor(color) { document.execCommand('foreColor', false, color); }
 
     window.onload = function() { renderStyles(); };
+
+
+
+
+//SCRIPT COLLONNES
+
+function addGridBlock(num) {
+    var container = document.createElement('div');
+    container.className = 'block-container';
+    
+    // On prépare le contenu des colonnes avec ton texte de test
+    var colsHtml = '';
+    for(var i=0; i < num; i++) {
+        // Chaque colonne reçoit le LOREM_TEXT et devient éditable
+        colsHtml += '<div class="col-item" contenteditable="true" onfocus="setTarget(\'grid\', this.parentElement)" style="flex:1; min-height:100px; outline:none; border:1px dashed #ddd; padding:0px;">' + LOREM_TEXT + '</div>';
+    }
+    
+    // Structure avec Flexbox pour que le Gutter (gap) fonctionne
+    container.innerHTML = `
+        <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
+        <div class="grid-wrapper" onclick="setTarget('grid', this)" style="display:flex; gap:20px; margin-bottom:20px; width:100%; clear:both;">
+            ${colsHtml}
+        </div>`;
+        
+    var core = document.getElementById('editor-core');
+    if(core) core.appendChild(container);
+}
+
+function updateGutter(val) {
+    // Si on a sélectionné une grille (le target est 'grid')
+    if(currentTag === 'grid' && currentImageElement) {
+        currentImageElement.style.gap = val + 'px';
+        document.getElementById('val-gutter').innerText = val;
+    }
+}
+
+
+
+
+
+
+
     </script>
 </body>
 </html>

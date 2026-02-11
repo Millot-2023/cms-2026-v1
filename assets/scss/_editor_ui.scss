@@ -51,19 +51,57 @@ html, body {
 
 
 
+.editor-content, .paper {
+    
+    h1 {
+        font-size: $font-size-h1;    // Utilise tes 2.5rem
+        font-weight: $weight-bold;   // Utilise ton 700 ou 800
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        color: #1a1a1a;
+    }
+
+    h2 {
+        font-size: $font-size-h2;    // Utilise tes 2rem (donc > 1.75)
+        font-weight: 600;
+        margin-top: 2.5rem;          // Plus d'espace pour un grand titre
+        margin-bottom: 1.25rem;
+        color: #333;
+    }
+
+    h3 {
+        font-size: $font-size-h3;    // Utilise tes 1.5rem
+        font-weight: 600;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+
+    h4 {
+        font-size: $font-size-h4;          // On descend doucement
+        font-weight: 600;
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        color: #444;
+    }
+
+    h5 {
+        font-size: $font-size-h5;              // Taille du texte standard mais en gras
+        font-weight: 600;
+        margin-top: 1.25rem;
+        margin-bottom: 0.5rem;
+        color: #555;
+    }
+}
+
+
+
+
+
+
 body:has(.master-grid) {
     overflow-y: auto !important;
     height: auto !important;
-}
-.master-grid {
-    width: 100%;
-    position: relative;
-}
-
-
-
-
-body:has(.master-grid) {
     display: flex;
     flex-direction: column;
     justify-content: flex-start !important;
@@ -71,9 +109,15 @@ body:has(.master-grid) {
 }
 
 .master-grid {
+    width: 100%;
+    position: relative;
     flex: 1; 
     display: block; 
+
 }
+
+
+
 
 
 
@@ -239,57 +283,109 @@ input[type="range"] { width: 100%; accent-color: #fff; cursor: pointer; }
     &:hover .delete-block { opacity: 1; }
 }
 
-/* ICÔNES DE POSITIONNEMENT (AJOUTÉ) */
-.ico-align {
+
+
+
+/* ICÔNES DE POSITIONNEMENT & JUSTIFICATION */
+.ico-ui {
     display: inline-block;
-    width: 20px;
+    width: 18px;
     height: 14px;
     position: relative;
-    border-top: 2px solid #666;
-    border-bottom: 2px solid #666;
-    vertical-align: middle;
-
-    &::before {
+    
+    // Barre de texte générique (pour les icônes de float)
+    &::after {
         content: "";
         position: absolute;
-        width: 8px;
-        height: 8px;
-        background: #fff;
-        top: 1px;
+        background: #555;
     }
 }
-.ico-left::before  { left: 0; }
-.ico-right::before { right: 0; }
-.ico-full::before  { width: 20px; height: 2px; background: #666; top: 4px; left: 0; }
 
-.ico-left::after, .ico-right::after {
-    content: "";
-    position: absolute;
-    width: 10px; height: 2px; background: #666; top: 4px;
+// Icônes de JUSTIFICATION (Lignes simples)
+.ico-just-left { border-top: 2px solid #fff; border-bottom: 2px solid #fff; &::after { top: 4px; left: 0; width: 12px; height: 2px; } }
+.ico-just-center { border-top: 2px solid #fff; border-bottom: 2px solid #fff; &::after { top: 4px; left: 3px; width: 12px; height: 2px; } }
+.ico-just-right { border-top: 2px solid #fff; border-bottom: 2px solid #fff; &::after { top: 4px; right: 0; width: 12px; height: 2px; } }
+
+// Icônes de FLOAT (Le carré représente l'image)
+.ico-float-left {
+    border-top: 2px solid #555;
+    &::before { content: ""; position: absolute; top: 0; left: 0; width: 7px; height: 7px; background: #fff; } // Carré EN HAUT à gauche
+    &::after { top: 4px; right: 0; width: 8px; height: 2px; } // Ligne de texte à côté
 }
-.ico-left::after  { right: 0; }
-.ico-right::after { left: 0; }
 
-/* GRILLES DU COCKPIT */
+.ico-float-right {
+    border-top: 2px solid #555;
+    &::before { content: ""; position: absolute; top: 0; right: 0; width: 7px; height: 7px; background: #fff; } // Carré EN HAUT à droite
+    &::after { top: 4px; left: 0; width: 8px; height: 2px; } // Ligne de texte à côté
+}
+
+.ico-full {
+    border-top: 2px solid #fff; border-bottom: 2px solid #fff;
+    &::after { top: 4px; left: 0; width: 100%; height: 2px; background: #fff; }
+}
+
+/* GRILLES DU COCKPIT MISE À JOUR */
 .sidebar-scroll {
-    .row-h, .row-styles, .row-float { 
+    .row-h, .row-styles, .row-align, .row-float { 
         display: grid !important; 
         gap: 8px !important; 
-        margin-bottom: 10px !important;
+        margin-bottom: 12px !important;
         
         .tool-btn {
             margin-bottom: 0 !important; 
-            height: 35px !important;
-            width: 100% !important;
+            height: 38px !important;
             background: var(--sidebar-input) !important;
-            font-size: 10px !important;
-            @include flex-center; 
+            @include flex-center;
+            
+            &:hover { background: #222 !important; }
         }
     }
-    .row-h { grid-template-columns: repeat(4, 1fr) !important; } 
-    .row-styles { grid-template-columns: repeat(3, 1fr) !important; }
-    .row-float { grid-template-columns: repeat(3, 1fr) !important; }
+    
+    .row-h { grid-template-columns: repeat(5, 1fr) !important; } // H1 à H5
+    .row-styles { grid-template-columns: repeat(3, 1fr) !important; } // Gras, Ital, Lien
+    .row-align { grid-template-columns: repeat(3, 1fr) !important; } // Gauche, Centre, Droite
+    .row-float { grid-template-columns: repeat(3, 1fr) !important; } // Float L, Full, Float R
 }
+
+
+
+
+/* GRILLES DANS LE CONTENU (PAPER) */
+.grid-2nd, .grid-3rd {
+    display: grid;
+    gap: 20px;
+    margin: 20px 0;
+    width: 100%;
+
+    // Sur Mobile (dans le paper quand il est réduit ou via Media Query)
+    @media (max-width: 600px) {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+.grid-2nd { grid-template-columns: repeat(2, 1fr); }
+.grid-3rd { grid-template-columns: repeat(3, 1fr); }
+
+.col-content {
+    border: 1px dashed #ddd; // Aide visuelle dans l'éditeur
+    padding: 10px;
+    min-height: 50px;
+    outline: none;
+}
+
+/* ICÔNES COCKPIT */
+.ico-col-2::before, .ico-col-2::after { content:""; position:absolute; top:0; width:8px; height:14px; border:1px solid #fff; }
+.ico-col-2::before { left:0; } .ico-col-2::after { right:0; }
+
+.ico-col-3 {
+    display: flex; gap: 2px;
+    span { flex:1; height:14px; border:1px solid #fff; }
+}
+
+/* Ligne Cockpit */
+.row-cols { grid-template-columns: repeat(2, 1fr) !important; }
+
+
 
 /* TRIGGER SIDEBAR */
 .sidebar-trigger { 

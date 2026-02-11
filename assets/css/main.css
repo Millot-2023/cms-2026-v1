@@ -171,17 +171,45 @@ html, body {
   /*color: var(--accent); */
 }
 
+.editor-content h1, .paper h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  color: #1a1a1a;
+}
+.editor-content h2, .paper h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  color: #333;
+}
+.editor-content h3, .paper h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+.editor-content h4, .paper h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #444;
+}
+.editor-content h5, .paper h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
 body:has(.master-grid) {
   overflow-y: auto !important;
   height: auto !important;
-}
-
-.master-grid {
-  width: 100%;
-  position: relative;
-}
-
-body:has(.master-grid) {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -198,6 +226,8 @@ body:has(.master-grid) {
 }
 
 .master-grid {
+  width: 100%;
+  position: relative;
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
@@ -514,70 +544,112 @@ body.sidebar-hidden .canvas {
   opacity: 1;
 }
 
-/* ICÔNES DE POSITIONNEMENT (AJOUTÉ) */
-.ico-align {
+/* ICÔNES DE POSITIONNEMENT & JUSTIFICATION */
+.ico-ui {
   display: inline-block;
-  width: 20px;
+  width: 18px;
   height: 14px;
   position: relative;
-  border-top: 2px solid #666;
-  border-bottom: 2px solid #666;
-  vertical-align: middle;
 }
-.ico-align::before {
+.ico-ui::after {
   content: "";
   position: absolute;
-  width: 8px;
-  height: 8px;
+  background: #555;
+}
+
+.ico-just-left {
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+.ico-just-left::after {
+  top: 4px;
+  left: 0;
+  width: 12px;
+  height: 2px;
+}
+
+.ico-just-center {
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+.ico-just-center::after {
+  top: 4px;
+  left: 3px;
+  width: 12px;
+  height: 2px;
+}
+
+.ico-just-right {
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+.ico-just-right::after {
+  top: 4px;
+  right: 0;
+  width: 12px;
+  height: 2px;
+}
+
+.ico-float-left {
+  border-top: 2px solid #555;
+}
+.ico-float-left::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 7px;
   background: #fff;
-  top: 1px;
 }
-
-.ico-left::before {
-  left: 0;
-}
-
-.ico-right::before {
-  right: 0;
-}
-
-.ico-full::before {
-  width: 20px;
-  height: 2px;
-  background: #666;
+.ico-float-left::after {
   top: 4px;
-  left: 0;
+  right: 0;
+  width: 8px;
+  height: 2px;
 }
 
-.ico-left::after, .ico-right::after {
+.ico-float-right {
+  border-top: 2px solid #555;
+}
+.ico-float-right::before {
   content: "";
   position: absolute;
-  width: 10px;
-  height: 2px;
-  background: #666;
-  top: 4px;
-}
-
-.ico-left::after {
+  top: 0;
   right: 0;
+  width: 7px;
+  height: 7px;
+  background: #fff;
 }
-
-.ico-right::after {
+.ico-float-right::after {
+  top: 4px;
   left: 0;
+  width: 8px;
+  height: 2px;
 }
 
-/* GRILLES DU COCKPIT */
-.sidebar-scroll .row-h, .sidebar-scroll .row-styles, .sidebar-scroll .row-float {
+.ico-full {
+  border-top: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+.ico-full::after {
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #fff;
+}
+
+/* GRILLES DU COCKPIT MISE À JOUR */
+.sidebar-scroll .row-h, .sidebar-scroll .row-styles, .sidebar-scroll .row-align, .sidebar-scroll .row-float {
   display: grid !important;
   gap: 8px !important;
-  margin-bottom: 10px !important;
+  margin-bottom: 12px !important;
 }
-.sidebar-scroll .row-h .tool-btn, .sidebar-scroll .row-styles .tool-btn, .sidebar-scroll .row-float .tool-btn {
+.sidebar-scroll .row-h .tool-btn, .sidebar-scroll .row-styles .tool-btn, .sidebar-scroll .row-align .tool-btn, .sidebar-scroll .row-float .tool-btn {
   margin-bottom: 0 !important;
-  height: 35px !important;
-  width: 100% !important;
+  height: 38px !important;
   background: var(--sidebar-input) !important;
-  font-size: 10px !important;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -588,10 +660,16 @@ body.sidebar-hidden .canvas {
       -ms-flex-pack: center;
           justify-content: center;
 }
+.sidebar-scroll .row-h .tool-btn:hover, .sidebar-scroll .row-styles .tool-btn:hover, .sidebar-scroll .row-align .tool-btn:hover, .sidebar-scroll .row-float .tool-btn:hover {
+  background: #222 !important;
+}
 .sidebar-scroll .row-h {
-  grid-template-columns: repeat(4, 1fr) !important;
+  grid-template-columns: repeat(5, 1fr) !important;
 }
 .sidebar-scroll .row-styles {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+.sidebar-scroll .row-align {
   grid-template-columns: repeat(3, 1fr) !important;
 }
 .sidebar-scroll .row-float {
