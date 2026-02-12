@@ -46,6 +46,29 @@ const studio = {
         }
     },
 
+    // AJOUT : Bascule la classe lettrine
+toggleLettrine() {
+        // On récupère la sélection directe dans l'iframe
+        const sel = this.iframe.contentWindow.getSelection();
+        if (sel.rangeCount > 0) {
+            const range = sel.getRangeAt(0);
+            let target = range.commonAncestorContainer;
+
+            // Si on a cliqué sur du texte, on remonte au parent
+            if (target.nodeType === 3) target = target.parentElement;
+
+            // On cherche le paragraphe ou la colonne
+            const block = target.closest('p') || target.closest('.column');
+
+            if (block) {
+                block.classList.toggle('has-lettrine');
+                console.log("Classe appliquée sur :", block.tagName);
+            }
+        } else {
+            console.warn("Aucune sélection trouvée dans l'iframe.");
+        }
+    },
+    
     addBlock(tag) {
         const target = this.canvas.getElementById('editable-core');
         if (!target) return;

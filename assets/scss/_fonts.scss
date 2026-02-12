@@ -1,2 +1,29 @@
-// Importation de Inter avec les poids : 200 (Extra-Light), 300 (Light), 400 (Regular), 700 (Bold)
+@use "variables" as *;
+
+/* ==========================================================================
+   GESTION DES TYPOGRAPHIES ET LETTRINES (VERSION UNIVERSELLE)
+   ========================================================================== */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700&display=swap');
+
+/* LETTRINES */
+// On cible la lettrine directement sur l'élément qui a la classe .has-lettrine
+// Cela fonctionnera sur les <p> ET sur les <div class="col-item">
+.has-lettrine::first-letter {
+    float: left;
+    background-color: #ffffff; 
+    color: #000000;            
+    font-size: 3.5rem;         
+    line-height: 1;            
+    margin-right: 8px;         
+    font-weight: 900;          
+    display: block;
+    padding: 0 4px;
+}
+
+// Nettoyage général pour éviter les interférences
+.has-lettrine {
+    border: none;
+    outline: none;
+    text-decoration: none;
+}

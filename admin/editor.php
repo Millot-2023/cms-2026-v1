@@ -1,6 +1,6 @@
 <?php
 /**
- * PROJET-CMS-2026 - ÉDITEUR DESIGN SYSTEM (VERSION v3.0.4-FIX)
+ * PROJET-CMS-2026 - ÉDITEUR DESIGN SYSTEM (VERSION v3.0.6-FIDÈLE)
  * @author: Christophe Millot
  */
 
@@ -141,10 +141,13 @@ if (!empty($cover)) {
                 <button class="tool-btn" onclick="addBlock('h5', 'Titre H5')">H5</button>
             </div>
             <button class="tool-btn" onclick="addBlock('p')" style="margin-top:8px;">Paragraphe</button>
+
             <div class="row-styles" style="margin-top:8px;">
                 <button class="tool-btn" onclick="execStyle('bold')">B</button>
                 <button class="tool-btn" onclick="execStyle('italic')">I</button>
-                <div class="color-wrapper" style="position: relative; width: 100%; height: 40px; border: 1px solid var(--sidebar-border); border-radius: 4px; overflow: hidden; background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);"><input type="color" oninput="changeTextColor(this.value)" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;"></div>
+                <div class="color-wrapper" style="position: relative; width: 100%; height: 40px; border: 1px solid var(--sidebar-border); border-radius: 4px; overflow: hidden; background: conic-gradient(red, yellow, lime, aqua, blue, magenta, red);">
+                    <input type="color" oninput="changeTextColor(this.value)" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                </div>
             </div>
 
             <span class="section-label">RÉGLAGES : <span id="target-label" style="color:#fff">H1</span></span>
@@ -156,63 +159,48 @@ if (!empty($cover)) {
             <span class="section-label">DISPOSITION (FLOAT)</span>
             <div class="row-float">
                 <button class="tool-btn" onclick="addFloatBlock('left')" title="Aligner à gauche">
-                    <div class="ico-ui ico-float-left"></div>
+                    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11" width="9" height="2" fill="currentColor"/><rect x="11" y="4" width="9" height="2" fill="currentColor"/><rect y="8" width="20" height="2" fill="currentColor"/><rect y="12" width="20" height="2" fill="currentColor"/><rect width="9" height="6" fill="currentColor" stroke="black" stroke-width="1"/></svg>
                 </button>
                 <button class="tool-btn" onclick="addFloatBlock('full')" title="Pleine largeur">
-                    <div class="ico-ui ico-full"></div>
+                    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="8" width="20" height="2" fill="currentColor"/><rect y="12" width="20" height="2" fill="currentColor"/><rect width="20" height="6" fill="currentColor"/></svg>
                 </button>
                 <button class="tool-btn" onclick="addFloatBlock('right')" title="Aligner à droite">
-                    <div class="ico-ui ico-float-right"></div>
+                    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="2" fill="currentColor"/><rect width="9" y="4" height="2" fill="currentColor"/><rect y="8" width="20" height="2" fill="currentColor"/><rect y="12" width="20" height="2" fill="currentColor"/><rect x="11" width="9" height="6" fill="currentColor" stroke="black" stroke-width="1"/></svg>
+                </button>
+            </div>
+            <div class="row-float" style="margin-top:5px;">
+                <button class="tool-btn" onclick="addFloatBlock('bottom-left')" title="Aligner en bas à gauche">
+                    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="0" width="20" height="2" fill="currentColor"/><rect y="4" width="20" height="2" fill="currentColor"/><rect x="11" y="8" width="9" height="2" fill="currentColor"/><rect x="11" y="12" width="9" height="2" fill="currentColor"/><rect width="9" height="6" y="8" fill="currentColor" stroke="black" stroke-width="1"/></svg>
+                </button>
+                <button class="tool-btn" onclick="addFloatBlock('bottom-full')" title="Pleine largeur en bas">
+                    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="0" width="20" height="2" fill="currentColor"/><rect y="4" width="20" height="2" fill="currentColor"/><rect y="8" width="20" height="6" fill="currentColor"/></svg>
+                </button>
+                <button class="tool-btn" onclick="addFloatBlock('bottom-right')" title="Aligner en bas à droite">
+                    <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="9" height="2" fill="currentColor"/><rect width="9" y="4" height="2" fill="currentColor"/><rect y="8" width="20" height="2" fill="currentColor"/><rect y="12" width="20" height="2" fill="currentColor"/><rect x="11" y="8" width="9" height="6" fill="currentColor" stroke="black" stroke-width="1"/></svg>
                 </button>
             </div>
 
-            <span class="section-label">ALIGNEMENT TEXTE</span>
-            <div class="row-align">
-                <button class="tool-btn" onclick="execStyle('justifyLeft')" title="Aligner à gauche">
-                    <div class="ico-ui ico-just-left"></div>
-                </button>
-                <button class="tool-btn" onclick="execStyle('justifyCenter')" title="Centrer">
-                    <div class="ico-ui ico-just-center"></div>
-                </button>
-                <button class="tool-btn" onclick="execStyle('justifyRight')" title="Aligner à droite">
-                    <div class="ico-ui ico-just-right"></div>
-                </button>
+            <span class="section-label">JUSTIFICATION TEXTE</span>
+            <div class="row-justify" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 15px;">
+                <button class="tool-btn" onclick="setTextJustify('left')">L</button>
+                <button class="tool-btn" onclick="setTextJustify('center')">C</button>
+                <button class="tool-btn" onclick="setTextJustify('right')">R</button>
+                <button class="tool-btn" onclick="setTextJustify('full')">J</button>
             </div>
 
-<span class="section-label">COLONNES</span>
-<div class="row-cols" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 8px;">
-    <button class="tool-btn" onclick="addGridBlock(2)">2 COLONNES</button>
-    <button class="tool-btn" onclick="addGridBlock(3)">3 COLONNES</button>
-</div>
+            <span class="section-label">COLONNES</span>
+            <div class="row-cols" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 8px;">
+                <button class="tool-btn" onclick="addGridBlock(2)" style="font-size: 10px; font-weight: bold;">2 COLONNES</button>
+                <button class="tool-btn" onclick="addGridBlock(3)" style="font-size: 10px; font-weight: bold;">3 COLONNES</button>
+            </div>
 
-
-
-
-
-
-
-
-
-<div onclick="toggleLettrine()" style="width: 100%; margin-bottom: 12px; display: flex; align-items: center; justify-content: flex-start; gap: 10px; cursor: pointer; padding: 5px 0;">
-    <span id="v-icon" style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border: 1px solid #ccc; border-radius: 3px; font-weight: bold; font-size: 11px; color: transparent; transition: all 0.2s;">
-        V
-    </span> 
-    <span style="color: #bbb; font-size: 9px; letter-spacing: 0.8px; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 500; text-transform: uppercase;">
-        Lettrine
-    </span>
-</div>
-
-
-
-
-
-
-
-
-
+            <div onclick="toggleLettrine()" style="width: 100%; margin-bottom: 12px; display: flex; align-items: center; justify-content: flex-start; gap: 10px; cursor: pointer; padding: 5px 0;">
+                <span id="v-icon" style="display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border: 1px solid #ccc; border-radius: 3px; font-weight: bold; font-size: 11px; color: transparent;">V</span> 
+                <span style="color: #bbb; font-size: 9px; text-transform: uppercase;">Lettrine</span>
+            </div>
 
             <div class="gauge-row">
-                <div class="gauge-info"><span>ESPACEMENT (GUTTER)</span><span id="val-gutter">20</span>px</div>
+                <div class="gauge-info"><span>ESPACEMENT</span><span id="val-gutter">20</span>px</div>
                 <input type="range" id="slider-gutter" min="0" max="100" value="20" oninput="updateGutter(this.value)">
             </div>
 
@@ -235,278 +223,132 @@ if (!empty($cover)) {
             <button class="tool-btn" style="width: 100px;" onclick="resizePaper('768px')">TABLETTE</button>
             <button class="tool-btn" style="width: 100px;" onclick="resizePaper('375px')">MOBILE</button>
         </div>
+
         <article class="paper" id="paper">
-            <div class="block-container">
-                <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
-                <h1 id="main-title" contenteditable="true" onfocus="setTarget('h1')"><?php echo htmlspecialchars($title); ?></h1>
-            </div>
-            <div id="editor-core"><?php echo $htmlContent; ?></div>
+            <div id="editor-core"><?php echo $htmlContent; ?></div> 
         </article>
     </main>
 
     <script>
-    // =========================================================
-    // 1. VARIABLES GLOBALES & CONFIGURATION
-    // =========================================================
     var coverData = "<?php echo $cover; ?>"; 
     var currentTag = 'h1';
     var currentImageElement = null;
+    var currentTargetElement = null;
     var designSystem = <?php echo json_encode($designSystemArray); ?>;
-    var LOREM_TEXT = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.";
+    var LOREM_TEXT = "Le design system n'est pas seulement une collection de composants, c'est l'ossature de votre projet web. En utilisant des blocs structurés, vous assurez une cohérence visuelle sur tous les écrans, du mobile au desktop. Ce texte permet de tester la lisibilité, l'espacement des lignes et l'impact des lettrines sur vos paragraphes. Un bon éditeur doit permettre de manipuler ces éléments avec fluidité pour obtenir un rendu professionnel et équilibré à chaque publication.";
 
-    // =========================================================
-    // 2. MOTEUR DE RENDU ET UI
-    // =========================================================
     function renderStyles() {
         var dynStyle = document.getElementById('dynamic-styles');
         if(!dynStyle) return;
-        var css = ".paper { display: flow-root; padding-top: 40px !important; }\n"; 
+        var css = ".paper { padding-top: 40px; }\n"; 
+
+        // Règle Lettrine Rétablie
+        css += ".has-lettrine::first-letter { float: left; font-size: 3.5rem; line-height: 1; margin-right: 12px; font-weight: 900; display: block; padding: 4px; font-family: serif; }\n";
+
         for (var tag in designSystem) {
-            var isHeading = tag.startsWith('h');
-            var marginBottom = isHeading ? '0.5em' : '1.5em'; 
-            var marginTop = isHeading ? '1.2em' : '0em';
-            css += ".paper " + tag + ", #main-title { font-size: " + designSystem[tag].fontSize + "; line-height: 1.1 !important; margin-top: " + (tag === 'h1' ? '0' : marginTop) + " !important; margin-bottom: " + marginBottom + " !important; outline: none; display: block; }\n";
+            css += ".paper " + tag + " { font-size: " + designSystem[tag].fontSize + "; line-height: 1.1; margin-bottom: 1.5em; }\n";
         }
         dynStyle.innerHTML = css;
     }
 
-    function resizePaper(width) {
-        var paper = document.getElementById('paper');
-        if(paper) {
-            paper.style.width = width;
-            paper.style.maxWidth = (width === '100%') ? "850px" : width;
+    function setTarget(tag, el) {
+        currentTag = tag;
+        currentImageElement = (tag === 'grid' || tag === 'img') ? el : null;
+        // Correction ici : Accepte les col-item directement pour la lettrine
+        currentTargetElement = (el && (el.getAttribute('contenteditable') === 'true' || el.classList.contains('col-item'))) ? el : (el.querySelector ? el.querySelector('p') : null);
+        
+        var label = document.getElementById('target-label');
+        if(label) label.innerText = tag.toUpperCase();
+        updateLettrineIcon(currentTargetElement);
+    }
+
+    function toggleLettrine() {
+        if (currentTargetElement) {
+            currentTargetElement.classList.toggle('has-lettrine');
+            updateLettrineIcon(currentTargetElement);
         }
     }
 
-    function toggleSidebar() { document.body.classList.toggle('sidebar-hidden');}
-    function toggleTheme() { document.body.classList.toggle('light-mode'); }
-
-    // =========================================================
-    // 3. GESTION DES CIBLES ET STYLES DYNAMIQUES
-    // =========================================================
-function setTarget(tag, imgEl) {
-    currentTag = tag;
-    currentImageElement = imgEl || null;
-    var label = document.getElementById('target-label');
-    if(label) label.innerText = tag.toUpperCase();
-
-    if(designSystem[tag]) {
-        var val = parseInt(designSystem[tag].fontSize);
-        var slider = document.getElementById('slider-size');
-        var display = document.getElementById('val-size');
-        if(slider) slider.value = val;
-        if(display) display.innerText = val;
+    function updateLettrineIcon(target) {
+        let icon = document.getElementById('v-icon');
+        if (!icon) return;
+        let active = target && target.classList.contains('has-lettrine');
+        icon.style.backgroundColor = active ? "#28a745" : "transparent";
+        icon.style.borderColor = active ? "#28a745" : "#ccc";
+        icon.style.color = active ? "#fff" : "transparent";
     }
 
-    // --- AJOUT POUR LA SYNCHRO DE LA LETTRINE ---
-    // On définit quelle est la cible textuelle pour vérifier la classe CSS
-    let targetForLettrine = imgEl ? (imgEl.querySelector('p') || imgEl.querySelector('.col-item')) : document.activeElement;
-    
-    // On appelle la fonction de mise à jour visuelle du "V"
-    updateLettrineIcon(targetForLettrine);
-    // --------------------------------------------
-}
-
-
-
-
-
-
-    function updateStyle(prop, val, displayId) {
-        if(designSystem[currentTag]) {
-            designSystem[currentTag][prop] = val; 
-            var display = document.getElementById(displayId);
-            if(display) display.innerText = val.replace('px', ''); 
-            renderStyles();
-        }
-    }
-
-    function updateImageWidth(val) {
-        if(currentImageElement) {
-            currentImageElement.style.width = val + '%';
-            var display = document.getElementById('val-img-width');
-            if(display) display.innerText = val;
-        }
-    }
-
-    // =========================================================
-    // 4. INSERTION DE BLOCS (TEXTE, FLOAT, IMAGE)
-    // =========================================================
     function addBlock(tag, txt) {
         txt = txt || LOREM_TEXT;
         var container = document.createElement('div');
         container.className = 'block-container';
-        container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><' + tag + ' contenteditable="true" onfocus="setTarget(\'' + tag + '\')">' + txt + '</' + tag + '>';
-        var core = document.getElementById('editor-core');
-        if(core) core.appendChild(container);
+        container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><' + tag + ' contenteditable="true" onfocus="setTarget(\'' + tag + '\', this)">' + txt + '</' + tag + '>';
+        document.getElementById('editor-core').appendChild(container);
     }
 
-    function addFloatBlock(type) {
-        var container = document.createElement('div');
-        container.className = 'block-container';
-        var width = (type === 'full') ? "100%" : "40%";
-        var style = (type === 'left') ? "float:left; margin:0 20px 10px 0; width:" + width + ";" : (type === 'right') ? "float:right; margin:0 0 10px 20px; width:" + width + ";" : "width:" + width + "; margin-bottom:20px; clear:both;";
-        container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="image-placeholder" onclick="setTarget(\'img\', this); event.stopPropagation();" ondblclick="triggerUpload(this)" style="' + style + ' background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">IMAGE <input type="file" style="display:none;" onchange="handleImageSelect(this)"></div><p contenteditable="true" onfocus="setTarget(\'p\')">' + LOREM_TEXT + '</p>';
-        var core = document.getElementById('editor-core');
-        if(core) core.appendChild(container);
-    }
-
-    function triggerUpload(el) { 
-        var inp = el.querySelector('input');
-        if(inp) inp.click(); 
-    }
-
-    function handleImageSelect(input) {
-        var file = input.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var placeholder = input.parentElement;
-                placeholder.innerHTML = '<img src="' + e.target.result + '" style="width:100%; height:100%; object-fit:cover;"><input type="file" style="display:none;" onchange="handleImageSelect(this)">';
-                var img = placeholder.querySelector('img');
-                img.onclick = function(ev) { ev.stopPropagation(); setTarget('img', placeholder); };
-                img.ondblclick = function(ev) { ev.stopPropagation(); triggerUpload(placeholder); };
-                setTarget('img', placeholder);
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function handleCoverChange(input) {
-        var file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                coverData = e.target.result;
-                document.getElementById('preview-container').innerHTML = `<img src="${coverData}">`;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-
-    // =========================================================
-    // 5. FONCTIONS DE SAUVEGARDE ET EXPORT
-    // =========================================================
-    function publishProject() {
-        try {
-            var elSlug = document.getElementById('inp-slug');
-            var elTitle = document.getElementById('main-title');
-            var elSummary = document.getElementById('inp-summary');
-            var elCore = document.getElementById('editor-core');
-
-            var formData = new FormData();
-            formData.append('slug', elSlug ? elSlug.value : "");
-            formData.append('title', elTitle ? elTitle.innerText : "Sans titre");
-            formData.append('summary', elSummary ? elSummary.value : "");
-            formData.append('htmlContent', elCore ? elCore.innerHTML : "");
-            formData.append('coverImage', coverData);
-            formData.append('designSystem', JSON.stringify(designSystem));
-
-            fetch('save.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.status === "success") {
-                    alert(data.message);
-                } else {
-                    alert("Erreur : " + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("ERREUR RÉSEAU");
-            });
-        } catch (e) {
-            console.error(e);
-        }
-    }
-
-    function exportForGmail() {
-        var elTitle = document.getElementById('main-title');
-        var elCore = document.getElementById('editor-core');
-        if(!elCore) return;
-        var titleText = elTitle ? elTitle.innerText : "Projet";
-        var temp = document.createElement('div');
-        temp.innerHTML = elCore.innerHTML;
-        temp.querySelectorAll('.delete-block, input').forEach(function(x) { x.remove(); });
-        var emailTemplate = '<div style="padding:40px; font-family:Arial; max-width:800px; margin:auto;"><h1>' + titleText + '</h1>' + temp.innerHTML + '</div>';
-        var blob = new Blob([emailTemplate], { type: 'text/html' });
-        var data = [new ClipboardItem({ 'text/html': blob })];
-        navigator.clipboard.write(data).then(function() { alert("COPIÉ POUR GMAIL !"); });
-    }
-
-    function execStyle(cmd) { document.execCommand(cmd, false, null); }
-    function changeTextColor(color) { document.execCommand('foreColor', false, color); }
-
-    window.onload = function() { renderStyles(); };
-
-    // =========================================================
-    // 6. GESTION DES COLONNES (GRID SYSTEM)
-    // =========================================================
     function addGridBlock(num) {
         var container = document.createElement('div');
         container.className = 'block-container';
         var colsHtml = '';
         for(var i=0; i < num; i++) {
-            colsHtml += '<div class="col-item" contenteditable="true" onfocus="setTarget(\'grid\', this.parentElement)" style="flex:1; min-height:100px; outline:none; border:0px dashed #ddd; padding:0px;">' + LOREM_TEXT + '</div>';
+            colsHtml += '<div class="col-item" contenteditable="true" onfocus="setTarget(\'grid\', this)">' + LOREM_TEXT + '</div>';
         }
-        container.innerHTML = `
-            <div class="delete-block" onclick="this.parentElement.remove()">✕</div>
-            <div class="grid-wrapper" onclick="setTarget('grid', this)" style="display:flex; gap:20px; margin-bottom:20px; width:100%; clear:both;">
-                ${colsHtml}
-            </div>`;
-        var core = document.getElementById('editor-core');
-        if(core) core.appendChild(container);
+        container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="grid-wrapper">' + colsHtml + '</div>';
+        document.getElementById('editor-core').appendChild(container);
     }
 
-    function updateGutter(val) {
-        if(currentTag === 'grid' && currentImageElement) {
-            currentImageElement.style.gap = val + 'px';
-            document.getElementById('val-gutter').innerText = val;
-        }
+    function addFloatBlock(type) {
+        var container = document.createElement('div');
+        container.className = 'block-container';
+        var style = (type === 'left') ? "float:left; margin:0 20px 10px 0; width:40%;" : (type === 'right') ? "float:right; margin:0 0 10px 20px; width:40%;" : "width:100%; margin-bottom:20px; clear:both;";
+        container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="image-placeholder" onclick="setTarget(\'img\', this)" style="' + style + ' background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">IMAGE</div><p contenteditable="true" onfocus="setTarget(\'p\', this)">' + LOREM_TEXT + '</p>';
+        document.getElementById('editor-core').appendChild(container);
     }
 
-
-    // =========================================================
-    // 7. LETTRINES
-    // =========================================================
-
-// Fonction pour mettre à jour l'aspect visuel du carré V
-function updateLettrineIcon(target) {
-    let icon = document.getElementById('v-icon');
-    if (!icon) return;
-
-    if (target && target.classList.contains('has-lettrine')) {
-        icon.style.backgroundColor = "#28a745"; 
-        icon.style.borderColor = "#28a745";
-        icon.style.color = "#fff";
-    } else {
-        icon.style.backgroundColor = "transparent";
-        icon.style.borderColor = "#fff";
-        icon.style.color = "transparent";
+    function resizePaper(width) {
+        var paper = document.getElementById('paper');
+        paper.style.width = width;
+        paper.style.maxWidth = (width === '100%') ? "850px" : width;
     }
-}
 
-// Ta fonction de clic sur le bouton
-function toggleLettrine() {
-    let target;
-    if (currentImageElement) {
-        target = currentImageElement.querySelector('p') || currentImageElement.querySelector('.col-item');
-    } else {
-        let activeEl = document.activeElement;
-        if (activeEl && activeEl.getAttribute('contenteditable') === 'true') {
-            target = activeEl;
+    function updateStyle(prop, val, displayId) {
+        if(designSystem[currentTag]) {
+            designSystem[currentTag][prop] = val;
+            document.getElementById(displayId).innerText = val.replace('px','');
+            renderStyles();
         }
     }
 
-    if (target) {
-        target.classList.toggle('has-lettrine');
-        updateLettrineIcon(target); // On met à jour l'icône après le clic
-    }
-}
+    function updateImageWidth(val) { if(currentImageElement) { currentImageElement.style.width = val + '%'; document.getElementById('val-img-width').innerText = val; } }
+    function updateGutter(val) { if(currentTag === 'grid' && currentImageElement) { currentImageElement.style.gap = val + 'px'; document.getElementById('val-gutter').innerText = val; } }
+    function setTextJustify(type) { if (currentTargetElement) { currentTargetElement.style.textAlign = (type === 'full') ? 'justify' : type; } }
+    function execStyle(cmd) { document.execCommand(cmd, false, null); }
+    function changeTextColor(color) { document.execCommand('foreColor', false, color); }
+    function toggleSidebar() { document.body.classList.toggle('sidebar-hidden');}
+    function toggleTheme() { document.body.classList.toggle('light-mode'); }
 
+    function handleCoverChange(input) {
+        var file = input.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                coverData = e.target.result;
+                document.getElementById('preview-container').innerHTML = '<img src="' + coverData + '">';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function publishProject() {
+        var formData = new FormData();
+        formData.append('slug', document.getElementById('inp-slug').value);
+        formData.append('htmlContent', document.getElementById('editor-core').innerHTML);
+        formData.append('designSystem', JSON.stringify(designSystem));
+        fetch('save.php', { method: 'POST', body: formData })
+        .then(r => r.json()).then(d => alert(d.message));
+    }
+
+    window.onload = renderStyles;
     </script>
 </body>
 </html>

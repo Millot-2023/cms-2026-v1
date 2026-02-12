@@ -3,6 +3,10 @@
    MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
    ========================================================================== */
 /* ==========================================================================
+   GESTION DES TYPOGRAPHIES ET LETTRINES (VERSION UNIVERSELLE)
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700&display=swap");
+/* ==========================================================================
    VARIABLES GLOBALES - PROJET CMS 2026
    ========================================================================== */
 /* ==========================================================================
@@ -51,6 +55,28 @@ button, input, textarea {
 /* Verrouillage du scroll lors de l'ouverture d'Evolution (Optionnel) */
 body.evolution-open {
   overflow: hidden;
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* LETTRINES */
+.has-lettrine::first-letter {
+  float: left;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-right: 8px;
+  font-weight: 900;
+  display: block;
+  padding: 0 4px;
+}
+
+.has-lettrine {
+  border: none;
+  outline: none;
+  text-decoration: none;
 }
 
 /* ==========================================================================
@@ -369,6 +395,11 @@ body.sidebar-hidden .sidebar {
   width: 100%;
   margin-bottom: 5px;
 }
+.tool-btn svg rect {
+  fill: currentColor !important;
+  -webkit-transition: fill 0.2s;
+  transition: fill 0.2s;
+}
 .tool-btn:hover {
   border-color: #555;
   color: #fff;
@@ -544,50 +575,47 @@ body.sidebar-hidden .canvas {
   opacity: 1;
 }
 
-/* ICÔNES DE POSITIONNEMENT & JUSTIFICATION */
-.ico-ui {
+/* editor_ui.scss - ALIGNÉ SUR LE MODÈLE DE RÉFÉRENCE */
+.ico-txt-align {
   display: inline-block;
-  width: 18px;
-  height: 14px;
+  width: 16px;
+  height: 12px;
   position: relative;
+  vertical-align: middle;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-top: 2px solid #fff;
 }
-.ico-ui::after {
+.ico-txt-align::after {
   content: "";
   position: absolute;
-  background: #555;
-}
-
-.ico-just-left {
-  border-top: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-}
-.ico-just-left::after {
-  top: 4px;
+  bottom: 0;
   left: 0;
-  width: 12px;
+  width: 100%;
   height: 2px;
+  background: #fff;
+}
+.ico-txt-align::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  height: 2px;
+  background: #fff;
 }
 
-.ico-just-center {
-  border-top: 2px solid #fff;
-  border-bottom: 2px solid #fff;
+.ico-txt-left::before {
+  left: 0;
+  width: 10px;
 }
-.ico-just-center::after {
-  top: 4px;
+
+.ico-txt-center::before {
   left: 3px;
-  width: 12px;
-  height: 2px;
+  width: 10px;
 }
 
-.ico-just-right {
-  border-top: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-}
-.ico-just-right::after {
-  top: 4px;
+.ico-txt-right::before {
   right: 0;
-  width: 12px;
-  height: 2px;
+  width: 10px;
 }
 
 /* ICÔNES DE POSITIONNEMENT (REVISITÉES SELON SCHÉMA) */
@@ -723,27 +751,6 @@ body.sidebar-hidden .canvas {
 }
 
 /*ICONES DE COLEONNES*/
-/*LETRINES*/
-/* Le style de ta lettrine tel que sur ton image */
-/* LETTRINES */
-.has-lettrine {
-  border: none !important;
-  outline: none !important;
-  text-decoration: none !important;
-}
-.has-lettrine::first-letter {
-  float: left;
-  background-color: #ffffff;
-  color: #000000;
-  font-size: 3.5rem;
-  line-height: 1;
-  padding: 4px 10px;
-  margin-right: 12px;
-  margin-top: 4px;
-  font-weight: 900;
-  display: block;
-}
-
 /* TRIGGER SIDEBAR */
 .sidebar-trigger {
   position: fixed;
@@ -772,6 +779,114 @@ body.sidebar-hidden .canvas {
 }
 body.sidebar-hidden .sidebar-trigger {
   left: 15px !important;
+}
+
+/* 1. Base du papier */
+.paper {
+  width: 95%;
+  max-width: 850px;
+  container-type: inline-size;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* 2. Gestion des colonnes */
+.grid-wrapper {
+  display: block;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  /* --- MODE COLONNES (Article final ET Éditeur large) --- */
+  /* On active le flex si l'écran est large OU si le conteneur est large */
+  /* --- LA SEULE RÈGLE DE FORCE (Éditeur bouton Mobile) --- */
+  /* Cette règle "écrase" le flex ci-dessus grâce à la précision du sélecteur */
+}
+.grid-wrapper .col-item {
+  width: 100%;
+  margin-bottom: 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+@media (min-width: 768px) {
+  .grid-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    gap: 20px;
+  }
+  .grid-wrapper .col-item {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    width: 0;
+    margin-bottom: 0;
+  }
+}
+.paper.mobile-view .grid-wrapper {
+  display: block;
+}
+.paper.mobile-view .grid-wrapper .col-item {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* 1. Base du papier */
+.paper {
+  width: 95%;
+  max-width: 850px;
+  container-type: inline-size;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* 2. Gestion des colonnes */
+.grid-wrapper {
+  display: block;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  /* --- MODE COLONNES (Article final ET Éditeur large) --- */
+  /* On active le flex si l'écran est large OU si le conteneur est large */
+  /* --- LA SEULE RÈGLE DE FORCE (Éditeur bouton Mobile) --- */
+  /* Cette règle "écrase" le flex ci-dessus grâce à la précision du sélecteur */
+}
+.grid-wrapper .col-item {
+  width: 100%;
+  margin-bottom: 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+@media (min-width: 768px) {
+  .grid-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    gap: 20px;
+  }
+  .grid-wrapper .col-item {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    width: 0;
+    margin-bottom: 0;
+  }
+}
+.paper.mobile-view .grid-wrapper {
+  display: block;
+}
+.paper.mobile-view .grid-wrapper .col-item {
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 /* ==========================================================================
