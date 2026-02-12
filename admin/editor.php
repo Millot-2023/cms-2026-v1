@@ -297,13 +297,102 @@ if (!empty($cover)) {
         document.getElementById('editor-core').appendChild(container);
     }
 
-    function addFloatBlock(type) {
-        var container = document.createElement('div');
-        container.className = 'block-container';
-        var style = (type === 'left') ? "float:left; margin:0 20px 10px 0; width:40%;" : (type === 'right') ? "float:right; margin:0 0 10px 20px; width:40%;" : "width:100%; margin-bottom:20px; clear:both;";
-        container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="image-placeholder" onclick="setTarget(\'img\', this)" style="' + style + ' background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">IMAGE</div><p contenteditable="true" onfocus="setTarget(\'p\', this)">' + LOREM_TEXT + '</p>';
-        document.getElementById('editor-core').appendChild(container);
-    }
+
+
+
+/*
+
+function addFloatBlock(type) {
+    var container = document.createElement('div');
+    container.className = 'block-container';
+    var style = (type === 'left') ? "float:left; margin:0 20px 10px 0; width:40%;" : (type === 'right') ? "float:right; margin:0 0 10px 20px; width:40%;" : "width:100%; margin-bottom:20px; clear:both;";
+    
+    container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="image-placeholder" onclick="setTarget(\'img\', this); document.getElementById(\'inp-cover\').click();" style="' + style + ' background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">IMAGE</div><p contenteditable="true" onfocus="setTarget(\'p\', this)">' + LOREM_TEXT + '</p>';
+    
+    document.getElementById('editor-core').appendChild(container);
+}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function addFloatBlock(type) {
+    var container = document.createElement('div');
+    container.className = 'block-container';
+    var style = (type === 'left') ? "float:left; margin:0 20px 10px 0; width:40%;" : (type === 'right') ? "float:right; margin:0 0 10px 20px; width:40%;" : "width:100%; margin-bottom:20px; clear:both;";
+    
+    container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div>' +
+        '<div class="image-placeholder" ' +
+        'onclick="setTarget(\'img\', this)" ' +
+        'ondblclick="document.getElementById(\'inp-cover\').click();" ' + 
+        'style="' + style + ' background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">' +
+        'IMAGE</div>' +
+        '<p contenteditable="true" onfocus="setTarget(\'p\', this)">' + LOREM_TEXT + '</p>';
+    
+    document.getElementById('editor-core').appendChild(container);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     function resizePaper(width) {
         var paper = document.getElementById('paper');
@@ -327,6 +416,10 @@ if (!empty($cover)) {
     function toggleSidebar() { document.body.classList.toggle('sidebar-hidden');}
     function toggleTheme() { document.body.classList.toggle('light-mode'); }
 
+
+
+
+/*
     function handleCoverChange(input) {
         var file = input.files[0];
         if (file) {
@@ -337,7 +430,36 @@ if (!empty($cover)) {
             };
             reader.readAsDataURL(file);
         }
+    }*/
+
+function handleCoverChange(input) {
+    var file = input.files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var imageData = e.target.result;
+            
+            // Si on vient d'un double-clic dans un bloc Float
+            if (currentTag === 'img' && currentImageElement) {
+                currentImageElement.innerHTML = '<img src="' + imageData + '" style="width:100%; height:100%; object-fit:cover;">';
+                // On remet le tag à null pour ne pas polluer le prochain clic sidebar
+                currentTag = null; 
+            } 
+            else {
+                // Sinon, c'est l'appel direct de la Sidebar pour la Card
+                coverData = imageData;
+                var preview = document.getElementById('preview-container');
+                if(preview) {
+                    preview.innerHTML = '<img src="' + imageData + '">';
+                }
+            }
+        };
+        reader.readAsDataURL(file);
     }
+}
+
+
+
 
     function publishProject() {
         var formData = new FormData();
@@ -348,7 +470,20 @@ if (!empty($cover)) {
         .then(r => r.json()).then(d => alert(d.message));
     }
 
+
+
+
+
+
+
+
     window.onload = renderStyles;
+
+
+
+
+
+
     </script>
 </body>
 </html>
