@@ -177,6 +177,9 @@ if (!empty($cover)) {
     <button class="tool-btn" onclick="execStyle('justifyRight')" title="Aligner à droite">
         <div class="ico-txt-align ico-txt-right"></div>
     </button>
+    <button class="tool-btn" onclick="execStyle('justifyFull')" title="Justifier">
+    <div class="ico-txt-align ico-txt-full"></div>
+</button>
 </div>
 
             <span class="section-label">COLONNES</span>

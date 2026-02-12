@@ -344,9 +344,7 @@ input[type="range"] { width: 100%; accent-color: #fff; cursor: pointer; }
 .ico-txt-left::before   { left: 0; width: 10px; }
 .ico-txt-center::before { left: 3px; width: 10px; }
 .ico-txt-right::before  { right: 0; width: 10px; }
-
-
-
+.ico-txt-full::before   { left: 0; width: 100%; }
 
 
 
@@ -483,7 +481,7 @@ input[type="range"] { width: 100%; accent-color: #fff; cursor: pointer; }
     // On définit le nombre de colonnes pour chaque type de rangée
     .row-h      { grid-template-columns: repeat(5, 1fr) !important; } // H1 à H5
     .row-styles { grid-template-columns: repeat(3, 1fr) !important; } // B, I, Color
-    .row-align  { grid-template-columns: repeat(3, 1fr) !important; } // Gauche, Centre, Droite
+    .row-align  { grid-template-columns: repeat(4, 1fr) !important; } // Gauche, Centre, Droite
     .row-float  { grid-template-columns: repeat(3, 1fr) !important; } // Float L, Full, Float R
     .row-cols   { grid-template-columns: repeat(2, 1fr) !important; } // 2 Cols, 3 Cols
 }

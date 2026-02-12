@@ -609,6 +609,11 @@ body.sidebar-hidden .canvas {
   width: 10px;
 }
 
+.ico-txt-full::before {
+  left: 0;
+  width: 100%;
+}
+
 /* ICÔNES DE POSITIONNEMENT (REVISITÉES SELON SCHÉMA) */
 .ico-ui {
   display: inline-block;
@@ -716,7 +721,7 @@ body.sidebar-hidden .canvas {
   grid-template-columns: repeat(3, 1fr) !important;
 }
 .sidebar-scroll .row-align {
-  grid-template-columns: repeat(3, 1fr) !important;
+  grid-template-columns: repeat(4, 1fr) !important;
 }
 .sidebar-scroll .row-float {
   grid-template-columns: repeat(3, 1fr) !important;

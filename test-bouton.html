@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+
+.toolbar {
+  display: flex;
+  gap: 8px;
+  background: #2b2b2b;
+  padding: 10px;
+}
+
+.btn {
+  background: #444;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #555;
+}
+
+/* Base icône */
+.icon {
+  width: 16px;
+  height: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.icon span {
+  height: 2px;
+  background: white;
+}
+
+/* ------------------ */
+/* ALIGN LEFT */
+.left span:nth-child(1),
+.left span:nth-child(3) {
+  width: 100%;
+}
+
+.left span:nth-child(2) {
+  width: 70%;
+}
+
+/* ------------------ */
+/* ALIGN CENTER */
+.center {
+  align-items: center;
+}
+
+.center span:nth-child(1),
+.center span:nth-child(3) {
+  width: 100%;
+}
+
+.center span:nth-child(2) {
+  width: 70%;
+}
+
+/* ------------------ */
+/* ALIGN RIGHT */
+.right {
+  align-items: flex-end;
+}
+
+.right span:nth-child(1),
+.right span:nth-child(3) {
+  width: 100%;
+}
+
+.right span:nth-child(2) {
+  width: 70%;
+}
+
+/* ------------------ */
+/* JUSTIFY */
+.justify span {
+  width: 100%;
+}
+
+
+
+
+    </style>
+</head>
+<body>
+
+
+
+
+
+<div class="toolbar">
+  <button class="btn">
+    <span class="icon left">
+      <span></span><span></span><span></span>
+    </span>
+  </button>
+
+  <button class="btn">
+    <span class="icon center">
+      <span></span><span></span><span></span>
+    </span>
+  </button>
+
+  <button class="btn">
+    <span class="icon right">
+      <span></span><span></span><span></span>
+    </span>
+  </button>
+
+  <button class="btn">
+    <span class="icon justify">
+      <span></span><span></span><span></span>
+    </span>
+  </button>
+</div>
+
+
+
+
+
+
+</body>
+</html>
