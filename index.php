@@ -70,10 +70,18 @@ require_once 'includes/hero.php';
                             $summary  = $data_loaded['summary'] ?? "";
                         }
 
-                        $image_src = ASSETS_URL . "img/image-template.png";
-                        if (!empty($cover)) {
-                            $image_src = (strpos($cover, 'data:image') === 0) ? $cover : BASE_URL . $content_path . $folder . '/' . $cover;
-                        }
+// On définit l'image par défaut
+$image_src = ASSETS_URL . "img/image-template.png";
+
+if (!empty($cover)) {
+    if (strpos($cover, 'data:image') === 0) {
+        $image_src = $cover;
+    } else {
+        // ON FORCE LE CHEMIN VERS LA RACINE DES ASSETS
+        // On utilise basename pour être sûr de n'avoir que le nom du fichier
+        $image_src = ASSETS_URL . "img/" . basename($cover);
+    }
+}
                         // L'ACCOLADE ÉTAIT ICI ET CASSAIT TOUT - ELLE A ÉTÉ SUPPRIMÉE
                         ?>
                         <article class="grid-block" style="position: relative;">

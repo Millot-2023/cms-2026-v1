@@ -90,11 +90,28 @@ if (file_exists($data_path)) {
     }
 }
 
+
+
+
 $cover_path = "";
 if (!empty($cover)) {
-    $sub_folder = $is_in_trash ? 'content/_trash/' : 'content/';
-    $cover_path = (strpos($cover, 'data:image') === 0) ? $cover : BASE_URL . $sub_folder . $slug . '/' . $cover;
+    if (strpos($cover, 'data:image') === 0) {
+        $cover_path = $cover;
+    } else {
+        // On enlève les "../" et "content/" si jamais ils sont restés dans la base
+        $clean_cover = str_replace(['../', 'content/'], '', $cover);
+        // On force le chemin depuis la racine localhost
+        $cover_path = '/cms-2026-v5/' . ltrim($clean_cover, '/');
+    }
 }
+
+
+
+
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -117,13 +134,22 @@ if (!empty($cover)) {
 
         <div class="sidebar-scroll">
             <span class="section-label">APERÇU CARTE</span>
-            <div class="preview-card-container" id="preview-container">
-                <?php if(!empty($cover_path)): ?>
-                    <img src="<?php echo $cover_path; ?>" id="img-cover-preview" class="<?php echo $is_in_trash ? 'img-trash' : ''; ?>">
-                <?php else: ?>
-                    <span style="font-size:8px; color:#444;">AUCUNE IMAGE</span>
-                <?php endif; ?>
-            </div>
+
+
+<div class="preview-card-container" id="preview-container">
+    <img src="<?php echo $cover_path; ?>" 
+         id="img-cover-preview" 
+         class="<?php echo $is_in_trash ? 'img-trash' : ''; ?>"
+         style="<?php echo empty($cover_path) ? 'display:none;' : 'display:block;'; ?> width:100%; height:100%; object-fit:cover;">
+    
+    <?php if(empty($cover_path)): ?>
+        <span id="no-img-label" style="font-size:8px; color:#444;">AUCUNE IMAGE</span>
+    <?php endif; ?>
+</div>
+
+
+
+
             <button class="tool-btn" style="height:30px; font-size:9px;" onclick="document.getElementById('inp-cover').click()">Changer l'image</button>
             <input type="file" id="inp-cover" style="display:none;" onchange="handleCoverChange(this)">
 
@@ -300,50 +326,23 @@ if (!empty($cover)) {
 
 
 
-/*
-
-function addFloatBlock(type) {
-    var container = document.createElement('div');
-    container.className = 'block-container';
-    var style = (type === 'left') ? "float:left; margin:0 20px 10px 0; width:40%;" : (type === 'right') ? "float:right; margin:0 0 10px 20px; width:40%;" : "width:100%; margin-bottom:20px; clear:both;";
-    
-    container.innerHTML = '<div class="delete-block" onclick="this.parentElement.remove()">✕</div><div class="image-placeholder" onclick="setTarget(\'img\', this); document.getElementById(\'inp-cover\').click();" style="' + style + ' background:#eee; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; cursor:pointer; overflow:hidden; position:relative;">IMAGE</div><p contenteditable="true" onfocus="setTarget(\'p\', this)">' + LOREM_TEXT + '</p>';
-    
-    document.getElementById('editor-core').appendChild(container);
-}*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function updateImage(imgElement) {
     const newSrc = prompt("Entrez l'URL de la nouvelle image :", imgElement.src);
     
     if (newSrc) {
-        console.log("Nouvelle URL reçue :", newSrc); // TEST 1
-        
-        imgElement.src = newSrc;
+        // NETTOYAGE : Si l'URL contient assets/img, on force le chemin absolu
+        let cleanSrc = newSrc;
+        if (newSrc.includes('assets/img/')) {
+            const fileName = newSrc.split('/').pop().split('?')[0];
+            cleanSrc = '/cms-2026-v5/assets/img/' + fileName;
+        }
+
+        imgElement.src = cleanSrc + '?v=' + new Date().getTime();
         
         if (typeof updateSidebarCardImage === "function") {
             updateSidebarCardImage(imgElement);
-            console.log("Sidebar mise à jour"); // TEST 2
         }
 
-        console.log("Tentative de sauvegarde..."); // TEST 3
         saveContent(); 
     }
 }
@@ -351,21 +350,32 @@ function updateImage(imgElement) {
 
 
 
-function updateSidebarCardImage(imgElement) {
-    // 1. On trouve le bloc parent dans l'éditeur
-    const container = imgElement.closest('.block-container');
-    
-    // 2. On calcule sa position (index) parmi tous les blocs
-    const allBlocks = Array.from(document.querySelectorAll('#paper .block-container'));
-    const index = allBlocks.indexOf(container);
-    
-    // 3. On cible l'image dans la sidebar avec ton nouveau HTML (.card-image img)
-    const sidebarImages = document.querySelectorAll('.sidebar .card-image img');
-    const targetImg = sidebarImages[index];
 
-    if (targetImg) {
-        // 4. On synchronise la source
-        targetImg.src = imgElement.src;
+
+
+
+
+
+
+
+
+
+
+
+// 1. MISE À JOUR DE L'IMAGE SIDEBAR
+function updateSidebarCardImage(imgElement) {
+    const targetImg = document.getElementById('img-cover-preview');
+    const label = document.getElementById('no-img-label');
+
+    if (targetImg && imgElement) {
+        const fileName = imgElement.src.split('/').pop().split('?')[0];
+        targetImg.src = '/cms-2026-v5/assets/img/' + fileName + '?v=' + new Date().getTime();
+        
+        // ON REND L'IMAGE VISIBLE
+        targetImg.style.display = 'block';
+        if(label) label.style.display = 'none';
+        
+        console.log("Card activée et mise à jour !");
     }
 }
 
@@ -375,50 +385,48 @@ function updateSidebarCardImage(imgElement) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+// 2. SAUVEGARDE (Appelée par saveContent)
 function saveContent() {
     const blocks = [];
-    
     document.querySelectorAll('#paper .block-container').forEach(container => {
-        // On cherche l'image soit directement, soit dans le placeholder
         const img = container.querySelector('img');
-        const textElement = container.querySelector('p');
+        const textElement = container.querySelector('p, h1, h2, h3, h4, h5, .col-item');
+
+        let imgSrc = img ? img.getAttribute('src') : "";
+        if (imgSrc) {
+            // On nettoie pour ne garder que "assets/img/nom.jpg" dans le data.php
+            imgSrc = imgSrc.replace('/cms-2026-v5/', '').replace('../', '').split('?')[0];
+        }
 
         blocks.push({
-            // On sauve le src de l'image trouvée, sinon le template par défaut
-            image: img ? img.getAttribute('src') : "assets/img/image-template.png",
+            image: imgSrc,
             content: textElement ? textElement.innerHTML : ""
         });
     });
 
-    console.log("Données envoyées :", blocks);
+    const formData = new FormData();
+    formData.append('slug', document.getElementById('inp-slug').value);
+    formData.append('summary', document.getElementById('inp-summary').value); // <-- RÉPARE LE RÉSUMÉ ICI
+    formData.append('blocks', JSON.stringify(blocks)); 
+    formData.append('designSystem', JSON.stringify(designSystem));
+    formData.append('cover', coverData.replace('/cms-2026-v5/', '').replace('../', '')); 
 
-    fetch('save.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(blocks)
-    })
-    .then(response => response.json())
-    .then(data => console.log("Sauvegarde réussie :", data))
-    .catch(err => console.error("Erreur :", err));
+    fetch('save.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(d => console.log("Sauvegarde OK"));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -439,37 +447,6 @@ function addFloatBlock(type) {
     
     document.getElementById('editor-core').appendChild(container);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -501,63 +478,91 @@ function addFloatBlock(type) {
 
 
 
-/*
-    function handleCoverChange(input) {
-        var file = input.files[0];
-        if (file) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                coverData = e.target.result;
-                document.getElementById('preview-container').innerHTML = '<img src="' + coverData + '">';
-            };
-            reader.readAsDataURL(file);
-        }
-    }*/
+
+
+
+
+
+
 
 function handleCoverChange(input) {
     var file = input.files[0];
-    if (file) {
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var imageData = e.target.result;
-            
-            if (currentTag === 'img' && currentImageElement) {
-                // On insère l'image dans le placeholder
-                currentImageElement.innerHTML = '<img src="' + imageData + '" style="width:100%; height:100%; object-fit:cover;">';
-                
-                // --- SYNCHRO SIDEBAR ---
-                // On passe l'élément <img> qu'on vient de créer à la synchro
-                updateSidebarCardImage(currentImageElement.querySelector('img'));
-                
-                // --- SAUVEGARDE ---
-                saveContent(); 
-                
-                currentTag = null; 
-            } 
-            else {
-                coverData = imageData;
-                var preview = document.getElementById('preview-container');
-                if(preview) {
-                    preview.innerHTML = '<img src="' + imageData + '">';
+    if (!file) return;
+
+    input.style.pointerEvents = 'none';
+    var formData = new FormData();
+    formData.append('file', file);
+
+    fetch('upload.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // 1. On crée l'URL COMPLETE (http://localhost/...)
+            // Cela empêche le navigateur de chercher dans le dossier "content"
+            var fileName = data.path.split('/').pop();
+            var baseURL = window.location.origin + '/cms-2026-v5/assets/img/';
+            var fullImageURL = baseURL + fileName + '?v=' + new Date().getTime();
+
+            // 2. Mise à jour de la CARD (Sidebar)
+            var targetImg = document.getElementById('img-cover-preview');
+            if (targetImg) {
+                targetImg.src = fullImageURL;
+                targetImg.style.display = 'block';
+                // On cache le texte "AUCUNE IMAGE" s'il est là
+                var container = document.getElementById('preview-container');
+                if (container && container.querySelector('span')) {
+                    container.querySelector('span').style.display = 'none';
                 }
             }
-        };
-        reader.readAsDataURL(file);
-    }
+
+            // 3. Mise à jour de l'ARTICLE
+            if (currentTag === 'img' && currentImageElement) {
+                currentImageElement.innerHTML = '<img src="' + fullImageURL + '" style="width:100%; height:100%; object-fit:cover;">';
+            } else {
+                // Si c'est la couverture générale
+                coverData = 'assets/img/' + fileName;
+            }
+            
+            saveContent(); 
+            console.log("Image envoyée sur : " + fullImageURL);
+
+        } else {
+            alert("Erreur : " + data.message);
+        }
+    })
+    .catch(error => console.error("Erreur :", error))
+    .finally(() => {
+        input.value = "";
+        input.style.pointerEvents = 'auto';
+    });
 }
 
 
 
 
-    function publishProject() {
-        var formData = new FormData();
-        formData.append('slug', document.getElementById('inp-slug').value);
-        formData.append('htmlContent', document.getElementById('editor-core').innerHTML);
-        formData.append('designSystem', JSON.stringify(designSystem));
-        fetch('save.php', { method: 'POST', body: formData })
-        .then(r => r.json()).then(d => alert(d.message));
-    }
 
+
+
+
+
+
+
+
+// 3. PUBLICATION (Appelée par le bouton PUBLIER)
+function publishProject() {
+    var formData = new FormData();
+    formData.append('slug', document.getElementById('inp-slug').value);
+    formData.append('summary', document.getElementById('inp-summary').value); // <-- RÉPARE LE RÉSUMÉ ICI AUSSI
+    formData.append('htmlContent', document.getElementById('editor-core').innerHTML);
+    formData.append('designSystem', JSON.stringify(designSystem));
+    
+    fetch('save.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(d => alert("Projet publié et résumé enregistré !"));
+}
 
 
 
