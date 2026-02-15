@@ -84,11 +84,33 @@ if (!empty($cover)) {
 }
                         // L'ACCOLADE ÉTAIT ICI ET CASSAIT TOUT - ELLE A ÉTÉ SUPPRIMÉE
                         ?>
-                        <article class="grid-block" style="position: relative;">
+                        <!--<article class="grid-block" style="position: relative;">
                             <a href="javascript:void(0);" 
                                onclick="confirmDelete('<?php echo $folder; ?>')" 
                                class="btn-trash-overlay" 
-                               title="Supprimer définitivement">×</a>
+                               title="Supprimer définitivement">×</a>-->
+
+
+
+<article class="grid-block" style="position: relative;">
+    <button type="button" 
+            onclick="confirmDelete('<?php echo $folder; ?>')" 
+            class="btn-trash-overlay" 
+            title="Mettre à la corbeille"
+            style="cursor: pointer; border: none; background: #000; color: #fff;">×</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                             <div class="card-image">
                                 <img src="<?php echo $image_src; ?>" alt="<?php echo htmlspecialchars($title); ?>">
@@ -128,8 +150,7 @@ if (!empty($cover)) {
 
 <script>
 function confirmDelete(slug) {
-    const confirmation = confirm("ALERTE SÉCURITÉ - Christophe :\n\nConfirmer la suppression du dossier [" + slug + "] ?");
-    if (confirmation) {
+    if (confirm("ALERTE SÉCURITÉ - Christophe :\n\nEnvoyer le dossier [" + slug + "] à la corbeille ?")) {
         window.location.href = "<?php echo BASE_URL; ?>admin/delete.php?project=" + slug;
     }
 }
