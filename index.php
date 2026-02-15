@@ -71,15 +71,15 @@ require_once 'includes/hero.php';
                         }
 
 // On définit l'image par défaut
-$image_src = ASSETS_URL . "img/image-template.png";
+$image_src = "assets/img/image-template.png";
 
 if (!empty($cover)) {
     if (strpos($cover, 'data:image') === 0) {
         $image_src = $cover;
     } else {
-        // ON FORCE LE CHEMIN VERS LA RACINE DES ASSETS
-        // On utilise basename pour être sûr de n'avoir que le nom du fichier
-        $image_src = ASSETS_URL . "img/" . basename($cover);
+        // basename() nettoie les résidus de chemins
+        // On force le passage par assets/img/
+        $image_src = "assets/img/" . basename($cover);
     }
 }
                         // L'ACCOLADE ÉTAIT ICI ET CASSAIT TOUT - ELLE A ÉTÉ SUPPRIMÉE

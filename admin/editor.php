@@ -95,8 +95,10 @@ if (!empty($cover)) {
     if (strpos($cover, 'data:image') === 0) {
         $cover_path = $cover;
     } else {
-        $clean_cover = str_replace(['../', 'content/'], '', $cover);
-        $cover_path = '/cms-2026-v5/' . ltrim($clean_cover, '/');
+        // On nettoie les vieux résidus de chemins
+        $fileName = basename($cover);
+        // Chemin relatif : on sort de /admin pour aller dans /assets/img/
+        $cover_path = "../assets/img/" . $fileName;
     }
 }
 ?>
@@ -324,57 +326,88 @@ function renderStyles() {
         document.getElementById('editor-core').appendChild(container);
     }
 
-    function updateImage(imgElement) {
-        const newSrc = prompt("Entrez l'URL de la nouvelle image :", imgElement.src);
-        if (newSrc) {
-            let cleanSrc = newSrc;
-            if (newSrc.includes('assets/img/')) {
-                const fileName = newSrc.split('/').pop().split('?')[0];
-                cleanSrc = '/cms-2026-v5/assets/img/' + fileName;
-            }
-            imgElement.src = cleanSrc + '?v=' + new Date().getTime();
-            if (typeof updateSidebarCardImage === "function") {
-                updateSidebarCardImage(imgElement);
-            }
-            saveContent(); 
+function updateImage(imgElement) {
+    const newSrc = prompt("Entrez l'URL de la nouvelle image :", imgElement.src);
+    if (newSrc) {
+        let cleanSrc = newSrc;
+        if (newSrc.includes('assets/img/')) {
+            // On extrait uniquement le nom du fichier (ex: photo.jpg)
+            const fileName = newSrc.split('/').pop().split('?')[0];
+            
+            // CORRECTION : On utilise le chemin relatif pour l'éditeur
+            cleanSrc = '../assets/img/' + fileName;
         }
-    }
-
-    function updateSidebarCardImage(imgElement) {
-        const targetImg = document.getElementById('img-cover-preview');
-        const label = document.getElementById('no-img-label');
-        if (targetImg && imgElement) {
-            const fileName = imgElement.src.split('/').pop().split('?')[0];
-            targetImg.src = '/cms-2026-v5/assets/img/' + fileName + '?v=' + new Date().getTime();
-            targetImg.style.display = 'block';
-            if(label) label.style.display = 'none';
+        
+        // Mise à jour de l'image dans le Paper
+        imgElement.src = cleanSrc + '?v=' + new Date().getTime();
+        
+        if (typeof updateSidebarCardImage === "function") {
+            updateSidebarCardImage(imgElement);
         }
+        
+        saveContent(); 
     }
+}
 
-    function saveContent() {
-        const blocks = [];
-        document.querySelectorAll('#paper .block-container').forEach(container => {
-            const img = container.querySelector('img');
-            const textElement = container.querySelector('p, h1, h2, h3, h4, h5, .col-item');
-            let imgSrc = img ? img.getAttribute('src') : "";
-            if (imgSrc) {
-                imgSrc = imgSrc.replace('/cms-2026-v5/', '').replace('../', '').split('?')[0];
-            }
-            blocks.push({
-                image: imgSrc,
-                content: textElement ? textElement.innerHTML : ""
-            });
+function updateSidebarCardImage(imgElement) {
+    const targetImg = document.getElementById('img-cover-preview');
+    const label = document.getElementById('no-img-label');
+    if (targetImg && imgElement) {
+        // On extrait proprement le nom du fichier
+        const fileName = imgElement.src.split('/').pop().split('?')[0];
+        
+        // CORRECTION : Utilisation du chemin relatif (sort de /admin)
+        targetImg.src = '../assets/img/' + fileName + '?v=' + new Date().getTime();
+        
+        targetImg.style.display = 'block';
+        if(label) label.style.display = 'none';
+    }
+}
+
+
+
+
+
+function saveContent() {
+    const blocks = [];
+    document.querySelectorAll('#paper .block-container').forEach(container => {
+        const img = container.querySelector('img');
+        const textElement = container.querySelector('p, h1, h2, h3, h4, h5, .col-item');
+        
+        let imgSrc = img ? img.getAttribute('src') : "";
+        if (imgSrc) {
+            imgSrc = imgSrc.replace(/^.*assets\/img\//, 'assets/img/').replace('../', '').split('?')[0];
+        }
+
+        // --- CORRECTION ICI ---
+        let rawHTML = textElement ? textElement.innerHTML : "";
+        // On nettoie les chemins d'images à l'intérieur du HTML pour article.php
+        let cleanHTML = rawHTML.replace(/\.\.\/assets\/img\//g, 'assets/img/');
+        // -----------------------
+
+        blocks.push({
+            image: imgSrc,
+            content: cleanHTML // On enregistre le HTML propre
         });
-        const formData = new FormData();
-        formData.append('slug', document.getElementById('inp-slug').value);
-        formData.append('summary', document.getElementById('inp-summary').value); 
-        formData.append('blocks', JSON.stringify(blocks)); 
-        formData.append('designSystem', JSON.stringify(designSystem));
-        formData.append('cover', coverData.replace('/cms-2026-v5/', '').replace('../', '')); 
-        fetch('save.php', { method: 'POST', body: formData })
-        .then(r => r.json())
-        .then(d => console.log("Sauvegarde OK"));
-    }
+    });
+    
+    const formData = new FormData();
+    formData.append('slug', document.getElementById('inp-slug').value);
+    formData.append('summary', document.getElementById('inp-summary').value); 
+    formData.append('blocks', JSON.stringify(blocks)); 
+    formData.append('designSystem', JSON.stringify(designSystem));
+    
+    formData.append('cover', coverData.replace(/^.*assets\/img\//, 'assets/img/').replace('../', '')); 
+    
+    fetch('save.php', { method: 'POST', body: formData })
+    .then(r => r.json())
+    .then(d => console.log("Sauvegarde OK"));
+}
+
+
+
+
+
 
     function addFloatBlock(type) {
         var container = document.createElement('div');
@@ -422,6 +455,8 @@ function updateGutter(val) {
     function toggleSidebar() { document.body.classList.toggle('sidebar-hidden');}
     function toggleTheme() { document.body.classList.toggle('light-mode'); }
 
+
+/*
     function handleCoverChange(input) {
         var file = input.files[0];
         if (!file) return;
@@ -456,7 +491,57 @@ function updateGutter(val) {
             input.value = "";
             input.style.pointerEvents = 'auto';
         });
-    }
+    }*/
+
+
+function handleCoverChange(input) {
+    var file = input.files[0];
+    if (!file) return;
+    input.style.pointerEvents = 'none';
+    var formData = new FormData();
+    formData.append('file', file);
+    
+    fetch('upload.php', { method: 'POST', body: formData })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            var fileName = data.path.split('/').pop();
+            var fullImageURL = '../assets/img/' + fileName + '?v=' + new Date().getTime();
+            
+            // 1. SI UN BLOC IMAGE EST SÉLECTIONNÉ DANS LE PAPER
+            if (currentTag === 'img' && currentImageElement) {
+                currentImageElement.innerHTML = '<img src="' + fullImageURL + '" style="width:100%; height:100%; object-fit:cover;">';
+                // On s'arrête là pour le Paper, on ne touche pas au Viewer
+            } 
+            // 2. SINON, C'EST QUE L'ON PILOTE LA CARD VIA LE VIEWER
+            else {
+                var targetImg = document.getElementById('img-cover-preview');
+                if (targetImg) {
+                    targetImg.src = fullImageURL;
+                    targetImg.style.display = 'block';
+                    var container = document.getElementById('preview-container');
+                    if (container && container.querySelector('span')) {
+                        container.querySelector('span').style.display = 'none';
+                    }
+                }
+                // On ne met à jour coverData QUE si c'est la Card
+                coverData = 'assets/img/' + fileName;
+            }
+
+            saveContent(); 
+        } else { alert("Erreur : " + data.message); }
+    })
+    .finally(() => {
+        input.value = "";
+        input.style.pointerEvents = 'auto';
+    });
+}
+
+
+
+
+
+
 
     function publishProject() {
         var formData = new FormData();

@@ -35,6 +35,9 @@ require_once 'includes/hero.php';
 
 // Sécurité : Nettoyage des attributs d'édition pour le visiteur
 $finalHtml = str_replace('contenteditable="true"', '', $htmlContent);
+
+// CORRECTION DES CHEMINS : On retire le "../" pour que les images s'affichent à la racine
+$finalHtml = str_replace('../assets/img/', 'assets/img/', $finalHtml);
 ?>
 
 <style>
