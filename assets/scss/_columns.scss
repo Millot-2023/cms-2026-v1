@@ -1,0 +1,91 @@
+/* 1. Base du papier */
+.paper {
+    width: 95%;
+    max-width: 850px;
+    container-type: inline-size;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* 2. Gestion des colonnes */
+.grid-wrapper {
+    display: block; // Par défaut partout : empilé
+    width: 100%;
+    box-sizing: border-box;
+
+    .col-item {
+        width: 100%;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+    }
+
+    /* --- MODE COLONNES (Article final ET Éditeur large) --- */
+    /* On active le flex si l'écran est large OU si le conteneur est large */
+    @media (min-width: 768px) {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+
+        .col-item {
+            flex: 1;
+            width: 0;
+            margin-bottom: 0;
+        }
+    }
+
+    /* --- LA SEULE RÈGLE DE FORCE (Éditeur bouton Mobile) --- */
+    /* Cette règle "écrase" le flex ci-dessus grâce à la précision du sélecteur */
+    .paper.mobile-view & {
+        display: block; 
+        
+        .col-item {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    }
+}/* 1. Base du papier */
+.paper {
+    width: 95%;
+    max-width: 850px;
+    container-type: inline-size;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* 2. Gestion des colonnes */
+.grid-wrapper {
+    display: block; // Par défaut partout : empilé
+    width: 100%;
+    box-sizing: border-box;
+
+    .col-item {
+        width: 100%;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+    }
+
+    /* --- MODE COLONNES (Article final ET Éditeur large) --- */
+    /* On active le flex si l'écran est large OU si le conteneur est large */
+    @media (min-width: 768px) {
+        display: flex;
+        flex-direction: row;
+        gap: 20px;
+
+        .col-item {
+            flex: 1;
+            width: 0;
+            margin-bottom: 0;
+        }
+    }
+
+    /* --- LA SEULE RÈGLE DE FORCE (Éditeur bouton Mobile) --- */
+    /* Cette règle "écrase" le flex ci-dessus grâce à la précision du sélecteur */
+    .paper.mobile-view & {
+        display: block; 
+        
+        .col-item {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    }
+}

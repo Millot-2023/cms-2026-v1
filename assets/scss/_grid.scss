@@ -1,0 +1,72 @@
+@use "variables" as *;
+
+/* GRILLE MASTER (PROTOCOLE FRACTIONS) */
+.master-grid {
+    display: grid;
+    grid-template-columns: minmax(20px, 1fr) minmax(auto, 1200px) minmax(20px, 1fr);
+    column-gap: 0;
+    width: 100%;
+    
+    // --- LA CORRECTION CLÉ ---
+    // On force la grille à occuper tout l'écran pour permettre au Hero de remonter
+    min-height: 100vh; 
+    background-color: #ffffff; // S'assure que le fond est opaque pour couvrir le hero
+    // -------------------------
+
+    & > * {
+        grid-column: 2;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+}
+
+/* CIBLE DE L'ANCRE & CALAGE ÉDITORIAL */
+#main {
+    scroll-margin-top: $header-height;
+    padding-top: 4rem; // On augmente un peu l'espace pour l'esthétique
+    padding-bottom: 5rem; // On ajoute de l'espace en bas pour le confort de lecture
+
+    & > :first-child {
+        margin-top: 0 !important;
+        h1, h2 { margin-top: 0; }
+    }
+}
+
+/* SYSTÈME DE BLOCS DYNAMIQUES 
+   Nettoyé de toute propriété de hauteur ou de largeur forcée
+*/
+.grid-block {
+    margin: 0; 
+}
+
+/* LIBÉRATION DES COLONNES DE L'ÉDITEUR */
+.editor-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 20px;
+    width: 100%;
+    
+    & > div {
+        flex: 1;
+        min-width: 250px; /* Aligne 3 colonnes sur desktop, empile sur mobile */
+    }
+}
+
+/* COMMENTE OU SUPPRIME CE BLOC DANS _grid.scss */
+/*
+.grid-block:not(.article-header-view) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+*/
+/* RESPONSIVE MOBILE (Base 393px) */
+@media (max-width: 800px) {
+    .master-grid {
+        grid-template-columns: 20px 1fr 20px;
+    }
+}

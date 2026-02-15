@@ -1,0 +1,22 @@
+@use "variables" as *;
+
+/* FOOTER : DIAGNOSTIC VISUEL */
+footer {
+    width: 100%;
+    background-color: #000; // Fond noir pour voir l'emprise réelle du bloc
+    color: #fff;           // Texte blanc pour le contraste
+    
+    padding: 20px 0;       // On garde un padding généreux pour le moment
+    
+    .footer-content {
+        // On s'assure que le contenu reste aligné sur la grille
+        // Si tu n'as pas encore de div interne, le texte sera brut
+        text-align: center;
+        
+        p {
+            margin: 0;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+    }
+}

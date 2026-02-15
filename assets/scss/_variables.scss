@@ -1,0 +1,37 @@
+/* ==========================================================================
+   VARIABLES GLOBALES - PROJET CMS 2026
+   ========================================================================== */
+
+// 1. Couleurs (Charte Evolution)
+$black-sidebar: #000000; // Rectifié de #1A1A1A à #000000 selon directives
+$white:         #FFFFFF;
+$gray-light:    #F5F5F5;
+$accent:        #007BFF; // Bleu action
+
+// 2. Structure & Layout
+$sidebar-width:  340px; // Aligné sur la largeur réelle de l'éditeur (340px)
+$header-height:  60px;
+
+// 3. Typographie (Fondations)
+$font-main:      'Inter', sans-serif;
+
+// 4. Échelle de Tailles (Pilotage sémantique)
+$font-size-base: 16px;
+$font-size-h1:   2.5rem;   // ~40px
+$font-size-h2:   2rem;     // ~32px
+$font-size-h3:   1.5rem;   // ~24px
+$font-size-h4:   1.25rem;     // ~32px
+$font-size-h5:   1rem;   // ~24px
+
+
+$font-size-p:    1rem;     // 16px
+
+// 5. Rythme Vertical (Adieu les <br>)
+$line-height-base:         1.6;
+$space-between-paragraphs: 1.5rem; 
+$space-between-sections:   4rem;
+
+// 6. Graisses (Weights)
+$weight-light:  300;
+$weight-normal: 400;
+$weight-bold:   700;

@@ -1,0 +1,37 @@
+/* ==========================================================================
+   _BASE.SCSS - LE PONT ENTRE VARIABLES ET HTML
+   ========================================================================== */
+
+@use "variables" as *; 
+
+body {
+    font-family: $font-main;
+    font-size: $font-size-base;
+    line-height: $line-height-base;
+    color: $black-sidebar;
+    background-color: $gray-light;
+}
+
+h1, .paper h1 {
+    font-size: $font-size-h1;
+    font-weight: $weight-bold;
+    line-height: 1.2;
+    margin-bottom: $space-between-paragraphs;
+}
+
+h2 {
+    font-size: $font-size-h2;
+    font-weight: $weight-bold;
+    // CORRECTION DÉPRÉCIATION : Emploi de calc() pour la division
+    margin-top: calc($space-between-sections / 2);
+    margin-bottom: $space-between-paragraphs;
+}
+
+h3 {
+    font-size: $font-size-h3;
+    font-weight: $weight-bold;
+}
+
+p {
+    margin-bottom: $space-between-paragraphs;
+}

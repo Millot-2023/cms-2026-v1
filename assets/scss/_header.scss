@@ -1,0 +1,150 @@
+@use "variables" as *;
+
+/* HEADER FIXE - VERROUILLAGE TOTAL */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: $header-height;
+    background-color: $white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; // Verrouille le centrage vertical global
+    padding: 0 5%;
+    z-index: 9999; 
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    box-sizing: border-box;
+
+    .logo {
+        display: flex;
+        align-items: center; // Assure que le logo est centré
+        height: 100%;
+        
+        a {
+            text-decoration: none;
+            color: #000;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+    }
+}
+
+/* NAVIGATION & BURGER */
+.nav-container {
+    display: flex;
+    align-items: center;
+    height: 100%; // Prend toute la hauteur pour centrer les enfants
+
+    .nav-links {
+        display: flex;
+        list-style: none;
+        margin: 0; // RESET CRUCIAL
+        padding: 0; // RESET CRUCIAL
+        gap: 30px; 
+        align-items: center; // Aligne les LI horizontalement sur la ligne médiane
+
+        li {
+            margin: 0; // Supprime les marges parasites qui décalent vers le haut
+            display: flex;
+            align-items: center;
+
+            a {
+                text-decoration: none;
+                color: #444;
+                transition: all 0.3s ease;
+                display: block; // Donne une surface de clic propre
+                line-height: 1; // Neutralise les interlignes qui poussent le texte
+                &:hover { color: $accent; }
+            }
+        }
+    }
+
+    .burger-trigger {
+        display: none; 
+        width: 30px;
+        height: 20px;
+        position: relative;
+        z-index: 10000; 
+        cursor: pointer;
+
+        span, &::before, &::after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background-color: #000;
+            left: 0;
+            transition: all 0.3s ease-in-out;
+        }
+
+        span { top: 9px; }
+        &::before { top: 0; }
+        &::after { bottom: 0; }
+
+        &.is-active {
+            span { opacity: 0; }
+            &::before { transform: translateY(9px) rotate(45deg); }
+            &::after { transform: translateY(-9px) rotate(-45deg); }
+        }
+    }
+}
+
+/* RESPONSIVE MOBILE (< 800px) */
+/* (Je ne touche à rien ici, ton code est parfait pour ton usage) */
+@media (max-width: 800px) {
+    .nav-container {
+        .nav-links { 
+            display: none; 
+            
+            &.nav-open {
+                display: flex !important;
+                flex-direction: column;
+                position: fixed;
+                top: $header-height;
+                left: 0;
+                width: 100%;
+                height: calc(100vh - #{$header-height});
+                background: $white;
+                z-index: 9998;
+                
+                gap: 0; 
+                padding: 0; 
+                margin: 0;
+
+                li {
+                    width: 100%;
+                    flex: 1; 
+                    display: flex;
+                    margin: 0;
+                    padding: 0;
+                    border-bottom: 1px solid rgba(0,0,0,0.05);
+
+                    a {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        width: 100%;
+                        height: 100%; 
+                        font-size: 2rem;
+                        font-weight: 700;
+                        text-transform: uppercase;
+                        margin: 0;
+                        
+                        &:hover {
+                            background-color: rgba(0,0,0,0.03);
+                            letter-spacing: 5px;
+                            color: $accent;
+                        }
+                    }
+                    
+                    &:last-child { border-bottom: none; }
+                }
+            }
+        }
+
+        .burger-trigger { 
+            display: block; 
+        }
+    }
+}

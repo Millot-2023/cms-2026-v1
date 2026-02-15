@@ -1,0 +1,65 @@
+/* ==========================================================================
+   _ARTICLE.SCSS - VERSION FINALE (FIX IMAGE & TITRE)
+   ========================================================================== */
+@use "variables" as *;
+
+// 1. STYLE DES CARDS (Index & Base)
+.grid-container {
+    display: grid !important;
+    gap: 2rem;
+    padding: 2rem 0;
+    grid-template-columns: repeat(4, 1fr);
+    @media (max-width: 1100px) { grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 650px) { grid-template-columns: 1fr; }
+}
+
+.grid-block {
+    background: #fff;
+    border-radius: 20px;
+    display: flex !important;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #f0f0f0;
+    transition: transform 0.3s;
+
+    .card-image {
+        width: 100%;
+        aspect-ratio: 16 / 10;
+        background: #f7f7f7;
+        img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    }
+
+    .card-content { padding: 1.5rem; }
+}
+
+// 2. MODE ARTICLE (La correction)
+.single-article {
+    max-width: 900px;
+    margin: 0 auto;
+
+    .project-main-image {
+        width: 100%;
+        margin-bottom: 2rem;
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            display: block;
+        }
+    }
+
+    .article-header {
+        margin-bottom: 3rem;
+        .main-article-title {
+            font-size: 4rem !important; // Ton gros titre
+            font-weight: 900;
+            margin: 0.5rem 0;
+            color: $black-sidebar;
+        }
+    }
+}
+
+// 3. RENDU ÉDITEUR
+.article-render {
+    .block-container { margin-bottom: 3.5rem; clear: both; }
+}

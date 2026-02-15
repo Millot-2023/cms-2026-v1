@@ -1,0 +1,103 @@
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+
+// 1. CONFIGURATION
+@use "variables" as *;
+@use "reset";
+@use "fonts";
+@use "bases"; // Ajout de bases pour tes polices et couleurs de fond
+
+@use "editor";
+@use "editor_ui";
+@use "columns";
+//@use "editor-styles";
+// 2. STRUCTURE GLOBALE
+@use "grid";
+ 
+
+// 3. COMPOSANTS
+@use "header";
+@use "hero";
+@use "cards";    // <--- INDISPENSABLE : Ton effet hover est ici !
+@use "article";
+@use "evolution";
+@use "footer";
+@use "admin";
+
+/* ==========================================================================
+   VERROUILLAGE FINAL DU CALAGE
+   ========================================================================== */
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: $font-main;
+}
+
+#main {
+    flex-grow: 1;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+    padding-top: $space-between-paragraphs;
+}
+
+hr {
+    border: 0;
+    border-top: 3px solid #e0e0e0;
+    margin: $space-between-paragraphs 0;
+    display: block;
+    width: 100%;
+}
+
+
+
+
+
+
+
+/* Base de l'icône */
+.ico-align {
+    width: 20px;
+    height: 14px;
+    position: relative;
+    border-top: 2px solid #666; /* Ligne de texte */
+    border-bottom: 2px solid #666; /* Ligne de texte */
+}
+
+/* Le petit carré symbolisant l'image */
+.ico-align::before {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    top: 3px;
+}
+
+/* Positionnement du carré */
+.ico-left::before  { left: 0; }
+.ico-right::before { right: 0; }
+
+/* Cas particulier : Pleine largeur (on remplace le carré par une ligne centrale) */
+.ico-full::before {
+    width: 20px;
+    height: 2px;
+    background: #666;
+    top: 5px;
+    left: 0;
+}
+
+/* Ligne centrale pour gauche et droite */
+.ico-left::after, .ico-right::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 2px;
+    background: #666;
+    top: 6px;
+}
+.ico-left::after  { right: 0; }
+.ico-right::after { left: 0; }

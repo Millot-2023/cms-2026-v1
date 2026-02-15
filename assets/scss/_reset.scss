@@ -1,0 +1,47 @@
+/* ==========================================================================
+   RESET CSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    overflow-x: hidden; // Sécurité anti-scroll horizontal
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    line-height: 1.5;
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+
+img {
+    max-width: 100%;
+    display: block;
+}
+
+ul, ol {
+    list-style: square;
+    padding-left: 25px;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button, input, textarea {
+    font: inherit;
+}
+
+/* Verrouillage du scroll lors de l'ouverture d'Evolution (Optionnel) */
+body.evolution-open {
+    overflow: hidden;
+}

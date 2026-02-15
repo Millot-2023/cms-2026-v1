@@ -1,0 +1,1980 @@
+@charset "UTF-8";
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* ==========================================================================
+   GESTION DES TYPOGRAPHIES ET LETTRINES (VERSION UNIVERSELLE)
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;700&display=swap");
+/* ==========================================================================
+   VARIABLES GLOBALES - PROJET CMS 2026
+   ========================================================================== */
+/* ==========================================================================
+   RESET CSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+  font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  line-height: 1.5;
+  background-color: #ffffff;
+  color: #1a1a1a;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+ul, ol {
+  list-style: square;
+  padding-left: 25px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button, input, textarea {
+  font: inherit;
+}
+
+/* Verrouillage du scroll lors de l'ouverture d'Evolution (Optionnel) */
+body.evolution-open {
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* LETTRINES */
+.has-lettrine::first-letter {
+  float: left;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 3.5rem;
+  line-height: 1;
+  margin-right: 8px;
+  font-weight: 900;
+  display: block;
+  padding: 0 4px;
+}
+
+.has-lettrine {
+  border: none;
+  outline: none;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* ==========================================================================
+   _BASE.SCSS - LE PONT ENTRE VARIABLES ET HTML
+   ========================================================================== */
+body {
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #000000;
+  background-color: #F5F5F5;
+}
+
+h1, .paper h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+:root {
+  --sidebar-bg: #111;
+  --text-muted: #888;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 320px;
+  background: var(--sidebar-bg);
+  padding: 30px 20px;
+  border-right: 1px solid #333;
+  z-index: 100;
+}
+.sidebar h2 {
+  font-size: 14px;
+  text-transform: uppercase;
+  color: #fff;
+  font-weight: 300;
+}
+
+.gauges {
+  display: block !important;
+  background: red !important;
+}
+.gauges .gauge-row {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  border: 1px solid yellow !important;
+}
+
+#paper {
+  container-type: inline-size;
+}
+
+@container (max-width: 500px) {
+  .block-container {
+    display: block !important;
+  }
+  .block-container .image-placeholder {
+    float: none !important;
+    width: 100% !important;
+    margin: 0 0 15px 0 !important;
+    display: block !important;
+  }
+  .block-container p {
+    clear: both !important;
+    width: 100% !important;
+    display: block !important;
+  }
+}
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* === CMS-2026 : UI DE L'ÉDITEUR (ARCHITECTURE COMPLÈTE) === */
+*, *::before, *::after {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #007bff;
+  border-radius: 10px;
+}
+
+:root {
+  --sidebar-bg: #000000;
+  --sidebar-border: #333333;
+  --sidebar-text: #ffffff;
+  --sidebar-muted: #666666;
+  --sidebar-input: #1a1a1a;
+  --canvas-bg: #1a1a1a;
+  --accent: #ffffff;
+}
+
+body.light-mode {
+  --canvas-bg: #e0e0e0;
+  --accent: #000000;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  /*overflow: hidden; */
+  font-family: "Inter", sans-serif;
+  background-color: var(--canvas-bg);
+  /*color: var(--accent); */
+}
+
+.editor-content h1, .paper h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  color: #1a1a1a;
+}
+.editor-content h2, .paper h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  color: #333;
+}
+.editor-content h3, .paper h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+.editor-content h4, .paper h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #444;
+}
+.editor-content h5, .paper h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+body:has(.master-grid) {
+  overflow-y: auto !important;
+  height: auto !important;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start !important;
+      -ms-flex-pack: start !important;
+          justify-content: flex-start !important;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+}
+
+.master-grid {
+  width: 100%;
+  position: relative;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  display: block;
+}
+
+/* SIDEBAR - STRICT NOIR */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 340px;
+  background-color: #000000 !important;
+  border-right: 1px solid var(--sidebar-border);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  z-index: 1500;
+  color: #ffffff;
+  -webkit-transition: -webkit-transform 0.3s ease;
+  transition: -webkit-transform 0.3s ease;
+  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+}
+body.sidebar-hidden .sidebar {
+  -webkit-transform: translateX(-340px);
+          transform: translateX(-340px);
+}
+.sidebar-header {
+  padding: 0px 25px 25px; /*hateur de la SIDEBAR*/
+  border-bottom: 1px solid var(--sidebar-border);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 15px;
+}
+.sidebar-header h2 {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--sidebar-muted);
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+.sidebar-scroll {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 25px;
+}
+.sidebar-footer {
+  padding: 20px 25px;
+  border-top: 1px solid var(--sidebar-border);
+  background-color: #000000;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+}
+
+/* ÉLÉMENTS DU COCKPIT */
+.admin-input {
+  width: 100%;
+  background-color: var(--sidebar-input);
+  border: 1px solid var(--sidebar-border);
+  color: var(--sidebar-text);
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 11px;
+  border-radius: 4px;
+  outline: none;
+}
+
+.section-label {
+  font-size: 9px;
+  color: var(--sidebar-muted);
+  text-transform: uppercase;
+  margin-top: 25px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.preview-card-container {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #111;
+  border: 1px solid var(--sidebar-border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.preview-card-container img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.tool-btn {
+  background-color: var(--sidebar-input);
+  border: 1px solid var(--sidebar-border);
+  color: var(--sidebar-muted);
+  height: 40px;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 4px;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+  text-transform: uppercase;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+  margin-bottom: 5px;
+}
+.tool-btn svg rect {
+  fill: currentColor !important;
+  -webkit-transition: fill 0.2s;
+  transition: fill 0.2s;
+}
+.tool-btn:hover {
+  border-color: #555;
+  color: #fff;
+}
+
+/* BOUTONS ACTIONS */
+.btn-gmail {
+  background: #ea4335 !important;
+  color: #ffffff !important;
+  border: none;
+  padding: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 10px;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 10px;
+  display: block;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-publish {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border: none;
+  padding: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 10px;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 10px;
+  display: block;
+  text-align: center;
+}
+
+.btn-exit {
+  color: var(--sidebar-muted);
+  text-align: center;
+  font-size: 10px;
+  text-decoration: none;
+  border: 1px solid var(--sidebar-border);
+  padding: 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+  display: block;
+  width: 100%;
+}
+
+/* GAUGES */
+.gauge-row {
+  background-color: var(--sidebar-input);
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  border: 1px solid var(--sidebar-border);
+}
+
+.gauge-info {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 10px;
+  color: var(--sidebar-muted);
+}
+
+input[type=range] {
+  width: 100%;
+  accent-color: #fff;
+  cursor: pointer;
+}
+
+/* CANVAS & PAPER - CORRECTION ALIGNEMENT */
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 340px; /* RÉACTIVÉ : Le canvas commence après la sidebar */
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  padding: 0;
+  -webkit-transition: left 0.3s ease;
+  transition: left 0.3s ease;
+  display: block;
+  background-color: var(--canvas-bg);
+}
+body.sidebar-hidden .canvas {
+  left: 0 !important;
+}
+
+.responsive-switcher {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: var(--canvas-bg);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 10px;
+  padding: 15px 0;
+  width: 100%;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.paper {
+  width: 95%; /* Ajusté pour le centrage dynamique */
+  max-width: 850px;
+  background: #ffffff;
+  color: #000000 !important;
+  min-height: 1100px;
+  height: auto;
+  padding: 60px;
+  -webkit-box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+  position: relative;
+  display: flow-root;
+  -webkit-transition: width 0.3s ease, max-width 0.3s ease;
+  transition: width 0.3s ease, max-width 0.3s ease;
+  margin: 40px auto !important;
+  overflow: visible;
+}
+
+#main-title {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  line-height: 0.8 !important;
+  display: inline-block;
+  width: 100%;
+}
+
+/* GESTION DES BLOCS */
+.block-container {
+  position: relative;
+  margin-bottom: 5px;
+  width: 100%;
+  clear: both;
+}
+.block-container .delete-block {
+  position: absolute;
+  left: -25px;
+  top: 0;
+  background: #ff4d4d;
+  color: white;
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  font-size: 9px;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 10;
+}
+.block-container:hover .delete-block {
+  opacity: 1;
+}
+
+/* editor_ui.scss - ALIGNÉ SUR LE MODÈLE DE RÉFÉRENCE */
+.ico-txt-align {
+  display: inline-block;
+  width: 16px;
+  height: 12px;
+  position: relative;
+  vertical-align: middle;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  border-top: 2px solid #fff;
+}
+.ico-txt-align::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #fff;
+}
+.ico-txt-align::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  height: 2px;
+  background: #fff;
+}
+
+.ico-txt-left::before {
+  left: 0;
+  width: 10px;
+}
+
+.ico-txt-center::before {
+  left: 3px;
+  width: 10px;
+}
+
+.ico-txt-right::before {
+  right: 0;
+  width: 10px;
+}
+
+/* ICÔNES DE POSITIONNEMENT (REVISITÉES SELON SCHÉMA) */
+.ico-ui {
+  display: inline-block;
+  width: 20px;
+  height: 14px;
+  position: relative;
+}
+
+.ico-float-left {
+  border-top: 2px solid #555;
+}
+.ico-float-left::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #555;
+  -webkit-box-shadow: 0 4px 0 #555, 0 8px 0 #555;
+          box-shadow: 0 4px 0 #555, 0 8px 0 #555;
+}
+.ico-float-left::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9px;
+  height: 7px;
+  background: #fff;
+  z-index: 2;
+}
+
+.ico-full {
+  border-top: 2px solid #555;
+}
+.ico-full::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: #fff;
+}
+.ico-full::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #555;
+}
+
+.ico-float-right {
+  border-top: 2px solid #555;
+}
+.ico-float-right::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #555;
+  -webkit-box-shadow: 0 4px 0 #555, 0 8px 0 #555;
+          box-shadow: 0 4px 0 #555, 0 8px 0 #555;
+}
+.ico-float-right::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 9px;
+  height: 7px;
+  background: #fff;
+  z-index: 2;
+}
+
+/* === RÉPARATION DES GRILLES DU COCKPIT === */
+.sidebar-scroll .row-h, .sidebar-scroll .row-styles, .sidebar-scroll .row-align, .sidebar-scroll .row-float, .sidebar-scroll .row-cols {
+  display: grid !important;
+  gap: 8px !important;
+  margin-bottom: 12px !important;
+}
+.sidebar-scroll .row-h .tool-btn, .sidebar-scroll .row-styles .tool-btn, .sidebar-scroll .row-align .tool-btn, .sidebar-scroll .row-float .tool-btn, .sidebar-scroll .row-cols .tool-btn {
+  margin-bottom: 0 !important;
+  height: 38px !important;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100% !important;
+}
+.sidebar-scroll .row-h {
+  grid-template-columns: repeat(5, 1fr) !important;
+}
+.sidebar-scroll .row-styles {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+.sidebar-scroll .row-align {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+.sidebar-scroll .row-float {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+.sidebar-scroll .row-cols {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+/* PETIT AJUSTEMENT POUR L'ICÔNE COLONNE (Optionnel) */
+.ico-col-3 {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  gap: 2px;
+  width: 100%;
+}
+.ico-col-3 span {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  height: 10px;
+  border: 1px solid #fff;
+}
+
+/*ICONES DE COLEONNES*/
+/* TRIGGER SIDEBAR */
+.sidebar-trigger {
+  position: fixed;
+  top: 15px;
+  left: 355px;
+  z-index: 2000;
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #ddd;
+  width: 35px;
+  height: 35px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  -webkit-transition: left 0.3s ease;
+  transition: left 0.3s ease;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+body.sidebar-hidden .sidebar-trigger {
+  left: 15px !important;
+}
+
+/* Passage des blocs float en empilement sur mobile */
+/* Force le mode empilé sur mobile */
+/*
+@media (max-width: 768px) {
+    #editor-core .block-container {
+        .image-placeholder[style] { // Le [style] cible les attributs injectés par le JS
+            float: none !important;
+            width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            margin-bottom: 15px !important;
+        }
+
+        p {
+            display: block !important;
+            width: 100% !important;
+            clear: both !important;
+        }
+    }
+}*/
+/* 1. Base du papier */
+.paper {
+  width: 95%;
+  max-width: 850px;
+  container-type: inline-size;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* 2. Gestion des colonnes */
+.grid-wrapper {
+  display: block;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.grid-wrapper .col-item {
+  width: 100%;
+  margin-bottom: 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.grid-wrapper {
+  /* --- MODE COLONNES (Article final ET Éditeur large) --- */
+  /* On active le flex si l'écran est large OU si le conteneur est large */
+}
+@media (min-width: 768px) {
+  .grid-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    gap: 20px;
+  }
+  .grid-wrapper .col-item {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    width: 0;
+    margin-bottom: 0;
+  }
+}
+.grid-wrapper {
+  /* --- LA SEULE RÈGLE DE FORCE (Éditeur bouton Mobile) --- */
+  /* Cette règle "écrase" le flex ci-dessus grâce à la précision du sélecteur */
+}
+.paper.mobile-view .grid-wrapper {
+  display: block;
+}
+.paper.mobile-view .grid-wrapper .col-item {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* 1. Base du papier */
+.paper {
+  width: 95%;
+  max-width: 850px;
+  container-type: inline-size;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* 2. Gestion des colonnes */
+.grid-wrapper {
+  display: block;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.grid-wrapper .col-item {
+  width: 100%;
+  margin-bottom: 20px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.grid-wrapper {
+  /* --- MODE COLONNES (Article final ET Éditeur large) --- */
+  /* On active le flex si l'écran est large OU si le conteneur est large */
+}
+@media (min-width: 768px) {
+  .grid-wrapper {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    gap: 20px;
+  }
+  .grid-wrapper .col-item {
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    width: 0;
+    margin-bottom: 0;
+  }
+}
+.grid-wrapper {
+  /* --- LA SEULE RÈGLE DE FORCE (Éditeur bouton Mobile) --- */
+  /* Cette règle "écrase" le flex ci-dessus grâce à la précision du sélecteur */
+}
+.paper.mobile-view .grid-wrapper {
+  display: block;
+}
+.paper.mobile-view .grid-wrapper .col-item {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* GRILLE MASTER (PROTOCOLE FRACTIONS) */
+.master-grid {
+  display: grid;
+  grid-template-columns: minmax(20px, 1fr) minmax(auto, 1200px) minmax(20px, 1fr);
+  -webkit-column-gap: 0;
+     -moz-column-gap: 0;
+          column-gap: 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+.master-grid > * {
+  grid-column: 2;
+}
+.master-grid .full-width {
+  grid-column: 1/-1;
+}
+
+/* CIBLE DE L'ANCRE & CALAGE ÉDITORIAL */
+#main {
+  scroll-margin-top: 60px;
+  padding-top: 4rem;
+  padding-bottom: 5rem;
+}
+#main > :first-child {
+  margin-top: 0 !important;
+}
+#main > :first-child h1, #main > :first-child h2 {
+  margin-top: 0;
+}
+
+/* SYSTÈME DE BLOCS DYNAMIQUES 
+   Nettoyé de toute propriété de hauteur ou de largeur forcée
+*/
+.grid-block {
+  margin: 0;
+}
+
+/* LIBÉRATION DES COLONNES DE L'ÉDITEUR */
+.editor-grid {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-orient: horizontal !important;
+  -webkit-box-direction: normal !important;
+      -ms-flex-direction: row !important;
+          flex-direction: row !important;
+  -ms-flex-wrap: wrap !important;
+      flex-wrap: wrap !important;
+  gap: 20px;
+  width: 100%;
+}
+.editor-grid > div {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  min-width: 250px; /* Aligne 3 colonnes sur desktop, empile sur mobile */
+}
+
+/* COMMENTE OU SUPPRIME CE BLOC DANS _grid.scss */
+/*
+.grid-block:not(.article-header-view) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+*/
+/* RESPONSIVE MOBILE (Base 393px) */
+@media (max-width: 800px) {
+  .master-grid {
+    grid-template-columns: 20px 1fr 20px;
+  }
+}
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* HEADER FIXE - VERROUILLAGE TOTAL */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background-color: #FFFFFF;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 0 5%;
+  z-index: 9999;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+.main-header .logo {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+}
+.main-header .logo a {
+  text-decoration: none;
+  color: #000;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* NAVIGATION & BURGER */
+.nav-container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 100%;
+}
+.nav-container .nav-links {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 30px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.nav-container .nav-links li {
+  margin: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.nav-container .nav-links li a {
+  text-decoration: none;
+  color: #444;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  display: block;
+  line-height: 1;
+}
+.nav-container .nav-links li a:hover {
+  color: #007BFF;
+}
+.nav-container .burger-trigger {
+  display: none;
+  width: 30px;
+  height: 20px;
+  position: relative;
+  z-index: 10000;
+  cursor: pointer;
+}
+.nav-container .burger-trigger span, .nav-container .burger-trigger::before, .nav-container .burger-trigger::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: #000;
+  left: 0;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+.nav-container .burger-trigger span {
+  top: 9px;
+}
+.nav-container .burger-trigger::before {
+  top: 0;
+}
+.nav-container .burger-trigger::after {
+  bottom: 0;
+}
+.nav-container .burger-trigger.is-active span {
+  opacity: 0;
+}
+.nav-container .burger-trigger.is-active::before {
+  -webkit-transform: translateY(9px) rotate(45deg);
+          transform: translateY(9px) rotate(45deg);
+}
+.nav-container .burger-trigger.is-active::after {
+  -webkit-transform: translateY(-9px) rotate(-45deg);
+          transform: translateY(-9px) rotate(-45deg);
+}
+
+/* RESPONSIVE MOBILE (< 800px) */
+/* (Je ne touche à rien ici, ton code est parfait pour ton usage) */
+@media (max-width: 800px) {
+  .nav-container .nav-links {
+    display: none;
+  }
+  .nav-container .nav-links.nav-open {
+    display: -webkit-box !important;
+    display: -ms-flexbox !important;
+    display: flex !important;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background: #FFFFFF;
+    z-index: 9998;
+    gap: 0;
+    padding: 0;
+    margin: 0;
+  }
+  .nav-container .nav-links.nav-open li {
+    width: 100%;
+    -webkit-box-flex: 1;
+        -ms-flex: 1;
+            flex: 1;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  .nav-container .nav-links.nav-open li a {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0;
+  }
+  .nav-container .nav-links.nav-open li a:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+    letter-spacing: 5px;
+    color: #007BFF;
+  }
+  .nav-container .nav-links.nav-open li:last-child {
+    border-bottom: none;
+  }
+  .nav-container .burger-trigger {
+    display: block;
+  }
+}
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+.hero-section {
+  width: 100%;
+  height: 100dvh;
+  margin-top: 0;
+  padding-top: 60px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  background-color: #1a1a1a;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  overflow: hidden;
+  opacity: 0;
+  -webkit-filter: blur(15px);
+          filter: blur(15px);
+  -webkit-animation: heroEntrance 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+          animation: heroEntrance 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+body.no-anim .hero-section {
+  -webkit-animation: none !important;
+          animation: none !important;
+  opacity: 1 !important;
+  -webkit-filter: blur(0) !important;
+          filter: blur(0) !important;
+  -webkit-transform: scale(1) !important;
+          transform: scale(1) !important;
+}
+.hero-section .hero-content {
+  text-align: center;
+  z-index: 2;
+  margin-top: calc(-1 * 60px / 2);
+}
+.hero-section .hero-content .hero-title {
+  color: #FFFFFF;
+  font-size: 3rem;
+  margin: 0;
+  opacity: 0;
+  -webkit-transform: translateY(20px);
+          transform: translateY(20px);
+  -webkit-animation: textAppear 0.8s ease-out 0.5s forwards;
+          animation: textAppear 0.8s ease-out 0.5s forwards;
+}
+body.no-anim .hero-section .hero-content .hero-title {
+  -webkit-animation: none !important;
+          animation: none !important;
+  opacity: 1 !important;
+  -webkit-transform: translateY(0) !important;
+          transform: translateY(0) !important;
+}
+.hero-section .hero-content .hero-subtitle {
+  color: #FFFFFF;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  opacity: 0;
+  -webkit-transform: translateY(20px);
+          transform: translateY(20px);
+  -webkit-animation: textAppear 0.8s ease-out 0.7s forwards;
+          animation: textAppear 0.8s ease-out 0.7s forwards;
+}
+body.no-anim .hero-section .hero-content .hero-subtitle {
+  -webkit-animation: none !important;
+          animation: none !important;
+  opacity: 1 !important;
+  -webkit-transform: translateY(0) !important;
+          transform: translateY(0) !important;
+}
+.hero-section .scroll-anchor {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+          transform: translateX(-50%);
+  color: #FFFFFF;
+  font-size: 2rem;
+  text-decoration: none;
+  -webkit-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+}
+.hero-section .scroll-anchor:hover {
+  opacity: 0.7;
+}
+.hero-section .scroll-anchor::before {
+  content: "↓";
+  display: block;
+  -webkit-animation: bounce 2s infinite;
+          animation: bounce 2s infinite;
+}
+
+.master-grid {
+  position: relative;
+  z-index: 10;
+  background-color: #f4f4f4;
+}
+
+@-webkit-keyframes heroEntrance {
+  0% {
+    opacity: 0;
+    -webkit-filter: blur(15px);
+            filter: blur(15px);
+    -webkit-transform: scale(1.05);
+            transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    -webkit-filter: blur(0);
+            filter: blur(0);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+@keyframes heroEntrance {
+  0% {
+    opacity: 0;
+    -webkit-filter: blur(15px);
+            filter: blur(15px);
+    -webkit-transform: scale(1.05);
+            transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    -webkit-filter: blur(0);
+            filter: blur(0);
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+@-webkit-keyframes textAppear {
+  to {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+@keyframes textAppear {
+  to {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+@-webkit-keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(-10px);
+            transform: translateY(-10px);
+  }
+  60% {
+    -webkit-transform: translateY(-5px);
+            transform: translateY(-5px);
+  }
+}
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  40% {
+    -webkit-transform: translateY(-10px);
+            transform: translateY(-10px);
+  }
+  60% {
+    -webkit-transform: translateY(-5px);
+            transform: translateY(-5px);
+  }
+}
+/* FICHIER : assets/scss/_cards.scss 
+   PROJET : CMS-2026
+   OBJECTIF : Grille militaire 220px avec effet Hover (Profondeur)
+*/
+.btn-open, .btn-edit, .btn-create, .card-footer a {
+  -webkit-transition: all 0.3s ease-in-out !important;
+  transition: all 0.3s ease-in-out !important;
+  display: inline-block;
+  text-decoration: none;
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #555;
+  cursor: pointer !important;
+  width: 100%;
+  text-align: center;
+  padding: 0.8rem;
+  border-radius: 6px;
+  font-weight: bold;
+}
+.btn-open:hover, .btn-edit:hover, .btn-create:hover, .card-footer a:hover {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+
+.card-footer {
+  margin-top: auto;
+  padding: 1rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+}
+.card-footer .btn-open, .card-footer .btn-edit {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  width: auto;
+}
+
+article.grid-block, .grid-block {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-box-direction: normal !important;
+      -ms-flex-direction: column !important;
+          flex-direction: column !important;
+  height: auto !important;
+  min-height: 400px;
+  background: #ffffff !important;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0 !important;
+  -webkit-transition: -webkit-box-shadow 0.3s ease-in-out !important;
+  transition: -webkit-box-shadow 0.3s ease-in-out !important;
+  transition: box-shadow 0.3s ease-in-out !important;
+  transition: box-shadow 0.3s ease-in-out, -webkit-box-shadow 0.3s ease-in-out !important;
+  position: relative;
+}
+article.grid-block:hover, .grid-block:hover {
+  -webkit-box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15) !important;
+  border-color: #ccc !important;
+  z-index: 10;
+}
+article.grid-block .card-image, .grid-block .card-image {
+  height: 220px !important;
+  width: 100%;
+  overflow: hidden;
+}
+article.grid-block .card-image img, .grid-block .card-image img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover !important;
+     object-fit: cover !important;
+  display: block;
+}
+article.grid-block .card-content, .grid-block .card-content {
+  padding: 1.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+article.grid-block .card-content h1.main-article-title, .grid-block .card-content h1.main-article-title {
+  color: #000 !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  margin: 0.5rem 0;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  display: block !important;
+}
+article.grid-block .card-content p, .grid-block .card-content p {
+  color: #666 !important;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* ==========================================================================
+   _ARTICLE.SCSS - VERSION FINALE (FIX IMAGE & TITRE)
+   ========================================================================== */
+.grid-container {
+  display: grid !important;
+  gap: 2rem;
+  padding: 2rem 0;
+  grid-template-columns: repeat(4, 1fr);
+}
+@media (max-width: 1100px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 650px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.grid-block {
+  background: #fff;
+  border-radius: 20px;
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+  -webkit-transition: -webkit-transform 0.3s;
+  transition: -webkit-transform 0.3s;
+  transition: transform 0.3s;
+  transition: transform 0.3s, -webkit-transform 0.3s;
+}
+.grid-block .card-image {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background: #f7f7f7;
+}
+.grid-block .card-image img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  display: block;
+}
+.grid-block .card-content {
+  padding: 1.5rem;
+}
+
+.single-article {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.single-article .project-main-image {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+.single-article .project-main-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  display: block;
+}
+.single-article .article-header {
+  margin-bottom: 3rem;
+}
+.single-article .article-header .main-article-title {
+  font-size: 4rem !important;
+  font-weight: 900;
+  margin: 0.5rem 0;
+  color: #000000;
+}
+
+.article-render .block-container {
+  margin-bottom: 3.5rem;
+  clear: both;
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* INTERFACE EVOLUTION - DESIGN MAQUETTE */
+#evolution-sidebar {
+  position: fixed;
+  top: 0;
+  left: -340px;
+  width: 340px;
+  height: 100vh;
+  background-color: #000000;
+  color: #FFFFFF;
+  z-index: 2000;
+  -webkit-transition: -webkit-transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: -webkit-transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), -webkit-transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+          box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+}
+#evolution-sidebar.is-open {
+  -webkit-transform: translateX(340px);
+          transform: translateX(340px);
+}
+#evolution-sidebar .sidebar-inner {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+  padding: 30px 20px;
+}
+
+.sidebar-scroll-content {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  overflow-y: auto;
+  margin-top: 20px;
+  padding-right: 5px;
+}
+.sidebar-scroll-content::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll-content::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 10px;
+}
+
+.module-group {
+  margin-bottom: 35px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #333;
+}
+.module-group h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.justify-tools {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+}
+.justify-tools .tool-btn {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+  background: #333;
+  border: 1px solid #444;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  -webkit-transition: background 0.2s;
+  transition: background 0.2s;
+}
+.justify-tools .tool-btn:hover {
+  background: #007BFF;
+}
+
+.grid-config {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+.grid-config .input-inline {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 10px;
+}
+.grid-config .input-inline label {
+  font-size: 0.9rem;
+}
+.grid-config .input-inline input {
+  width: 50px;
+  background: #222;
+  border: 1px solid #444;
+  color: white;
+  padding: 5px;
+  text-align: center;
+}
+
+.btn-add-main, .btn-publish {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+}
+.btn-add-main:hover, .btn-publish:hover {
+  opacity: 0.8;
+}
+
+.btn-add-main {
+  background: #444;
+  color: white;
+}
+
+.btn-publish {
+  background: #FFFFFF;
+  color: #000000;
+  margin-top: auto;
+}
+
+#evolution-toggle {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  width: 55px;
+  height: 55px;
+  background: #000000;
+  border: 1px solid #333;
+  border-radius: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  cursor: pointer;
+  z-index: 2001;
+  -webkit-transition: -webkit-transform 0.3s;
+  transition: -webkit-transform 0.3s;
+  transition: transform 0.3s;
+  transition: transform 0.3s, -webkit-transform 0.3s;
+}
+#evolution-toggle img {
+  width: 25px;
+  -webkit-filter: invert(1);
+          filter: invert(1);
+}
+#evolution-toggle:hover {
+  -webkit-transform: scale(1.1) rotate(45deg);
+          transform: scale(1.1) rotate(45deg);
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* FOOTER : DIAGNOSTIC VISUEL */
+footer {
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  padding: 20px 0;
+}
+footer .footer-content {
+  text-align: center;
+}
+footer .footer-content p {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   MAIN.SCSS - ARCHITECTURE PROJET-CMS-2026
+   ========================================================================== */
+/* ==========================================================================
+   _ADMIN.SCSS - OUTILS D'ÉDITION LOCALE (PROJET-CMS-2026)
+   ========================================================================== */
+.edit-form {
+  width: 100%;
+}
+.edit-form .edit-input-cat {
+  display: block;
+  font-size: 0.8rem;
+  color: #007BFF;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  border: none;
+  background: transparent;
+  border-bottom: 1px dashed #ccc;
+  margin-bottom: 1rem;
+  width: auto;
+  font-family: "Inter", sans-serif;
+}
+.edit-form .edit-input-cat:focus {
+  outline: none;
+  border-bottom-color: #007BFF;
+}
+.edit-form .edit-input-title {
+  display: block;
+  width: 100%;
+  font-size: 2.5rem;
+  font-weight: 800;
+  border: none;
+  background: transparent;
+  border-left: 5px solid #007BFF;
+  padding-left: 20px;
+  margin-bottom: 1.5rem;
+  font-family: "Inter", sans-serif;
+  color: #000000;
+}
+.edit-form .edit-input-title:focus {
+  outline: none;
+  background-color: rgba(0, 123, 255, 0.03);
+}
+.edit-form .edit-textarea {
+  width: 100%;
+  min-height: 120px;
+  font-size: 1rem;
+  line-height: 1.6;
+  border: 1px solid #eee;
+  padding: 1rem;
+  font-family: "Inter", sans-serif;
+  resize: vertical;
+  background: #F5F5F5;
+  margin-bottom: 1.5rem;
+}
+.edit-form .edit-textarea:focus {
+  outline: none;
+  background: #fff;
+  border-color: #007BFF;
+}
+
+.admin-controls {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 1.5rem;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 1rem 0;
+}
+.admin-controls .btn-save {
+  background-color: #000000;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.8rem 1.8rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-transform: uppercase;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+}
+.admin-controls .btn-save:hover {
+  background-color: #007BFF;
+  -webkit-transform: translateY(-2px);
+          transform: translateY(-2px);
+}
+.admin-controls .btn-cancel {
+  font-size: 0.75rem;
+  color: #999;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.admin-controls .btn-cancel:hover {
+  color: #cc0000;
+}
+
+.btn-edit-mode {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #bbb;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid #eee;
+  padding: 6px 12px;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+.btn-edit-mode:hover {
+  border-color: #007BFF;
+  color: #007BFF;
+  background: #fff;
+}
+
+/* ==========================================================================
+   VERROUILLAGE FINAL DU CALAGE
+   ========================================================================== */
+body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  min-height: 100vh;
+  font-family: "Inter", sans-serif;
+}
+
+#main {
+  -webkit-box-flex: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  width: 100%;
+  margin: 0 auto;
+  display: block;
+  padding-top: 1.5rem;
+}
+
+hr {
+  border: 0;
+  border-top: 3px solid #e0e0e0;
+  margin: 1.5rem 0;
+  display: block;
+  width: 100%;
+}
+
+/* Base de l'icône */
+.ico-align {
+  width: 20px;
+  height: 14px;
+  position: relative;
+  border-top: 2px solid #666; /* Ligne de texte */
+  border-bottom: 2px solid #666; /* Ligne de texte */
+}
+
+/* Le petit carré symbolisant l'image */
+.ico-align::before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  top: 3px;
+}
+
+/* Positionnement du carré */
+.ico-left::before {
+  left: 0;
+}
+
+.ico-right::before {
+  right: 0;
+}
+
+/* Cas particulier : Pleine largeur (on remplace le carré par une ligne centrale) */
+.ico-full::before {
+  width: 20px;
+  height: 2px;
+  background: #666;
+  top: 5px;
+  left: 0;
+}
+
+/* Ligne centrale pour gauche et droite */
+.ico-left::after, .ico-right::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 2px;
+  background: #666;
+  top: 6px;
+}
+
+.ico-left::after {
+  right: 0;
+}
+
+.ico-right::after {
+  left: 0;
+}/*# sourceMappingURL=main.css.map */
